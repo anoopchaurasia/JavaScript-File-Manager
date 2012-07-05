@@ -1,0 +1,66 @@
+<h2>fm</h2><br>
+<table style="width: 99%;">
+    <thead>
+        <tr>
+            <th class="name">Name</th>
+            <th class="param">Use</th>
+            <th class="description">Descriptions</th>
+        </tr>
+    </thead>
+    <tbody id="editing-part">
+        <tr>             
+            <td class="name editable" style=" ">&nbsp;<a href="#Package">Package</a></td>
+            <td class="param editable" style=" ">&nbsp;fm.Package(Path)</td>
+            <td class="description editable" style=" ">&nbsp;Every file start with fm.Package(); which take relative directory path of JS file with directories separated by '.'</td></tr><tr>             
+            <td class="name editable" style=" ">&nbsp;<a href="#Import"> Import </a></td>            
+            <td class="param editable" style=" ">&nbsp;fm.Import(Path)</td>
+            <td class="description editable" style=" ">&nbsp;It take relative file path. Include: It take relative path. Use it when importing class is different type.</td></tr><tr>             
+            <td class="name editable" style=" ">&nbsp;<a href="super.html">Base</a></td>            
+            <td class="param editable" style=" ">&nbsp;fm.Base(Path)</td>
+            <td class="description editable" style=" ">&nbsp;It take relative path of file, base file used as base class for current class.</td></tr><tr>             
+            <td class="name editable" style=" ">&nbsp;<a href="#Class">Class</a></td>            
+            <td class="param editable" style=" ">&nbsp;fm.Class(ClassName, Path)</td>
+            <td class="description editable" style=" ">&nbsp;It take class name. Second parameter is optional and it is base class path.</td></tr><tr>             
+            <td class="name editable" style=" ">&nbsp;<a href="#Interface">Interface</a></td>            
+            <td class="param editable" style=" ">&nbsp;fm.Interface(InterfaceName, Path)</td>
+            <td class="description editable" style=" ">&nbsp;It's first parameter is Interface name. Second parameter is optional and it is base class path.</td></tr><tr>             
+            <td class="name editable" style=" ">&nbsp;<a href="#Implements"> Implements</a></td>            
+            <td class="param editable" style=" ">&nbsp;fm.Implements(Path,Path,...)</td>
+            <td class="description editable" style=" ">&nbsp;It can take any number of parameters. All parameters must be an Interface.</td></tr>
+    <tr> <td class="name editable" style=" ">&nbsp;<a href="abstractclass.html"> AbstractClass</a></td><td class="param editable" style=" ">&nbsp;fm.AbstractClass(ClassName, Path)</td><td class="return editable" style=" ">&nbsp;It take class name. Second parameter is optional and it is base class path. Creates the Abstract Class and can't be instantiated.</td><td class="description editable"></td></tr><tr> <td class="name editable">basedir</td><td class="param editable" style=" ">&nbsp;fm.basedir = Path</td><td class="return editable" style=" ">&nbsp; All path are relative to this directory.</td><td class="description editable"></td></tr></tbody>
+</table>
+<div class="editable" style=" "><a href="example.html">Example</a><br><br>We have added two new Keywords "me" (Corresponding to Java's this) and "base"(Corresponding to Java's super) which is accessible inside class methods. <br>Inside Static method : me represent Class object, and base is base class object.<br>Inside Instance method: me represent instance object and base corresponding base class instance.<br>Inside Local method: value of me and base depends on caller method. <br><br> <div id="Class"><b>Class: </b><br> <p>The following <a class="SourceLink" href="examples/Bicycle.js" target="_blank"><code>Bicycle</code></a> class is one possible implementation of a bicycle:</p><br> <div class="codeblock"><pre>fm.Class("Bicycle");<br> Bicycle = function(){<br> var cadence = 0;<br> var speed = 0;<br> var gear = 1;<br> this.changeCadence = function(newValue) {<br> cadence = newValue;<br> };<br> this.changeGear = function(newValue) {<br> gear = newValue;<br> };<br> this.speedUp = function(increment) {<br> speed = speed + increment; <br> };<br> this.applyBrakes = function(decrement) {<br> speed = speed - decrement;<br> };<br> this.printStates = function() {<br> console.log("cadence:" +<br> cadence + " speed:" + <br> speed + " gear:" + gear);<br> } <br> };</pre></div><br> <p>
+            The fields <code>cadence</code>, <code>speed</code>, and <code>gear</code> represent the object's state
+            , and the methods (<code>changeCadence</code>, <code>changeGear</code>, <code>speedUp</code> etc.) define its 
+            interaction with the outside world.</p><br> <p>You may have noticed that the <code>Bicycle</code> class does not 
+            contain a <code>main</code> method. That's because it's not a complete application; it's just the blueprint for
+            bicycles that might be <i>used</i> in an application. The responsibility of creating and using new <code>Bicycle</code>
+            objects belongs to some other class in your application.</p><br> <p>Here's a <a class="SourceLink" href="examples/BicycleDemo.js" 
+target="_blank"> <code>BicycleDemo</code></a> class that
+creates two separate <code>Bicycle</code> objects and 
+invokes their methods:</p><br> <div class="codeblock">
+            <pre style=" ">fm.Import("Bicycle");<br> fm.Class("BicycleDemo");<br> BicycleDemo = function(){<br> // Create two different <br> 
+// Bicycle objects<br> //Static main get called once class become ready<br> Static.main = function(){<br> var bike1 = new Bicycle();<br>
+ var bike2 = new Bicycle();<br> <br> // Invoke methods on <br> // those objects<br> bike1.changeCadence(50) ;<br> bike1.speedUp(10);<br> 
+bike1.changeGear(2);<br> bike1.printStates();<br> bike2.changeCadence(50);<br> bike2.speedUp(10);<br> bike2.changeGear(2);<br> 
+bike2.changeCadence(40);<br> bike2.speedUp(10);<br> bike2.changeGear(3);<br> bike2.printStates();<br> }; <br> }; <br></pre></div><br> 
+<p>The output of this test prints the ending pedal cadence, speed, and gear for the two bicycles: <a onclick="myJsFunc.apply(this); 
+    return false" href="javascript:fm.basedir='examples';fm.include('BicycleDemo');">Run</a><br></p><br> <div class="codeblock">
+    <pre>cadence:50 speed:10 gear:2<br> cadence:40 speed:20 gear:3<br></pre></div><br><div id="Import"><b>Import</b></div> </div><br> 
+    <div id="Package"><b>Package:</b><br> <p>A package is a namespace that organizes a set of related classes and interfaces. Conceptually 
+            you can think of packages as being similar to different folders on your computer. You might keep HTML pages in one folder,
+            images in another, and scripts or applications in yet another.</p></div><br> <div id="Interface" style=" "><b>Interface:</b><br> 
+                <br> <p style=" "></p><p>An <i>interface</i> is a reference type, similar to a class, that can contain <i>only</i> constants,
+                    method signatures, and nested types. There are no method bodies. Interfaces cannot be instantiated?they can only be
+                    <i>implemented</i> by classes or <i>extended</i> by other interfaces. Extension is discussed later in this lesson.<br>
+                </p><p></p> <p>In its most common form, an interface is a group of related methods with empty bodies. A bicycle's behavior,
+                    if specified as an interface, might appear as follows:</p><br> <div class="codeblock"><pre>fm.Interface("BicycleInterface");
+<br>BicycleInterface = function (){<br> // wheel revolutions per minute<br> this.changeCadence = function(){}; <br>
+ this.changeGear = function(){};<br> this.speedUp = function(){};<br> this.applyBrakes = function(){};<br>}</pre></div> <br> <p> 
+     To implement this interface, the name of your class would change (to a particular brand of bicycle, for example, such as 
+     <code>ACMEBicycle</code>), and you'd use the <code>Implements</code> keyword in the class declaration:</p> <br> <div class="codeblock">
+     <pre>fm.Implements("BicycleInterface");<br>fm.Class("ACMEBicycle");<br>ACMEBicycle = function(){<br> // remainder of this class <br> 
+// implemented as before<br>}<br></pre></div><br> <p>Implementing an interface allows a class to become more formal about the behavior it
+    promises to provide. Interfaces form a contract between the class and the outside world, and this contract is enforced at build time 
+    by the compiler. If your class claims to implement an interface, all methods defined by that interface must appear in its source code
+    before the class will successfully compile.</p><br> </div><div id="Inheritence"><b>Inheritence:</b></div></div>

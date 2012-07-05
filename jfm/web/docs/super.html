@@ -1,0 +1,88 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <div id="PageContent">
+
+            <!-- Using base -->
+            <h2>Accessing Baseclass Members</h2>
+            <p>If your method overrides one of its baseclass's methods, 
+                you can invoke the overridden method through the use of the keyword <code>base</code>.
+                You can also use <code>base</code> to refer to a hidden field (although hiding fields is discouraged).
+                Consider this class, <code>Baseclass</code>:</p>
+            <div class="codeblock"><pre>
+fm.Class("Baseclass");
+Baseclass  = function(){
+
+    this.printMethod() {
+        console.log("Printed in Baseclass.");
+    }
+}
+                </pre></div>
+            <p>Here is a subclass, called <code>Subclass</code>, that overrides <code>printMethod()</code>:</p>
+            <div class="codeblock"><pre>
+fm.Class("Subclass", "Baseclass");
+Subclass = function(){
+    // overrides printMethod in Baseclass
+    this.printMethod = function() {
+        base.printMethod();
+        console.log("Printed in Subclass");
+    }
+    Static.main() {
+        Subclass s = new Subclass();
+        s.printMethod();    
+    }
+}
+                </pre></div>
+            <p>Within <code>Subclass</code>, the simple name <code>printMethod()</code> refers to the one declared in 
+                <code>Subclass</code>,
+                which overrides the one in <code>Baseclass</code>. So, to refer to 
+                <code>printMethod()</code> inherited from <code>Baseclass</code>, <code>Subclass</code> 
+                must use a qualified name, using <code>base</code> as shown. 
+                Compiling and executing <code>Subclass</code> prints the following:</p>
+            <div class="codeblock"><pre>Printed in Subclass
+Printed in Baseclass.
+                </pre></div>
+            <h2>Subclass Constructors</h2>
+            <p>The following example illustrates how to use the <code>base</code> keyword to invoke a baseclass's constructor. Recall from the 
+                <a class="TutorialLink" target="_top" href="examples/Bicycle.js">
+                    <code>Bicycle</code> </a> example that <code>MountainBike</code>
+                is a subclass of <code>Bicycle</code>. Here is the <code>MountainBike</code> 
+                (subclass) constructor that calls the baseclass constructor and then adds initialization 
+                code of its own:</p>
+            <div class="codeblock">
+                <pre>this.MountainBike = function(startHeight, 
+                    startCadence,
+                    startSpeed,
+                    startGear) {
+    base(startCadence, startSpeed, startGear);
+    seatHeight = startHeight;
+}   
+                </pre></div>
+            <p>The syntax for calling a baseclass constructor is</p>
+            <div class="codeblock"><pre>base();  
+                </pre></div>
+            or:
+            <div class="codeblock"><pre>base(parameter list);
+                </pre></div>
+
+            <div class="note"><hr><strong>Note:</strong>&nbsp;If a constructor does not explicitly invoke a baseclass
+                constructor, jfm automatically call base constructor just after constructor call.
+                <hr></div>
+            <p>If a subclass constructor invokes a constructor of its baseclass, 
+                either explicitly or implicitly, you might think that there will be a whole chain of constructors called, 
+                all the way back to the constructor of <code>Object</code>. In fact, this is the case. It is called <i>
+                    constructor chaining</i>, and you need to be aware of it when there is a long line of class descent.
+            </p>
+
+
+        </div>
+    </body>
+</html>

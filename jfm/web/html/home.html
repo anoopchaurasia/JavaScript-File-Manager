@@ -1,0 +1,44 @@
+<style>
+    #intro{
+        padding: 10px;
+        width: 700px;
+        margin: 0 auto;
+        font-size: 17px;
+        background-color: #eee;
+    }
+    #intro table{
+        width:43%; 
+    }
+    #intro .text{
+        padding: 10px 5px;
+
+    }
+    #intro .select >div {
+        width:300px;
+    }
+    #intro input,  #intro select{
+        height: 30px;
+        width: 300px;
+        padding-left:4px;
+    }
+    .td1{
+        padding-top: 5px;
+    }
+
+</style>
+<div id="intro" class="intro">
+
+    <form method="POST">
+        <div style="width:55%;float: left;">
+            <h2> Join Organization... </h2>
+        </div>
+        <table>
+            <tbody>
+                <tr class="email">
+                    <td class="input td1"><input class="mandatory" datatype="email" hintText="Email Address"  name="user.email" type="text" /></td>
+                </tr>
+            </tbody>
+        </table>
+        <input style="background-color: azure; margin-left: 230px; margin-top: 20px;" type="submit" value="Submit">
+    </form>
+</div>

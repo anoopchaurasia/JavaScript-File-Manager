@@ -1,0 +1,39 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <div id="PageContent">
+
+            <!-- Abstract Methods and Classes -->
+            <p>An <i>abstract class</i> is a class that is declared <code>AbstractClass</code>—it may or may not include abstract methods. 
+                Abstract classes cannot be instantiated, but they can be subclassed.</p>
+            <p>An <i>abstract method</i> is a method that is declared without an implementation (without braces, and followed by a semicolon), 
+                like this:</p>
+            <div class="codeblock"><pre>Abstract.moveTo = function(){};
+                </pre></div>
+            <p>If a class includes abstract methods, the class itself <i>must</i> be declared <code>abstract</code>, as in:</p>
+            <div class="codeblock"><pre>
+    AbstractClass("GraphicObject");
+    GraphicObject {
+   // declare fields
+   // declare non-abstract methods
+   Abstract.draw= function(){};
+}
+                </pre></div>
+            <p>When an abstract class is subclassed, the subclass usually provides implementations for all of the abstract methods in its parent
+                class. However, if it does not, the subclass must also be declared <code>abstract</code>.</p>
+            <div class="note"><hr><strong>Note:</strong>&nbsp;All of the methods in an <i>interface</i> (see the   section) are
+                <i>implicitly</i> abstract, so the <code>abstract</code> modifier is not used with interface methods (it could be—it's just
+                not necessary).
+                In the section on Interfaces, it was noted that a class that implements an interface must implement all of the interface's methods. It is possible, however, to define a class that does not implement all of the interface methods, provided that the class is declared to be abstract.
+                <hr></div>
+        </div>
+    </body>
+</html>
