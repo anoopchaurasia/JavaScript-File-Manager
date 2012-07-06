@@ -8,8 +8,7 @@ fm.Package("test");
 fm.Class("Template", "Base");
 test.Template = function(){
     this.getTemplate = function(req, resp, t){
-        var userprofile = process.env["USERPROFILE"];
-        var path = userprofile +"/SkyDrive/workspace/StructJS1/importmanager.git/trunk/web/html/"+req.params.data+ ".html";
+        var path = process.cwd() + "/web/templates/"+req.params.data+ ".html";
         fs.readFile(path, function (err, data) {
             if (err) {
                 console.log(err);
@@ -22,5 +21,5 @@ test.Template = function(){
         });
         
     };
-    this.method = function(){};
+    this.method = function(){/**/};
 };
