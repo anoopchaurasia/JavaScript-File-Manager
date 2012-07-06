@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
+fm.Import("const.Constants");
 fm.Class("App");
 App = function(){
     var http, url, qs, servletObj, staticServer;
@@ -14,7 +14,7 @@ App = function(){
         servletObj = {};       
         console.log(__dirname);
         staticServer = new(require('node-static').Server)(undefined, {
-            cache: 60000,
+            cache: 60,
             headers: {
                 'X-Powered-By': 'node-static'
             }
@@ -81,7 +81,7 @@ App = function(){
                 });               
             }
             // console.log(new Date().getTime() - t, servletName);
-        }).listen(8888);
+        }).listen(Constants.port);
     };
 };
 

@@ -40,7 +40,7 @@ jfm.html.form.Text = function(){
         var icon;
        switch(datatype){        
             case 'email':{
-                icon = "<img class='typeIcon' src='http://www.fukangsi.com/images/email_logo.jpg' />";
+                icon = "<span class='typeIcon' ></span>";
                 break;
             }
             case 'number':{

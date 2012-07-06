@@ -1,107 +1,118 @@
 <style>
-    #intro{
-        padding: 10px;
-        width: 700px;
-        margin: 0 auto;
-        font-size: 17px;
-        background-color: #eee;
-    }
-    #intro table{
-        width:43%; 
-    }
-    #intro .text{
-        padding: 10px 5px;
+#intro {
+	padding: 10px;
+	width: 700px;
+	margin: 0 auto;
+	font-size: 17px;
+	background-color: #eee;
+}
+#intro table {
+	width: 43%;
+}
 
-    }
-    #intro .select >div {
-        width:300px;
-    }
-    #intro input,  #intro select{
-        height: 30px;
-        width: 300px;
-        padding-left:4px;
-    }
-    .td1{
-        padding-top: 5px;
-    }
+#intro .text {
+	padding: 10px 5px;
+}
 
+#intro .select>div {
+	width: 300px;
+}
+
+#intro input,#intro select {
+	height: 30px;
+	width: 300px;
+	padding-left: 4px;
+}
+
+.td1 {
+	padding-top: 5px;
+	position: relative;
+}
 </style>
 <div id="intro" class="intro">
 
-    <form>
-        <div style="width:55%;float: left;">
-            <h2> Please fill this form </h2>
-        </div>
-        <table>
-            <tbody>
-                <tr class="firstname">
+	<form>
+		<div style="width: 55%; float: left;">
+			<h2>Please fill this 67 form</h2>
+		</div>
+		<table>
+			<tbody>
+				<tr class="firstname">
 
-                    <td class="input td1"><input hintText="First Name" class="mandatory" name="user.firstName" type="text"></td>
-                </tr>
-                <tr class="lastname">
+					<td class="input td1"><input hintText="First Name"
+						class="mandatory" name="user.firstName" type="text"></td>
+				</tr>
+				<tr class="lastname">
 
-                    <td class="input td1"><input hintText="Last Name" class="mandatory" name="user.lastName" type="text"></td>
-                </tr>
+					<td class="input td1"><input hintText="Last Name"
+						class="mandatory" name="user.lastName" type="text"></td>
+				</tr>
 
-                <tr class="company">
+				<tr class="company">
 
-                    <td class="input td1">
-                        <input hintText="Company Name" class="mandatory" name="user.companyName" type="text"></td>
-                </tr>
+					<td class="input td1"><input hintText="Company Name"
+						class="mandatory" name="user.companyName" type="text"></td>
+				</tr>
 
-                <tr class="address">
+				<tr class="address">
 
-                    <td class="input td1"><input hintText="Address" class="mandatory"  name="user.address.value" type="text" /></td>
-                </tr>
+					<td class="input td1"><input hintText="Address"
+						class="mandatory" name="user.address.value" type="text" /></td>
+				</tr>
 
-                <tr class="state">
+				<tr class="state">
 
-                    <td class="select td1">
-                        <select name="user.address.state" id="state">                            
-                        </select></td>
-                </tr>
-                <tr class="city">
+					<td class="select td1"><select name="user.address.state"
+						id="state">
+					</select></td>
+				</tr>
+				<tr class="city">
+					<td class="select td1"><select class="mandatory" id="city">
+					</select></td>
+				</tr>
+				<tr class="zip">
+					<td class="input td1"><input class="mandatory"
+						datatype="number" hintText="Zip/Postal Code"
+						name="user.address.zip" type="text"></td>
+				</tr>
+				<tr class="phone">
+					<td class="input td1"><input class="mandatory"
+						datatype="number" hintText="Phone" name="user.phone" type="text"></td>
+				</tr>
 
-                    <td class="select td1"><select class="mandatory" id="city">
+				<tr class="email">
 
-                        </select></td>
-                </tr>
+					<td class="input td1"><input class="mandatory"
+						datatype="email" hintText="Email Address" name="user.email"
+						type="text" /></td>
+				</tr>
 
-                <tr class="zip">
+				<tr class="comptype">
 
-                    <td class="input td1"><input class="mandatory" datatype="number" hintText="Zip/Postal Code"  name="user.address.zip" type="text"></td>
-                </tr>
+					<td class="input td1"><select name="user.comptype">
+							<option selected="selected" value="-1"></option>
+							<option value="1">PC/Windows</option>
+							<option value="2">Mac</option>
+					</select></td>
+				</tr>
 
-                <tr class="phone">
+				<tr id="org">
 
-                    <td class="input td1"><input class="mandatory" datatype="number" hintText="Phone"  name="user.phone" type="text"></td>
-                </tr>
+					<td class="input td1"><input
+						hintText="Professional Organizations You Belong to"
+						name="user.org" type="text" /></td>
+				</tr>
 
-                <tr class="email">
+				<tr id="fromwhere">
 
-                    <td class="input td1"><input class="mandatory" datatype="email" hintText="Email Address"  name="user.email" type="text" /></td>
-                </tr>
-
-                <tr class="comptype">
-
-                    <td class="input td1"><select name="user.comptype">
-                            <option selected="selected" value="-1"></option>
-                            <option value="1">PC/Windows</option>
-                            <option value="2">Mac</option>
-                        </select></td>
-                </tr>
-
-                <tr id="org">
-
-                    <td class="input td1"><input hintText="Professional Organizations You Belong to"  name="user.org" type="text" /> </td>
-                </tr>
-
-                <tr id="fromwhere">
-
-                    <td class="input td1"><input hintText="How did you hear about our Software?" name="user.fromwhere" type="text" /></td>
-                </tr>
-            </tbody>
-        </table>
-        <input style="background-color: azure; margin-left: 230px; margin-top: 20px;" type="submit" value="Submit">
-    </form>
+					<td class="input td1"><input
+						hintText="How did you hear about our Software?"
+						name="user.fromwhere" type="text" /></td>
+				</tr>
+			</tbody>
+		</table>
+		<input
+			style="background-color: azure; margin-left: 230px; margin-top: 20px;"
+			type="submit" value="Submit">
+	</form>
 </div>
