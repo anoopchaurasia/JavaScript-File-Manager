@@ -51,7 +51,7 @@ jfm.html.form.Text = function(){
        if(icon){
            el.parent().addClass("iconHandler");
            el.width(el.width() - 33);
-           el.before(icon);
+           el.before(icon).after("<span class='validityHinter'></span>");
        }
     }
     
@@ -107,12 +107,13 @@ jfm.html.form.Text = function(){
     function el_blur(){
         try{
             varifyValue(this.value); 
+            jQuery(this).next().show().removeClass("fail").addClass("pass");
         }catch(e){
-            //alert(e); 
+        	jQuery(this).next().show().removeClass("pass").addClass("fail");
         }
     }
     function el_click(){
-        textSelect(this);
+        this.value == hintText && textSelect(this);
     }
     function textSelect(inp) {
         if (inp.createTextRange) {
@@ -132,5 +133,5 @@ jfm.html.form.Text = function(){
             self.css('color','#666');
             self.val( hintText );
         }
-    };
+    }
 };
