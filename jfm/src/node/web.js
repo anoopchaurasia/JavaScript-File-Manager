@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 webPath = {
-    "/template":"test.Template",
-    "/Home":"test.Home",
-    "/registration":"test.Registration"
+    "/template" : "test.Template",
+    "/Home" : "test.Home",
+    "/registration" : "test.Registration"
 };

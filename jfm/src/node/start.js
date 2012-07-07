@@ -1,4 +1,4 @@
 
 require("./compiler/Master.js");
-fm.basedir = process.cwd() + "/src/node/";
+fm.basedir = __dirname + "/";
 fm.Include("App");

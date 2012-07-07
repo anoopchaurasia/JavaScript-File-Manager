@@ -6,12 +6,15 @@
 fm.Package("const");
 fm.Class("Constants");
 Constants = function( ) {
-	var ip;
+	var ip = "localhost";
 	this.init = function( ) {		
 		var socket = require("net").createConnection(80, 'www.google.com');
 		socket.on('connect', function( ) {
 			ip = socket.address().address;
 			socket.end();
+		});
+		socket.on("error",function(){
+			console.log(arguments);
 		});
 	};
 	

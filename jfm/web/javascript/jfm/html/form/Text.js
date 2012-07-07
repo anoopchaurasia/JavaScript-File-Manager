@@ -3,7 +3,10 @@ fm.Import("jfm.html.Constants");
 fm.Import("jfm.html.Popup");
 fm.Class("Text");
 jfm.html.form.Text = function(){
-    var originalColor, hintText, datatype;
+    var originalColor, placeholder, datatype;
+    this.init = function(){
+    	Static.isPlaceHoderSuported = 'placeholder' in document.createElement("input");
+    };
     this.Text = function(config){
         
         if(config instanceof jQuery){
@@ -19,8 +22,8 @@ jfm.html.form.Text = function(){
         this.el.blur(el_blur).click(el_click).keyup(el_keyup).keydown(el_keydown);
         originalColor = this.el.css('color');
         datatype = this.el.attr("datatype");
-        hintText = this.el.attr('hintText');
-        hintText && enableHint(this.el);
+        !this.isPlaceHoderSuported && ( placeholder = this.el.attr('placeholder') );
+        placeholder && enableHint(this.el);
         addLogo(this.el);
     };    
     
@@ -85,21 +88,18 @@ jfm.html.form.Text = function(){
     }
     
     function el_keydown(e){
-        if(hintText){
-            if(this.value == hintText && String.fromCharCode(e.keyCode)){
+        if(placeholder){
+            if(this.value == placeholder && String.fromCharCode(e.keyCode)){
                 this.value = "";
                 this.style.color = originalColor;
             }           
-        }else{
-            this.select();
         }
     }
     
     function el_keyup(e){
-        if(!this.value){
-            
+        if(!this.value && placeholder){            
             this.style.color = "#666666";
-            this.value = hintText;
+            this.value = placeholder;
             textSelect(this, 0, 0);
         }
     }
@@ -113,7 +113,7 @@ jfm.html.form.Text = function(){
         }
     }
     function el_click(){
-        this.value == hintText && textSelect(this);
+        this.value == placeholder && textSelect(this);
     }
     function textSelect(inp) {
         if (inp.createTextRange) {
@@ -131,7 +131,7 @@ jfm.html.form.Text = function(){
     function enableHint (self){        
         if(!self.val()){            
             self.css('color','#666');
-            self.val( hintText );
+            self.val( placeholder );
         }
     }
 };

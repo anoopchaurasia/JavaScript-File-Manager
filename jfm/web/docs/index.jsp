@@ -14,7 +14,7 @@
               return false;  
             };
             if(location.search.indexOf("?edit=true") != -1){
-                fm.basedir='/docs'
+                fm.basedir='/docs';
                 fm.Include("App");
                 fm.basedir='/javascript';                
             }
@@ -49,9 +49,7 @@
     </head>
     <body>
         <div id="container">
- 
                 <jsp:include page="index.html" ></jsp:include>
-
         </div>
     </body>
 </html>

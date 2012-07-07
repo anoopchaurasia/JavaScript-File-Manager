@@ -396,7 +396,7 @@ jfm.html.Combobox = function(){
             _settings.resultFunction( list, _value_list );
             return ;
         }
-        var pos = _text_box.parent().position();
+        var pos = _text_box.offset();
         var height = parseInt( _result_box.css('height') );
         var winHeight = $(window).height();
         if( height > (winHeight - pos.top) ){
