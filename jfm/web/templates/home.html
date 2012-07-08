@@ -8,7 +8,7 @@
 }
 
 #intro table {
-	width: 43%;
+	width: 60%;
 }
 
 #intro .text {
@@ -21,8 +21,14 @@
 
 #intro input,#intro select {
 	height: 30px;
-	width: 300px;
+	width: 360px;
 	padding-left: 4px;
+}
+
+#intro .submit {
+	height: 35px;
+	margin-left: -5px;
+	width: 60px;
 }
 
 .td1 {
@@ -30,8 +36,8 @@
 }
 </style>
 <div id="intro" class="intro">
-	<form method="POST">
-		<div style="width: 55%; float: left;">
+	<form id="join" method="POST">
+		<div style="width: 35%; float: left;">
 			<h2>Join Organization...</h2>
 		</div>
 		<table>
@@ -39,12 +45,26 @@
 				<tr class="email">
 					<td class="input td1"><input class="mandatory"
 						datatype="email" placeholder="Email Address" name="user.email"
-						type="text" /></td>
+						type="text" /> <input class="submit"
+						style="background-color: azure;" type="submit" value="Join"></td>
 				</tr>
 			</tbody>
 		</table>
-		<input
-			style="background-color: azure; margin-left: 230px; margin-top: 20px;"
-			type="submit" value="Submit">
+	</form>
+	<div>OR</div>
+	<form method="POST" id="signin">
+		<div style="width: 35%; float: left;">
+			<h2>Sign In</h2>
+		</div>
+		<table>
+			<tbody>
+				<tr class="email">
+					<td class="input td1"><input class="mandatory"
+						datatype="email" placeholder="Email Address" name="user.email"
+						type="text" /> <input class="submit"
+						style="background-color: azure;" type="submit" value="Sign In"></td>
+				</tr>
+			</tbody>
+		</table>
 	</form>
 </div>

@@ -19,6 +19,7 @@ jfm.cache.Cache = function(){
             cb = path;
         }
         if(tempalateStorage[name]){
+        	cb && cb(tempalateStorage[name]);
             return tempalateStorage[name];
         }
         var async = cb ? true:false;

@@ -4,6 +4,7 @@
  */
 
 fm.Package("com.region");
+fm.Import("jfm.html.Span");
 fm.Class("Topbar", 'jfm.html.Container');
 com.region.Topbar = function(){
     this.Topbar = function(){

@@ -1,0 +1,51 @@
+<style>
+div span {
+	width: 200px;
+	display: inline-block;
+}
+
+#intro div {
+	height: 50px;
+}
+
+#intro input,#intro select,#intro textarea {
+	height: 30px;
+	width: 360px;
+	padding-left: 4px;
+}
+
+#intro textarea {
+	height: 100px;
+}
+</style>
+<div id="intro" class="intro" style="width: 700px; margin: 0 auto;">
+	<form id="post" method="post">
+		<div>
+			<span> Email: </span><input type="text" name='post.emial'
+				placeholder="Email" mandatory=true />
+		</div>
+		<div>
+			<span> City: </span><input type="text" name='post.city' />
+		</div>
+		<div>
+			<span> Locality: </span><input type="text" name='post.locality' />
+		</div>
+		<div>
+			<span> Category: </span><input type="text" name='post.category' />
+		</div>
+		<div>
+			<span> Title: </span><input type="text" name='post.title' />
+		</div>
+		<div style="height: 110px">
+			<span> Description: </span>
+			<textarea name='post.description'></textarea>
+		</div>
+		<div>
+			<span> Mobile No.: </span><input type="text" name='post.mon' />
+		</div>
+		<div>
+			<input style="background-color: azure; margin-left: 230px; margin-top: 20px;"
+				type="submit" value="Submit">
+		</div>
+	</form>
+</div>

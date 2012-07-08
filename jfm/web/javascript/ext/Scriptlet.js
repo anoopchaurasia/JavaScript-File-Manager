@@ -3,7 +3,6 @@
  * and open the template in the editor.
  */
 
-
 /* 
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -17,11 +16,11 @@ var Scriptlet = new function (){
         switch(str){
             case '<%' :{
                 if(replace=="out('"){
-                    replace= "');"
+                    replace= "');";
                 } else if( replace== "+'"){
-                    replace = "');"
+                    replace = "');";
                 }else {
-                    replace = ""
+                    replace = "";
                 }
                 break;
             }
@@ -42,7 +41,7 @@ var Scriptlet = new function (){
     
                 }
                 else {
-                    replace= "out('"
+                    replace= "out('";
                 }
                 break;
             }

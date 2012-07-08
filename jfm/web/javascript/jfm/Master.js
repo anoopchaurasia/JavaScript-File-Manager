@@ -151,10 +151,10 @@ t = new Date().getTime();
 	var storePath = [];
 	
 	// /same as fm.import but for non jfm files.
-	fm['include'] = fm.Include = function Include( path ) {
+	fm['include'] = fm.Include = function Include( path, data ) {
 		
 		if (!storePath[fm.basedir + path]) {
-			storePath[fm.basedir + path] = true;
+			storePath[fm.basedir + path] =  data || true;
 		}
 		else {
 			return this;
@@ -254,8 +254,11 @@ t = new Date().getTime();
 	// fm.Class creates a jfm class.
 	fm['class'] = fm.Class = function Class( ) {
 		
+		
+		
 		!currentScript && this.Package();
-		var script = currentScript;
+		
+		var script = currentScript, data;
 		var a = arguments, o = null;
 		script.className = a[0];
 		if (a[1]) {
@@ -266,18 +269,22 @@ t = new Date().getTime();
 		
 		script.Package = o;
 		// fm.isConcatinated && fm.holdReady(true);
-		callAfterDelay(script);
+		if(typeof storePath[fm.basedir + script.Class] == 'object'){
+			data = storePath[fm.basedir + script.Class];
+			storePath[fm.basedir + script.Class] =true;
+		}
+		callAfterDelay(script, data);
 		currentScript = undefined;
 	};
 	
 	// callAfterDelay:Delay the call for classManager so that file get compiled
 	// completely.
 	// And classManager get all information about the function.
-	function callAfterDelay( currentScript ) {
+	function callAfterDelay( currentScript, data ) {
 		setTimeout(function( ) {
 			// Calling classmanager after a short delay so that file get
 			// completely ready.
-			classManager(currentScript);
+			classManager(currentScript, data);
 			// fm.holdReady(false);
 		});
 	}
@@ -829,7 +836,7 @@ t = new Date().getTime();
 	}
 	
 	// Run this code after all resources are available.
-	function executeOnready( script, fn, Class ) {
+	function executeOnready( script, fn, Class, data ) {
 		
 		var internalObj = script;
 		// for instance of: check if given class is a interface implemeted by
@@ -884,8 +891,9 @@ t = new Date().getTime();
 		iamready(this.getClass(), this);
 		if (typeof this.main == 'function') {
 			this.main = changeContext(this.main, this);
-			this.main();
+			this.main(data);
 			delete this.main;
+			data = undefined;
 		}
 		return;
 	}
@@ -924,7 +932,7 @@ t = new Date().getTime();
 		}
 	}
 	
-	function classManager( script ) {
+	function classManager( script, data ) {
 		
 		var po = script.Package, fn = script.className;
 		if (!po || !fn) {
@@ -955,7 +963,8 @@ t = new Date().getTime();
 		};
 		// Add resource ready queue.
 		addImportsOnready(script.imports, function( ) {
-			executeOnready.call(po[fn], script, fn, Class);
+			executeOnready.call(po[fn], script, fn, Class, data);
+			data = undefined;
 		}, fn);
 	}
 })(window);

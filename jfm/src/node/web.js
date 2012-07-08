@@ -5,5 +5,6 @@
 webPath = {
     "/template" : "test.Template",
     "/Home" : "test.Home",
-    "/registration" : "test.Registration"
+    "/registration" : "test.Registration",
+    "/post" : "test.Post"
 };
