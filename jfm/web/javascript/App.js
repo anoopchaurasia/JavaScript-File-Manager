@@ -32,7 +32,7 @@ App = function () {
         else{
         	fm.Include("com.home.Home", d);
         }
-        top.updateRegion();
+        top.updateRegion(d);
         d.top.add(top);
         d.addTo('body');
         console.log(new Date().getTime() - t, new Date().getTime() - t2);       

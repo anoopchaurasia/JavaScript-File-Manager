@@ -14,5 +14,5 @@ System = function(){
     this.Static.err = {
         print:function(data){Server.getInstance("clientSystem", "err_print").serviceCall({data: data });},
         println:function println(data){Server.getInstance("clientSystem", "err_print").serviceCall({data: (data + "\n") });}
-    }
+    };
 };

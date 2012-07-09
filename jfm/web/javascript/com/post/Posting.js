@@ -1,5 +1,6 @@
 fm.Package("com.post");
 fm.Import("com.post.Left");
+fm.Import("com.post.Top");
 fm.Import("jfm.cache.Cache");
 fm.Import("jfm.html.form.Text");
 fm.Import("jfm.server.Server");
@@ -11,13 +12,7 @@ com.post.Posting = function(){
 	};
 	
 	function getServerPostingFor(link, center){
-		Cache.getInstance().getTemplate("post",function(resp){
-			center.reset();
-			center.add(new Container({html: resp}));
-			setTimeout(function(){
-				jfm.html.form.Text.convertToJfm(center.el.find("input[type='text']"));
-			}, 100);
-		});
+		center.reset();
 	}
 	
 	function addToCenter(resp) {
@@ -29,10 +24,10 @@ com.post.Posting = function(){
 	this.Posting = function(division, user){
 		base();
 		division.center.reset();
-		division.center.add(this);
 		division.left.add(new Left(function(link){
 			getServerPostingFor(link, division.center);
 		}));
+		division.center.add(this);
 		
 	};
 };
