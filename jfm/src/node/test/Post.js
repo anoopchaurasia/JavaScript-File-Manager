@@ -4,7 +4,7 @@
  */
 
 fm.Package("test");
-fm.Import("user.User");
+fm.Import("post.Post");
 fm.Class("Post", "Base");
 test.Post = function( ) {
 	var pg, client;
@@ -13,8 +13,9 @@ test.Post = function( ) {
 	};
 	
 	this.save = function(req, res){
-		var p = JSON.parse(req.paramas.post);
-		
+		var p = new post.Post(JSON.parse(req.params.post));
+		console.log(p);
+		res.end();
 	};
 	
 	this.Post = function( ) {

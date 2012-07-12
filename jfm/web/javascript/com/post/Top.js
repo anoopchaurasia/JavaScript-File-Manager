@@ -21,6 +21,12 @@ com.post.Top = function() {
 				center.add(new Container({
 					html : resp
 				}));
+				center.el.find("form").submit(function(e){
+					e.preventDefault();
+					var data = jfm.html.FormManager.getData(this);
+					Server.getInstance("post").serviceCall(data,'save');
+					return false;
+				});
 				setTimeout(function() {
 					jfm.html.form.Text.convertToJfm(center.el.find("input[type='text']"));
 				}, 100);

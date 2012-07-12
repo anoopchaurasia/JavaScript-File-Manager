@@ -4,7 +4,7 @@
  */
 fm.Package("post");
 fm.Class("Post");
-user.Post = function( ) {
+post.Post = function( ) {
 	this.toArray = function( ) {
 		var arr = [];
 		for(var k in this){
