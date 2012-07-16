@@ -50,9 +50,7 @@ t= new Date().getTime();
                 if(isConst){
                     return valueStorage[key];
                 }
-                else{
                     return classProto[key];
-                }
             }
             
             if ( obj.__defineGetter__) {

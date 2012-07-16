@@ -107,7 +107,7 @@ jfm.html.form.Text = function(){
     function el_blur(){
         try{
             varifyValue(this.value); 
-            jQuery(this).next().show().removeClass("fail").addClass("pass");
+            this.value && jQuery(this).next().show().removeClass("fail").addClass("pass");
         }catch(e){
         	jQuery(this).next().show().removeClass("pass").addClass("fail");
         }

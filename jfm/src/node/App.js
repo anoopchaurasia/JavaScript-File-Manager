@@ -3,9 +3,11 @@
  * and open the template in the editor.
  */
 fm.Import("const.Constants");
+fm.Import("user.User");
 fm.Class("App");
 App = function(){
     var http, url, qs, servletObj, staticServer;
+    
     this.init = function(){
         fm.Include('web');
         http = require('http');
@@ -26,7 +28,7 @@ App = function(){
         servletObj[key] = new (fm.stringToObject(path))();
     }
     
-    Static.main = function(){
+    Static.main = function(args){
         http.createServer(function (req, resp) {
             var t= new Date().getTime();
             var servletName = req.url;
@@ -50,6 +52,7 @@ App = function(){
                             servletObj[servletName].POST(req, resp, t);
                            
                         }catch(e){
+                        	console.log(e);
                             resp.write(JSON.parse(e));
                             resp.end();
                         }
@@ -66,7 +69,6 @@ App = function(){
                         resp.end();
                     }
                 }
-                
             }
             else{
                 if(servletName =="/"){

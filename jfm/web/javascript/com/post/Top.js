@@ -7,7 +7,7 @@ com.post.Top = function() {
 	this.Top = function(center) {
 		base({
 			html : "Post",
-			width:40,
+			'class':'green-btn',
 			css : {
 				'background-color' : "#ccc",
 				"position" : "absolute",

@@ -8,7 +8,7 @@ fm.Import("const.Constants");
 fm.Import("user.User");
 fm.Class("Home", "Base");
 test.Home = function( ) {
-	var pg, client, email;
+	var pg, client, email, counter;
 	function sendMail( mail, res ) {
 		debugger;
 		email.send({
@@ -38,7 +38,8 @@ test.Home = function( ) {
 			}
 		});
 	}
-	this.method = function( ) { /* /Abstract method ; */
+	this.method = function(req, res ) { /* /Abstract method ; */
+		
 	};
 	
 	this.join = function( req, res ) {
@@ -67,6 +68,7 @@ test.Home = function( ) {
 	};
 	
 	this.Home = function( ) {
+		counter = 0;
 		console.log("Called ..");
 		pg = require('pg');
 		email = require('mailer');

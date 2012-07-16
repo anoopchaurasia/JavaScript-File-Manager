@@ -57,10 +57,7 @@ t = new Date().getTime();
 				});
 			}
 			else {
-				classRefernece[key] = classRefernece[key] || [];
-				classRefernece[key].push(obj);
-				
-				classProto[key] != undefined && (obj[key] = classProto[key]);
+				obj[key] == undefined && (obj[key] = valueStorage[key]);
 			}
 		};
 	}
