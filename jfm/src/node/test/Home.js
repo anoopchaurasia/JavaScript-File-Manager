@@ -38,8 +38,8 @@ test.Home = function( ) {
 			}
 		});
 	}
-	this.method = function(req, res ) { /* /Abstract method ; */
-		
+	this.method = function( req, res ) { /* /Abstract method ; */
+	
 	};
 	
 	this.join = function( req, res ) {
@@ -55,7 +55,23 @@ test.Home = function( ) {
 		}
 	};
 	this.signin = function( req, res ) {
-		this.getUser(req, res);
+		
+		user.User.getUser(client, JSON.parse(req.params.user), function( usr ) {
+			if (usr) {
+				var session = req.sessionM, sess = {};
+				sess.sessionId = usr.email;
+				sess.userId = usr.firstName;
+				res.setHeader('Set-Cookie', "SESSIONID=" + sess.sessionId + "");
+				res.write("registration");
+				session.add(sess);
+			}
+			else{
+				res.write("login");
+			}
+			res.end();
+			
+		});
+		
 	};
 	this.getUser = function( req, res ) {
 		user.User.getUser(client, JSON.parse(req.params.user), function( usr ) {

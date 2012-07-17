@@ -27,8 +27,11 @@ user.User = function( ) {
 		client.query("select * from user1 where email='" + usr.email + "'", function(err, b ) {
 			if(err){
 				cb  && cb(err);
-			}else{
-				cb  && cb(new user.User(b.rows[0]));
+			}else if (b.rows.length){
+				cb && cb(new user.User(b.rows[0]));
+			}
+			else{
+				cb  && cb(null);
 			}
 		});
 	};

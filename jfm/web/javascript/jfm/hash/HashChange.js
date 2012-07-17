@@ -3,11 +3,15 @@ fm.Class("HashChange");
 jfm.hash.HashChange = function( ) {
 	var division;
 	
-	function onHashChange( ) {
-		var hash = location.hash.substring(1);
+	function onHashChange( hash ) {
+		var hash = location.hash.substring(1) || hash;
 		switch (hash) {
 			case("registration"):{
 				fm.Include("com.registration.Registration", division);
+				break;
+			}
+			case ("login"):{
+				fm.Include("com.post.Posting",[division, {}]);
 				break;
 			}
 			default: {
@@ -20,6 +24,6 @@ jfm.hash.HashChange = function( ) {
 		division = d;
 		console.log("a");
 		jQuery(window).hashchange(onHashChange);
-		onHashChange();
+		onHashChange ("home");
 	};
 };

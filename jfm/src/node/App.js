@@ -12,6 +12,7 @@ App = function(){
         fm.Include('web');
         fm.Include("cookie.Cookie");
         http = require('http');
+        sessionM = require('sessionManagement');
         url = require('url'),
         qs = require('querystring');
         servletObj = {};       
@@ -30,9 +31,10 @@ App = function(){
     }
     
     Static.main = function(args){
+    	
         http.createServer(function (req, resp) {
+        	req.sessionM = sessionM;
         	
-        	cookie.Cookie.getCookie(req);
             var t= new Date().getTime();
             var servletName = req.url;
             if(servletName.indexOf("?") != -1){
@@ -43,6 +45,15 @@ App = function(){
                 loadServlet(webPath[servletName], servletName);
             }
             if(servletObj[servletName]){                
+            	var c = cookie.Cookie.getCookie(req);
+            	var SessionId = c.SESSIONID;
+            	console.log("SessionId " + SessionId);
+            	var user = sessionM.getSessionByUserId(SessionId);
+            	if(!user){
+            		resp.write("home");
+            		resp.end();
+            		return;
+            	}
                 if(req.method=="POST"){                    
                     var body = "";  
                     req.on('data', function (data) {
@@ -51,12 +62,10 @@ App = function(){
                     req.on('end',function(){
                         req.params = qs.parse(body);
                         try{
-                            
                             servletObj[servletName].POST(req, resp, t);
-                           
                         }catch(e){
                         	console.log(e);
-                            resp.write(JSON.parse(e));
+                           // resp.write(JSON.parse(e));
                             resp.end();
                         }
                     });
@@ -85,7 +94,7 @@ App = function(){
                     }                    
                 });               
             }
-            resp.setHeader('Set-Cookie', "SESSIONID=" + (Date.now()) + "");
+            
             // console.log(new Date().getTime() - t, servletName);
         }).listen(Constants.port);
     };

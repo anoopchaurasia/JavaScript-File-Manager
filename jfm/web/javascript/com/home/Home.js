@@ -43,13 +43,10 @@ com.home.Home = function( ) {
 				return false;
 			}
 			Server.getInstance("Home").serviceCall(data, 'signin', function( resp ) {
-				fm.Include("com.post.Posting",[division, resp]);
+				location.hash = resp;
 			});
 			return false;
 		});
-		if(QueryStr.getQuery("login")){
-			fm.Include("com.post.Posting",[division, {}]);
-		}
 		setTimeout(function( ) {
 			jfm.html.form.Text.convertToJfm(self.el.find("input[type='text']"));
 		});
