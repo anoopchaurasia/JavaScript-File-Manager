@@ -10,6 +10,7 @@ App = function(){
     
     this.init = function(){
         fm.Include('web');
+        fm.Include("cookie.Cookie");
         http = require('http');
         url = require('url'),
         qs = require('querystring');
@@ -30,6 +31,8 @@ App = function(){
     
     Static.main = function(args){
         http.createServer(function (req, resp) {
+        	
+        	cookie.Cookie.getCookie(req);
             var t= new Date().getTime();
             var servletName = req.url;
             if(servletName.indexOf("?") != -1){
@@ -82,6 +85,7 @@ App = function(){
                     }                    
                 });               
             }
+            resp.setHeader('Set-Cookie', "SESSIONID=" + (Date.now()) + "");
             // console.log(new Date().getTime() - t, servletName);
         }).listen(Constants.port);
     };
