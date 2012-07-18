@@ -9,9 +9,14 @@ fm.Import("jfm.html.Combobox");
 fm.Import("jfm.html.FormManager");
 fm.Class("Registration", "jfm.html.Container");
 com.registration.Registration = function( ) {
-	
+	var r;
 	Static.main = function( division ) {
-		var r = new me();
+		r = new me();
+		this.onHashChange(division);
+	};
+	
+	Static.onHashChange = function(division){
+		division.center.reset();
 		division.center.add(r);
 	};
 	

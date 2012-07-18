@@ -9,7 +9,7 @@ cookie.Cookie = function(){
 		if(c){
 			for(var k = 0;  k < c.length; k++){
 				temp = c[k].split("=");
-				cookie[temp[0]] = temp[1]; 
+				cookie[temp[0].trim()] = temp[1]; 
 			}
 		}
 		return cookie;

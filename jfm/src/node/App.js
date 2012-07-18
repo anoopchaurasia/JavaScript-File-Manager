@@ -6,7 +6,7 @@ fm.Import("const.Constants");
 fm.Import("user.User");
 fm.Class("App");
 App = function(){
-    var http, url, qs, servletObj, staticServer;
+    var http, url, qs, servletObj, staticServer, sessionM;
     
     this.init = function(){
         fm.Include('web');
@@ -42,14 +42,14 @@ App = function(){
             }
             
             if(webPath[servletName] && !servletObj[servletName]){
-                loadServlet(webPath[servletName], servletName);
+                loadServlet(webPath[servletName].class, servletName);
             }
             if(servletObj[servletName]){                
             	var c = cookie.Cookie.getCookie(req);
-            	var SessionId = c.SESSIONID;
-            	console.log("SessionId " + SessionId);
-            	var user = sessionM.getSessionByUserId(SessionId);
-            	if(!user && servletName != '/Home'){
+            	var SessionId = c["SESSIONID"];
+            	console.log("SessionId " + SessionId, c);
+            	var user = sessionM.getSession(SessionId);
+            	if(!user && webPath[servletName].auth){
             		resp.writeHead(307, {'Content-Type': 'text/plain'});
             		resp.write("home");
             		resp.end();

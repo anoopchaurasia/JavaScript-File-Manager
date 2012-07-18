@@ -8,9 +8,13 @@ fm.Class("Posting", "jfm.html.Container");
 com.post.Posting = function(){
 	
 	Static.main = function(args){
-		new me(args[0], args[1]);
+		this.onHashChange(args);
 	};
 	
+	Static.onHashChange = function(args){
+		new me(args[0], args[1]);
+	};
+
 	function getServerPostingFor(link, center){
 		center.reset();
 	}

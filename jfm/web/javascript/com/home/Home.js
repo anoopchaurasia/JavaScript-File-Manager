@@ -9,9 +9,14 @@ fm.Import("jfm.html.FormManager");
 fm.Import("jfm.html.form.Text");
 fm.Class("Home", "jfm.html.Container");
 com.home.Home = function( ) {
-	
+	var h;
 	Static.main = function( division ) {
-		var h = new me(division);
+		h = new me(division);
+		this.onHashChange(division);
+	};
+	
+	Static.onHashChange = function(division){
+		division.center.reset();
 		division.center.add(h);
 	};
 	

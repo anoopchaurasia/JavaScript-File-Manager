@@ -3,8 +3,9 @@
  * and open the template in the editor.
  */
 webPath = {
-    "/template" : "test.Template",
-    "/Home" : "test.Home",
-    "/registration" : "test.Registration",
-    "/post" : "test.Post"
+    "/template" : { 'class' : "test.Template" },
+    "/Home" : { 'class' :"test.Home"},
+    "/registration" : { 'class' :"test.Registration"},
+    "/post" : { 'class' : "test.Post", 'auth': true}
 };
+

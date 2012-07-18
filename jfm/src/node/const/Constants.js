@@ -18,6 +18,9 @@ Constants = function( ) {
 		});
 	};
 	
+	Static.interVal = 5 * 1000;
+	Static.sessionTimeOut = 1 * 60 * 1000;
+	
 	Static.Const = {
 	    port : 8888,
 	    userName : "anoop.c@imaginea.com",

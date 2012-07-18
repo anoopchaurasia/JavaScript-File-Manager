@@ -63,7 +63,7 @@ test.Home = function( ) {
 				sess.userId = usr.firstName;
 				res.setHeader('Set-Cookie', "SESSIONID=" + sess.sessionId + "");
 				res.write("registration");
-				session.add(sess);
+				session.add(sess.sessionId, sess);
 			}
 			else{
 				res.write("login");

@@ -7,17 +7,41 @@ jfm.hash.HashChange = function( ) {
 		var hash = location.hash.substring(1) || hash;
 		switch (hash) {
 			case("registration"):{
-				fm.Include("com.registration.Registration", division);
+				if(isExist("com.registration.Registration")){
+					com.registration.Registration.onHashChange(division);
+				}else{
+					fm.Include("com.registration.Registration", division);
+				}
 				break;
 			}
-			case ("login"):{
-				fm.Include("com.post.Posting",[division, {}]);
+			case ("login"): {
+				if(isExist("com.post.Posting")){
+					com.post.Posting.onHashChange([division, {}]);
+				}else{
+					fm.Include("com.post.Posting",[division, {}]);
+				}
 				break;
 			}
 			default: {
-				fm.Include("com.home.Home", division);
+				if(isExist("com.home.Home")){
+					com.home.Home.onHashChange(division);
+				}else{
+					fm.Include("com.home.Home", division);
+				}
 			}
 		}
+	}
+	
+	function isExist(cls){
+		var s = cls.split(".");
+		var o = window;
+		for(var k in s){
+			if(!o[s[k]]){
+				return false;
+			}
+			o = o[s[k]];
+		}
+		return true;
 	}
 	
 	this.HashChange = function( d ) {
