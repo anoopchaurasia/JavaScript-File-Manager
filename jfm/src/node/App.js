@@ -49,7 +49,8 @@ App = function(){
             	var SessionId = c.SESSIONID;
             	console.log("SessionId " + SessionId);
             	var user = sessionM.getSessionByUserId(SessionId);
-            	if(!user){
+            	if(!user && servletName != '/Home'){
+            		resp.writeHead(307, {'Content-Type': 'text/plain'});
             		resp.write("home");
             		resp.end();
             		return;
