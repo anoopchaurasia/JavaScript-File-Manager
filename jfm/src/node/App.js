@@ -2,7 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-fm.Import("const.Constants");
+
+fm.Package("");
+fm.Import("constant.Constants");
+fm.Import("session.SessionManager");
 fm.Import("user.User");
 fm.Class("App");
 App = function(){
@@ -12,11 +15,10 @@ App = function(){
         fm.Include('web');
         fm.Include("cookie.Cookie");
         http = require('http');
-        sessionM = require('sessionManagement');
+        sessionM = session.SessionManager.getInstance();
         url = require('url'),
         qs = require('querystring');
         servletObj = {};       
-        console.log(__dirname);
         staticServer = new(require('node-static').Server)(undefined, {
             cache: 60,
             headers: {
@@ -44,11 +46,13 @@ App = function(){
             if(webPath[servletName] && !servletObj[servletName]){
                 loadServlet(webPath[servletName].class, servletName);
             }
-            if(servletObj[servletName]){                
+            
+            if(servletObj[servletName]){
             	var c = cookie.Cookie.getCookie(req);
             	var SessionId = c["SESSIONID"];
-            	console.log("SessionId " + SessionId, c);
             	var user = sessionM.getSession(SessionId);
+            	req.cookie = c;
+            	req.session = user;
             	if(!user && webPath[servletName].auth){
             		resp.writeHead(307, {'Content-Type': 'text/plain'});
             		resp.write("home");
@@ -78,7 +82,7 @@ App = function(){
                     try{
                         servletObj[servletName].GET(req, resp, t);
                     }catch(e){
-                        resp.write(JSON.parse(e));
+                       // resp.write(JSON.parse(e));
                         resp.end();
                     }
                 }
