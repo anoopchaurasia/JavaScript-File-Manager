@@ -4,11 +4,11 @@
  */
 
 fm.Package("test");
-fm.Import("const.Constants");
+fm.Import("constant.Constants");
 fm.Import("user.User");
 fm.Class("Home", "Base");
 test.Home = function( ) {
-	var pg, client, email, counter;
+	var pg, client, email ;
 	function sendMail( mail, res ) {
 		debugger;
 		email.send({
@@ -62,7 +62,7 @@ test.Home = function( ) {
 				sess.sessionId = usr.email;
 				sess.userId = usr.firstName;
 				res.setHeader('Set-Cookie', "SESSIONID=" + sess.sessionId + "");
-				res.write("registration");
+				res.write("home");
 				session.add(sess.sessionId, sess);
 			}
 			else{
@@ -84,7 +84,6 @@ test.Home = function( ) {
 	};
 	
 	this.Home = function( ) {
-		counter = 0;
 		console.log("Called ..");
 		pg = require('pg');
 		email = require('mailer');
