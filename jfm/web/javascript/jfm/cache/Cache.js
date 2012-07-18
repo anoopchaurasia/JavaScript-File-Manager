@@ -28,10 +28,8 @@ jfm.cache.Cache = function(){
         },tmpltMethod, function(resp){
             tempalateStorage[name] = resp;  
             cb && cb(resp);
-        }, function(resp){
-            tempalateStorage[name] = resp;  
-            cb && cb(resp, "error");
-        }, 'html', async);
+        }, null, 'html', async);
+        
         return tempalateStorage[name];
     };
     this.Static.getInstance = function(){        

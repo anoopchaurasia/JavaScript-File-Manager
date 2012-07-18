@@ -14,19 +14,19 @@ jfm.hash.HashChange = function( ) {
 				}
 				break;
 			}
-			case ("login"): {
-				if(isExist("com.post.Posting")){
-					com.post.Posting.onHashChange([division, {}]);
+			case ("home"): {
+				if(isExist("com.home.Home")){
+					com.home.Home.onHashChange([division, {}]);
 				}else{
-					fm.Include("com.post.Posting",[division, {}]);
+					fm.Include("com.home.Home",[division, {}]);
 				}
 				break;
 			}
 			default: {
-				if(isExist("com.home.Home")){
+				if(isExist("com.home.Login")){
 					com.home.Home.onHashChange(division);
 				}else{
-					fm.Include("com.home.Home", division);
+					fm.Include("com.home.Login", division);
 				}
 			}
 		}

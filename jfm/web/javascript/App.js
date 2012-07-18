@@ -20,7 +20,6 @@ App = function( ) {
 			$('body').trigger('resize');
 		});
 	}
-	
 	Static.main = function() {
 		
 		updateLayout();

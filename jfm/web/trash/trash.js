@@ -45,3 +45,31 @@ function getData(index){
     }
 }
 getData(); 
+
+
+
+
+
+
+
+
+
+-----------------------------------
+
+self.el.find("form#join").submit(function( ) {
+	var data;
+	try {
+		data = FormManager.getData(this);
+	}
+	catch (e) {
+		alert(e);
+		return false;
+	}
+	Server.getInstance("Home").serviceCall(data, 'join', function( resp ) {
+		alert(Serialize.serialize(resp));
+	});
+	return false;
+});
+
+
+---------------------

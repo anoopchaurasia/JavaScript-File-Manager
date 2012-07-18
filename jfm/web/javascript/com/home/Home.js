@@ -4,56 +4,38 @@
  */
 
 fm.Package("com.home");
+fm.Import("com.post.Left");
+fm.Import("com.post.Top");
 fm.Import("jfm.cache.Cache");
-fm.Import("jfm.html.FormManager");
 fm.Import("jfm.html.form.Text");
+fm.Import("jfm.server.Server");
 fm.Class("Home", "jfm.html.Container");
 com.home.Home = function( ) {
-	var h;
-	Static.main = function( division ) {
-		h = new me(division);
-		this.onHashChange(division);
+	Static.main = function(args){
+		this.onHashChange(args);
 	};
 	
-	Static.onHashChange = function(division){
-		division.center.reset();
-		division.center.add(h);
+	Static.onHashChange = function(args){
+		new me(args[0], args[1]);
 	};
+
+	function getServerPostingFor(link, center){
+		center.reset();
+	}
 	
-	this.Home = function( division ) {
-		var self = this;
+	function addToCenter(resp) {
+		for(var k = 0; k< resp.length; k++){
+			console.log(resp[k]);
+		}
+    }
+	
+	this.Home = function(division, user){
 		base();
-		self.el.html(Cache.getInstance().getTemplate('home'));
-		self.el.find("form#join").submit(function( ) {
-			var data;
-			try {
-				data = FormManager.getData(this);
-			}
-			catch (e) {
-				alert(e);
-				return false;
-			}
-			Server.getInstance("Home").serviceCall(data, 'join', function( resp ) {
-				alert(Serialize.serialize(resp));
-			});
-			return false;
-		});
-		self.el.find("form#signin").submit(function( ) {
-			var data;
-			try {
-				data = FormManager.getData(this);
-			}
-			catch (e) {
-				alert(e);
-				return false;
-			}
-			Server.getInstance("Home").serviceCall(data, 'signin', function( resp ) {
-				location.hash = resp;
-			});
-			return false;
-		});
-		setTimeout(function( ) {
-			jfm.html.form.Text.convertToJfm(self.el.find("input[type='text']"));
-		});
+		division.center.reset();
+		division.left.add(new Left(function(link){
+			getServerPostingFor(link, division.center);
+		}));
+		division.center.add(this);
+		
 	};
 };

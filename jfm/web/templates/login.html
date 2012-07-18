@@ -1,0 +1,52 @@
+<style>
+#intro {
+	padding: 10px;
+	width: 700px;
+	margin: 0 auto;
+	font-size: 17px;
+	background-color: #eee;
+}
+
+#intro table {
+	width: 60%;
+}
+
+#intro .text {
+	padding: 10px 5px;
+}
+
+#intro .select>div {
+	width: 300px;
+}
+
+#intro input,#intro select {
+	height: 30px;
+	width: 360px;
+	padding-left: 4px;
+}
+
+#intro .submit {
+	height: 35px;
+	margin-left: -5px;
+	width: 55px;
+	padding:0;
+}
+
+.td1 {
+	padding-top: 5px;
+}
+</style>
+<div id="intro" class="intro">
+	<form method="POST" id="signin">
+		<table>
+			<tbody>
+				<tr class="email">
+					<td class="input td1">
+						<input class="mandatory" datatype="email" placeholder="Email Address" name="user.email" type="text" />
+						<button class="jfm-button green-btn submit"> Sign In </button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</form>
+</div>

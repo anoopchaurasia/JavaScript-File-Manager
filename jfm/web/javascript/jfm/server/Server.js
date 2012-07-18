@@ -27,7 +27,7 @@ jfm.server.Server = function(im){
         this.async = async == undefined ?  this.async: async ;
     };
     this.errorCallback = function(msg) {
-    	location.host = msg.responseText;
+    	location.hash = msg.responseText;
         console.log(msg);
     };
     this.callback = function(msg) {
