@@ -12,31 +12,28 @@ fm.Import("jfm.html.form.Text");
 fm.Import("jfm.server.Server");
 fm.Class("Home", "jfm.html.Container");
 com.home.Home = function( ) {
-	Static.main = function(args){
+	
+	Static.main = function( args ) {
 		this.onHashChange(args);
 	};
 	
-	Static.onHashChange = function(args){
+	Static.onHashChange = function( args ) {
 		new me(args[0], args[1]);
 	};
-
-	function getServerPostingFor(link, center){
+	
+	function getServerPostingFor( link, center ) {
 		center.reset();
 	}
 	
-	function addToCenter(resp) {
-		for(var k = 0; k< resp.length; k++){
+	function addToCenter( resp ) {
+		for ( var k = 0; k < resp.length; k++) {
 			console.log(resp[k]);
 		}
-    }
+	}
 	
-	this.Home = function(division, user){
+	this.Home = function( division, user ) {
 		base();
-		var me = this;
 		division.center.reset();
-		Cache.getInstance().getTemplate('home', function( data ) {
-			me.el.html(data);
-		});
 		division.center.add(this);
 	};
 };

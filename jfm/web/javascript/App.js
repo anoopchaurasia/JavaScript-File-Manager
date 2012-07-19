@@ -28,14 +28,12 @@ App = function( ) {
 			id : "jfm-division",
 			'class':"bg"
 		});
-		var top = new Topbar();
+		var top = new Topbar(d);
 		new jfm.hash.HashChange(d);
 		
 		if (QueryStr.getQuery("method") == 'verify') {
 			location.hash = "registration";
 		}
-		
-		top.updateRegion(d);
 		d.top.add(top);
 		d.addTo('body');
 		console.log(new Date().getTime() - t, new Date().getTime() - t2);

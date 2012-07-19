@@ -248,6 +248,18 @@ t = new Date().getTime();
 		}
 	};
 	
+	fm.isExist = function(cls){
+		var s = cls.split(".");
+		var o = window;
+		for(var k in s){
+			if(!o[s[k]]){
+				return false;
+			}
+			o = o[s[k]];
+		}
+		return true;
+	};
+	
 	// fm.Class creates a jfm class.
 	fm['class'] = fm.Class = function Class( ) {
 		

@@ -38,7 +38,8 @@ App = function(){
         	req.sessionM = sessionM;
         	
             var t= new Date().getTime();
-            var servletName = req.url;
+            var url_parts = url.parse(req.url, true);
+            var servletName = url_parts.pathname;
             if(servletName.indexOf("?") != -1){
                 servletName= servletName.substring(0, servletName.indexOf("?"));
             }
@@ -76,7 +77,6 @@ App = function(){
                     });
                 }
                 else if (req.method == "GET"){
-                    var url_parts = url.parse(servletName, true);
                     var query = url_parts.query;
                     req.params = query;
                     try{
