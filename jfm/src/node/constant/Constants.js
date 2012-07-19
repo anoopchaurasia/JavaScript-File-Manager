@@ -18,8 +18,8 @@ constant.Constants = function( ) {
 		});
 	};
 	
-	Static.interVal = 5 * 1000;
-	Static.sessionTimeOut = 1 * 60 * 1000;
+	Static.interVal = 5* 60 * 1000;
+	Static.sessionTimeOut = 30 * 60 * 1000;
 	
 	Static.Const = {
 	    port : 8888,

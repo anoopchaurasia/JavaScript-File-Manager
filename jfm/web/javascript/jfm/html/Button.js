@@ -10,7 +10,7 @@ jfm.html.Button = function(im, base){
     this.shortHand = "Button";
     this.init = function(){
         var c = Static.Const.config = {};
-        c['class']  = "jfm-button-div, jfm-button";
+        c['class']  = "jfm-button-div jfm-button";
     };
     
     this.Button = function(config){

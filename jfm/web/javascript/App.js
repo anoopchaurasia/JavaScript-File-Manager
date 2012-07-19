@@ -25,7 +25,8 @@ App = function( ) {
 		updateLayout();
 		var t2 = new Date().getTime();
 		var d = new jfm.division.Division({
-			id : "jfm-division"
+			id : "jfm-division",
+			'class':"bg"
 		});
 		var top = new Topbar();
 		new jfm.hash.HashChange(d);
