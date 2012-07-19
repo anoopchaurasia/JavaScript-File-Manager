@@ -6,6 +6,7 @@
 fm.Package("com.region");
 fm.Import("jfm.html.Span");
 fm.Import("com.post.Top");
+fm.Import("jfm.html.Combobox");
 fm.Class("Topbar", 'jfm.html.Container');
 com.region.Topbar = function() {
 	this.Topbar = function() {
@@ -18,9 +19,21 @@ com.region.Topbar = function() {
 	};
 	
 	this.updateRegion = function(division) {
-		this.add(new Span({
-			html : "Event Managment"
+		this.add(new Container({
+			html : "<a href='#'>Kerana</a>",
+			'class': "logo"
 		}));
-		this.add(new Top(division.center));
+		
+		var states = new Combobox([], {
+		    hintText : "Select State",
+		    inputTabIndex : 6
+		});
+		
+		Cache.getInstance().getTemplate('States', function( data ) {
+			states.updateData(jQuery.parseJSON(data));
+		});
+		
+		states.el.addClass("searchProduct");
+		this.add(states);
 	};
 };

@@ -6,6 +6,7 @@
 fm.Package("com.home");
 fm.Import("com.post.Left");
 fm.Import("com.post.Top");
+
 fm.Import("jfm.cache.Cache");
 fm.Import("jfm.html.form.Text");
 fm.Import("jfm.server.Server");
@@ -31,11 +32,11 @@ com.home.Home = function( ) {
 	
 	this.Home = function(division, user){
 		base();
+		var me = this;
 		division.center.reset();
-		division.left.add(new Left(function(link){
-			getServerPostingFor(link, division.center);
-		}));
+		Cache.getInstance().getTemplate('home', function( data ) {
+			me.el.html(data);
+		});
 		division.center.add(this);
-		
 	};
 };
