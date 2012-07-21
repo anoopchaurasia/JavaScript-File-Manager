@@ -7,6 +7,7 @@ fm.Import("jfm.division.Division");
 fm.Import("jfm.query.QueryStr");
 fm.Import("jfm.hash.HashChange");
 fm.Import("com.region.Topbar");
+fm.Import("com.region.Right");
 fm.Class("App");
 App = function( ) {
 	function updateLayout( ) {
@@ -29,11 +30,13 @@ App = function( ) {
 			'class':"bg"
 		});
 		var top = new Topbar(d);
+		var right = new Right();
 		new jfm.hash.HashChange(d);
 		
 		if (QueryStr.getQuery("method") == 'verify') {
 			location.hash = "registration";
 		}
+		d.right.add(right);
 		d.top.add(top);
 		d.addTo('body');
 		console.log(new Date().getTime() - t, new Date().getTime() - t2);

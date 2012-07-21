@@ -8,7 +8,7 @@ fm.Import("constant.Constants");
 fm.Import("user.User");
 fm.Class("Home", "Base");
 test.Home = function( ) {
-	var pg, client, email ;
+	var client, email ;
 	function sendMail( mail, res ) {
 		debugger;
 		email.send({
@@ -73,6 +73,7 @@ test.Home = function( ) {
 		});
 		
 	};
+	
 	this.getUser = function( req, res ) {
 		user.User.getUser(client, JSON.parse(req.params.user), function( usr ) {
 			res.writeHead(200, {
@@ -84,8 +85,7 @@ test.Home = function( ) {
 	};
 	
 	this.Home = function( ) {
-		console.log("Called ..");
-		pg = require('pg');
+		var pg = require('pg');
 		email = require('mailer');
 		var conString = "tcp://postgres:adminadmin@localhost/postgres";
 		client = new pg.Client(conString);

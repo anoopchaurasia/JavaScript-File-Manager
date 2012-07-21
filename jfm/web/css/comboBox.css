@@ -11,7 +11,7 @@
 .combo_popup {
 	position: absolute;
 	background-color: White;
-	height: 200px;
+	max-height: 200px;
 	z-index: 999;
 	font-size: 12px;
 	display: block;

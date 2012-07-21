@@ -29,22 +29,10 @@ com.region.Topbar = function( ) {
 			openedMenu && openedMenu.hide();
 		});
 		
-		var states = new Combobox([], {
-		    hintText : "Select State",
-		    inputTabIndex : 6
-		});
-		
-		Cache.getInstance().getTemplate('States', function( data ) {
-			states.updateData(jQuery.parseJSON(data));
-		});
-		
 		Cache.getInstance().getTemplate('home', function( data ) {
 			self.el.append(data);
 			self.el.find(".category").click(division, onCategoryClick);
 		});
-		
-		states.el.addClass("searchProduct");
-		this.add(states);
 	};
 	
 	function onCategoryClick( e ) {
