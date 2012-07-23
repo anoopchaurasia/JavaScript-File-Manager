@@ -11,34 +11,35 @@ fm.Import("jfm.io.Serialize");
 fm.Class("Server");
 jfm.server.Server = function(im){
     var me = this;
-    this.Static.url = location.protocol + "//" + location.host + "/" ;
-    this.Static.method = "process";
+    this.url = location.protocol + "//" + location.host + "/" ;
+    this.method = "process";
     this.shortHand = "Server";
     this.type = "html";
     this.async = true;
     this.parameters = {};
     var singleton;
-    this.Static.setDefault = function( url, method, parameters, type, async ){
-
-        this.url = url || this.url;
-        this.method = method || this.method;
-        this.parameters = parameters || this.parameters;
-        this.type = type || this.type;
-        this.async = async == undefined ?  this.async: async ;
-    };
+    
     this.errorCallback = function(msg) {
     	location.hash = msg.responseText;
         console.log(msg);
     };
     this.callback = function(msg) {
-
+    	console.log("callback", msg);
     };
+    
+    this.Static.makeInstance = function(url){
+    	return new jfm.server.Server(url);
+    };
+    
     this.Static.getInstance = function( url){  
 
-        this.url = url || this.url;        
+    	
         if(!singleton){
             singleton = new jfm.server.Server( url);
             me = singleton;
+        }
+        else{
+        	singleton.url = url;
         }
         return singleton;
     };

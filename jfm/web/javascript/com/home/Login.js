@@ -36,7 +36,7 @@ com.home.Login = function( ) {
 				return false;
 			}
 			Server.getInstance("Home").serviceCall(data, 'signin', function( resp ) {
-				location.hash = resp;
+				location.hash = 'chat';
 			});
 			return false;
 		});

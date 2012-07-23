@@ -32,7 +32,6 @@ App = function( ) {
 		var top = new Topbar(d);
 		var right = new Right();
 		new jfm.hash.HashChange(d);
-		
 		if (QueryStr.getQuery("method") == 'verify') {
 			location.hash = "registration";
 		}

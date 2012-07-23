@@ -43,6 +43,19 @@ test.Home = function( ) {
 	};
 	
 	this.join = function( req, res ) {
+		
+		openid.authenticate(
+		                    parsedUrl.query.openid_identifier, // user supplied identifier
+		                    'http://localhost:8888/#verify', // our callback URL
+		                    null, // realm (optional)
+		                    false, // attempt immediate authentication first?
+		                    function(authUrl)
+		                    {
+		                        res.writeHead(302, { Location: authUrl });
+		                        res.end();
+		                    });
+		
+		
 		var user = JSON.parse(req.params.user);
 		var userarr = [ user.email, 0 ];
 		client.query("INSERT INTO user1(email, verified) values($1, $2)", userarr);

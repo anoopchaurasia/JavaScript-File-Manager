@@ -22,6 +22,14 @@ jfm.hash.HashChange = function( ) {
 				}
 				break;
 			}
+			case ("chat"):{
+				if(fm.isExist("com.home.Chat")){
+					com.home.Chat.onHashChange([division, {}]);
+				}else{
+					fm.Include("com.home.Chat",[division, {}]);
+				}
+				break;
+			}
 			default: {
 				if(fm.isExist("com.home.Login")){
 					com.home.Login.onHashChange(division);
