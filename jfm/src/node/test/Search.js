@@ -23,6 +23,14 @@ test.Search = function( ) {
 		var pg = require('pg');
 		var conString = "tcp://postgres:adminadmin@localhost/postgres";
 		client = new pg.Client(conString);
+	//	client.query("CREATE TABLE search (id serial, str varchar(100))");
+//		try{
+//		for(var k =0; k < data.length; k++){
+//			client.query("INSERT INTO search (str) values('"+ data[k]+"')");
+//		}
+//		}catch(e){
+//			console.log(e);
+//		}
 		client.connect();
 	};
 };

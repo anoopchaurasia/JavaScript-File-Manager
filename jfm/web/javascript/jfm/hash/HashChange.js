@@ -24,7 +24,7 @@ jfm.hash.HashChange = function( ) {
 			}
 			default: {
 				if(fm.isExist("com.home.Login")){
-					com.home.Home.onHashChange(division);
+					com.home.Login.onHashChange(division);
 				}else{
 					fm.Include("com.home.Login", division);
 				}
