@@ -21,7 +21,7 @@ com.region.Right = function( ) {
 		});
 		
 		var states = new Combobox([], {
-		    hintText : "Select State",
+		    hintText : "Type Keywords (CTRL + SHIFT + c)",
 		    inputTabIndex : 6,
 		    ignoreNumberOfCharacters : 1
 		}, function( searchString, cb ) {

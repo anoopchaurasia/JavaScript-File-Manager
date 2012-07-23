@@ -1,23 +1,31 @@
 <style>
-#home{
-	clear:both;
+#home {
+	clear: both;
 	padding-top: 8px;
 }
+
 #home ul {
 	list-style-type: none;
 }
 
-#home span{
+#home span {
 	cursor: pointer;
+}
+
+#home .menu-btn {
+	padding: 7px 10px;
+	margin: 0 -1px;
 }
 
 #home .sub-category-list {
 	background-color: #709E0E;
 	padding: 15px;
 	margin-top: 5px;
-	margin-left: 5px;
+	margin-left: -1px;
 	position: absolute;
 	z-index: 1000;
+	border: solid 1px #3B7200;
+	border-top: transparent;
 }
 
 #home .sub-category-list li a {
@@ -29,10 +37,11 @@
 	float: left;
 }
 </style>
+
 <div id="home" class="home">
 	<div class="sf-contener">
 		<ul class="jfm-button green-btn">
-			<li class="category"><span class="jfm-button green-btn">Edibles</span>
+			<li class="category"><span class="jfm-button green-btn menu-btn">Edibles</span>
 				<ul style="display: none;" class="sub-category-list">
 					<li><a href="#!home/type=67">Jam / Honey / Ketchup</a></li>
 					<li><a href="#!home/type=81">Oats / Corn flakes</a></li>
@@ -44,13 +53,13 @@
 					<li><a href="#!home/type=95">Snacks / Namkeen</a></li>
 					<li><a href="#!home/type=65">Soups / Noodles</a></li>
 				</ul></li>
-			<li class="category"><span class="jfm-button green-btn">Beverages</span>
+			<li class="category"><span class="jfm-button green-btn menu-btn">Beverages</span>
 				<ul style="display: none;" class="sub-category-list">
 					<li><a href="#!home/type=49">Coffee &amp; Tea</a></li>
 					<li><a href="#!home/type=48">Health Drinks</a></li>
 					<li><a href="#!home/type=82">Juices / Soft Drinks / Water</a></li>
 				</ul></li>
-			<li class="category"><span class="jfm-button green-btn">Groceries</span>
+			<li class="category"><span class="jfm-button green-btn menu-btn">Groceries</span>
 				<ul style="display: none;" class="sub-category-list">
 					<li><a href="#!home/type=71">Cooking Oil</a></li>
 					<li><a href="#!home/type=89">Rice</a></li>
@@ -66,7 +75,7 @@
 					<li><a href="#!home/type=88">Basmati Rice</a></li>
 					<li><a href="#!home/type=98">Ghee &amp; Vanaspathi</a></li>
 				</ul></li>
-			<li class="category"><span class="jfm-button green-btn">Personal Care</span>
+			<li class="category"><span class="jfm-button green-btn menu-btn">Personal Care</span>
 				<ul style="display: none;" class="sub-category-list">
 					<li><a href="#!home/type=24">Cleansing Soaps</a></li>
 					<li><a href="#!home/type=32">Facial Care</a></li>
@@ -77,26 +86,26 @@
 					<li><a href="#!home/type=28">Shaving Aids</a></li>
 					<li><a href="#!home/type=79">Others</a></li>
 				</ul></li>
-			<li class="category"><span class="jfm-button green-btn">Home upkeep</span>
+			<li class="category"><span class="jfm-button green-btn menu-btn">Home upkeep</span>
 				<ul style="display: none;" class="sub-category-list">
 					<li><a href="#!home/type=35">Hygiene Essentials</a></li>
 					<li><a href="#!home/type=75">Mosquito Repeller</a></li>
 					<li><a href="#!home/type=39">Detergents</a></li>
 					<li><a href="#!home/type=40">Supplies</a></li>
 				</ul></li>
-			<li class="category"><span class="jfm-button green-btn">Infant Zone</span>
+			<li class="category"><span class="jfm-button green-btn menu-btn">Infant Zone</span>
 				<ul style="display: none;" class="sub-category-list">
 					<li><a href="#!home/type=45">Food &amp; Drinks</a></li>
 					<li><a href="#!home/type=44">Personal Care</a></li>
 				</ul></li>
-			<li class="category"><span class="jfm-button green-btn">Organic</span>
+			<li class="category"><span class="jfm-button green-btn menu-btn">Organic</span>
 				<ul style="display: none;" class="sub-category-list">
 					<li><a href="#!home/type=99">Rice</a></li>
 					<li><a href="#!home/type=100">SPICES / HERBS</a></li>
 					<li><a href="#!home/type=101">FLOUR / SEMOLINA</a></li>
 					<li><a href="#!home/type=102">Pulses / Seeds</a></li>
 				</ul></li>
-			<li class="category"><span class="jfm-button green-btn">Others</span>
+			<li class="category"><span class="jfm-button green-btn menu-btn">Others</span>
 				<ul style="display: none;" class="sub-category-list">
 					<li><a href="#!home/type=77">Shoe Polish</a></li>
 					<li><a href="#!home/type=86">Necessities</a></li>
@@ -104,6 +113,5 @@
 					<li><a href="#!home/type=105">Combos</a></li>
 				</ul></li>
 		</ul>
-
 	</div>
 </div>

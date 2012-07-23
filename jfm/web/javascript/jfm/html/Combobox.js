@@ -281,7 +281,7 @@ jfm.html.Combobox = function(){
                 $(this).trigger('blur');
                 return false;
                 break;
-            default : {
+			default : {
                 createPopup($(this).val());
                 break;
             }

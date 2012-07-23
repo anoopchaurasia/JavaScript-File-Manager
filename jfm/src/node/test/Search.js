@@ -19,7 +19,6 @@ test.Search = function( ) {
 	};
 	
 	this.Search = function( ) {
-		
 		var pg = require('pg');
 		var conString = "tcp://postgres:adminadmin@localhost/postgres";
 		client = new pg.Client(conString);

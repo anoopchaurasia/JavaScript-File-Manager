@@ -5,6 +5,7 @@
 
 fm.Package("");
 fm.Import("constant.Constants");
+fm.Import("cookie.Cookie");
 fm.Import("session.SessionManager");
 fm.Import("user.User");
 fm.Class("App");
@@ -13,7 +14,7 @@ App = function( ) {
 	
 	this.init = function( ) {
 		fm.Include('web');
-		fm.Include("cookie.Cookie");
+		
 		http = require('http');
 		sessionM = session.SessionManager.getInstance();
 		url = require('url'), qs = require('querystring');

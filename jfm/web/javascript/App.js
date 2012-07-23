@@ -36,7 +36,7 @@ App = function( ) {
 		if (QueryStr.getQuery("method") == 'verify') {
 			location.hash = "registration";
 		}
-		d.right.add(right);
+		d.left.add(right);
 		d.top.add(top);
 		d.addTo('body');
 		console.log(new Date().getTime() - t, new Date().getTime() - t2);
