@@ -53,7 +53,9 @@ table {
 #recieve {
 	padding-left: 40px;
 }
-
+.msg-text{
+	border-bottom:1px dotted #ccc;
+}
 #send textarea {
 	float: left;
 	width: 400px;

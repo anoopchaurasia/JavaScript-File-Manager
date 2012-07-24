@@ -24,8 +24,8 @@ com.home.Chat = function() {
 	};
 
 	function send(textarea) {
-		var val = textarea.val();
-		if (jQuery.trim(val) == '') {
+		var val = jQuery.trim(textarea.val());
+		if (val == '') {
 			return;
 		}
 		chatSer.serviceCall({
