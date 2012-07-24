@@ -23,6 +23,18 @@ com.home.Chat = function() {
 		new me();
 	};
 
+	function send(textarea) {
+		var val = textarea.val();
+		if (jQuery.trim(val) == '') {
+			return;
+		}
+		chatSer.serviceCall({
+			text : val.replace(/\n/ig, "<br/>")
+		}, "send", function(resp) {
+			$("#rss").html(JSON.parse(resp).rss);
+		});
+		textarea.val("");
+	}
 	function activate(self) {
 		self.center.reset();
 		self.center.add(new Container({
@@ -36,20 +48,15 @@ com.home.Chat = function() {
 							height : 100
 						}));
 		self.right.add(new Container({
-			width:100,
-			html:' <button class="leave">Leave</button><div id=rss></div>'
+			width : 100,
+			html : ' <button class="leave">Leave</button><div id=rss></div>'
 		}));
 		self.bottom.el.find("textarea").keydown(function(e) {
 
 			if (e.keyCode == 13) {
-				var isChecked = self.bottom.el.find("button").siblings('input')[0].checked;
+				var isChecked = (e.shiftKey && !e.ctrlKey && !e.altKey) || self.bottom.el.find("button").siblings('input')[0].checked;
 				if (isChecked) {
-					chatSer.serviceCall({
-						text : self.bottom.el.find("textarea").val()
-					}, "send", function(resp) {
-						$("#rss").html(JSON.parse(resp).rss);
-					});
-					self.bottom.el.find("textarea").val("");
+					send(self.bottom.el.find("textarea"));
 					return false;
 				}
 			}
@@ -61,12 +68,8 @@ com.home.Chat = function() {
 			});
 		});
 		self.bottom.el.find("button").click(function() {
-			chatSer.serviceCall({
-				text : $(this).prev().val().replace(/\n/ig, "<br/>")
-			}, "send", function(resp) {
-				$("#rss").html(JSON.parse(resp).rss);
-			});
-			$(this).prev().val("");
+			send(self.bottom.el.find("textarea"));
+			return false;
 		});
 	}
 
@@ -151,7 +154,7 @@ com.home.Chat = function() {
 		chatSer = Server.makeInstance("chat");
 		var self = this;
 		this.center.add(new Container({
-			html : "<input /><button>Join</button>",
+			html : "<form method='post'><input /><button>Join</button></form>",
 			id : "join"
 		}));
 
@@ -162,15 +165,19 @@ com.home.Chat = function() {
 				activate(self);
 			}
 			else {
-				self.center.el.find("#join button").click(function() {
-
+				self.center.el.find("#join form").submit(function() {
+					var val = $(this).find("input").val();
+					var space = /\s/gi.exec(val);
+					if (space && space.length > 0) {
+						return;
+					}
 					chatSer.serviceCall({
-						nick : $(this).prev().val().trim()
+						nick : jQuery.trim(val)
 					}, "join", function(resp) {
 						longPoll(JSON.parse(resp));
 						activate(self);
 					});
-
+					return false;
 				});
 			}
 		});
@@ -213,8 +220,8 @@ com.home.Chat = function() {
 		// replace URLs with links
 		text = text.replace(Utility.urlRE, '<a target="_blank" href="$&">$&</a>');
 
-		var content = '<tr>' + '  <td class="nick">' + Utility.toStaticHTML(from) + '</td>'
-				+ '  <td class="msg-text">' + Utility.toNormalHtml(text) + '</td>' + '  <td class="date">' + Utility.timeString(time) + '</td>' +'</tr>';
+		var content = '<tr>' + '  <td class="nick">' + Utility.toStaticHTML(from) + '</td>' + '  <td class="msg-text">' + Utility.toNormalHtml(text) + '</td>'
+				+ '  <td class="date">' + Utility.timeString(time) + '</td>' + '</tr>';
 		messageElement.html(content);
 
 		// the log is the stream that we view
