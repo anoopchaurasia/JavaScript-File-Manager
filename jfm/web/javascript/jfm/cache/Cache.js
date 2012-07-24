@@ -8,7 +8,7 @@ fm.Package("jfm.cache");
 fm.Import("jfm.server.Server");
 fm.Class("Cache");
 jfm.cache.Cache = function(){
-    var tmpltServlet, tmpltMethod, tempalateStorage, singleton ;
+    var tmplServ, tmpltMethod, tempalateStorage, singleton ;
     this.shortHand = "Cache";
     this.getTemplate = function(name, path, cb){
         
@@ -23,7 +23,7 @@ jfm.cache.Cache = function(){
             return tempalateStorage[name];
         }
         var async = cb ? true:false;
-        Server.getInstance(tmpltServlet).serviceCall({
+        tmplServ.serviceCall({
             data:name
         },tmpltMethod, function(resp){
             tempalateStorage[name] = resp;  
@@ -39,7 +39,7 @@ jfm.cache.Cache = function(){
         return singleton;
     };
     this.Cache = function(){
-        tmpltServlet = "template";
+    	tmplServ = Server.makeInstance("template");
         tmpltMethod = "getTemplate";
         tempalateStorage = {};
     };

@@ -1,18 +1,17 @@
 fm.Package("test");
 fm.Class("Chat", "Base");
 test.Chat = function( ) {
-	var messages, callbacks, mem, starttime, MESSAGE_BACKLOG, sys;
+	var messages, callbacks, mem, starttime, MESSAGE_BACKLOG;
 	
 	this.Chat = function( ) {
 		messages = [];
-		sys = require("sys");
 		callbacks = [];
 		mem = process.memoryUsage();
 		setInterval(function( ) {
 			mem = process.memoryUsage();
 		}, 10 * 1000);
 		starttime = (new Date()).getTime();
-		MESSAGE_BACKLOG = 200;
+		MESSAGE_BACKLOG = 100;
 		
 		setInterval(function( ) {
 			var now = new Date();
@@ -23,7 +22,35 @@ test.Chat = function( ) {
 	};
 	
 	this.method = function( req, res ) {
-		throw "not emplemented";
+		res.write('\
+		<!DOCTYPE html>\
+		<html>\
+		    <head>\
+		        <title> Home </title>\
+				  <link rel="stylesheet" href="css/main.css" type="text/css"/>\
+		        <link rel="stylesheet" href="css/chat.css" type="text/css"/>\
+		        <script type="text/javascript" src="javascript/jquery.js" ></script>\
+		        <script type="text/javascript" src="javascript/jfm/Master.js" ></script>\
+		        <script>\
+		            fm.basedir="javascript";\
+		            fm.Include("com.home.Chat");\
+		        </script>\
+		    </head>\
+		    <body>\
+		        <div id="container" style="width:700px; margin:0 auto"></div>\
+		    </body>\
+		</html>');
+		res.end();
+	};
+	
+	this.userExist = function( req, res){
+		var id = req.cookie.SESSIONID;
+		var session = req.sessionM.getSession(id);
+		if(session){
+			res.write('1');
+		}
+		console.log(session);
+		res.end();
 	};
 	
 	this.join = function( req, res ) {
@@ -80,9 +107,16 @@ test.Chat = function( ) {
 			res.end();
 			return;
 		}
-		console.log(session);
 		req.sessionM.updateTime(id);
 		appendMessage(session.sessionId, "msg", text);
+		res.write(JSON.stringify({
+			rss : mem.rss
+		}));
+		res.end();
+	};
+	
+	this.part = function(req, res){
+		req.sessionM.remove(req.cookie.SESSIONID);
 		res.write(JSON.stringify({
 			rss : mem.rss
 		}));
@@ -116,21 +150,7 @@ test.Chat = function( ) {
 		    text : text,
 		    timestamp : (new Date()).getTime()
 		};
-		
-		switch (type) {
-			case "msg":
-				sys.puts("<" + nick + "> " + text);
-				break;
-			case "join":
-				sys.puts(nick + " join");
-				break;
-			case "part":
-				sys.puts(nick + " part");
-				break;
-		}
-		
 		messages.push(m);
-		console.log(m);
 		while (callbacks.length > 0) {
 			callbacks.shift().callback([ m ]);
 		}
