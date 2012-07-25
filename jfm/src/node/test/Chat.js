@@ -22,31 +22,22 @@ test.Chat = function( ) {
 	};
 	
 	this.method = function( req, res ) {
-		res.write('\
-		<!DOCTYPE html>\
-		<html>\
-		    <head>\
-		        <title> Home </title>\
-				  <link rel="stylesheet" href="css/main.css" type="text/css"/>\
-		        <link rel="stylesheet" href="css/chat.css" type="text/css"/>\
-		        <script type="text/javascript" src="javascript/jquery.js" ></script>\
-		        <script type="text/javascript" src="javascript/jfm/Master.js" ></script>\
-		        <script>\
-		            fm.basedir="javascript";\
-		            fm.Include("com.home.Chat");\
-		        </script>\
-		    </head>\
-		    <body>\
-		        <div id="container" style="width:700px; margin:0 auto"></div>\
-		    </body>\
-		</html>');
-		res.end();
+		var path = process.cwd() + "/web/html/chat.html";
+		require('fs').readFile(path, function( err, data ) {
+			if (err) {
+				console.log(err);
+			}
+			else {
+				res.write(data);
+				res.end();
+			}
+		});
 	};
 	
-	this.userExist = function( req, res){
+	this.userExist = function( req, res ) {
 		var id = req.cookie.SESSIONID;
 		var session = req.sessionM.getSession(id);
-		if(session){
+		if (session) {
 			res.write('1');
 		}
 		console.log(session);
@@ -90,7 +81,7 @@ test.Chat = function( ) {
 			res.write(JSON.stringify({
 			    messages : messages,
 			    rss : mem.rss,
-			    nick:session.SESSIONID
+			    nick : session.SESSIONID
 			}));
 			res.end();
 		});
@@ -115,7 +106,7 @@ test.Chat = function( ) {
 		res.end();
 	};
 	
-	this.part = function(req, res){
+	this.part = function( req, res ) {
 		req.sessionM.remove(req.cookie.SESSIONID);
 		res.write(JSON.stringify({
 			rss : mem.rss

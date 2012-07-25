@@ -43,9 +43,10 @@ table {
 	color: inherit;
 }
 
-.date{
-	width:40px;
+.date {
+	width: 40px;
 }
+
 #send {
 	height: 100px;
 }
@@ -53,18 +54,26 @@ table {
 #recieve {
 	padding-left: 40px;
 }
-.msg-text{
-	border-bottom:1px dotted #ccc;
+
+.msg-text {
+	border-bottom: 1px dotted #ccc;
 }
+
 #send textarea {
 	float: left;
-	width: 400px;
+	width: 70%;
 	height: 70px;
 	margin-left: 35px;
 }
 
-input {
+.activateEnter {
 	float: left;
+	margin-left: 10px;
+}
+
+.activateEnter input, #join input {
+	float: left;
+	margin-top:3px;
 	padding: 7px 10px;
 }
 
@@ -81,7 +90,7 @@ button {
 	background: -webkit-linear-gradient(top, #88c72a 0%, #709e0e 100%);
 	background: -o-linear-gradient(top, #88c72a 0%, #709e0e 100%);
 	background: -ms-linear-gradient(top, #88c72a 0%, #709e0e 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient(       startColorstr='#709e0e',
+	filter: progid:DXImageTransform.Microsoft.gradient(        startColorstr='#709e0e',
 		endColorstr='#709e0e', GradientType=0 );
 	background: linear-gradient(top, #88c72a 0%, #709e0e 100%);
 	-webkit-box-shadow: 0px 0px 1px #66FF00, inset 0px 0px 1px #FFFFFF;
