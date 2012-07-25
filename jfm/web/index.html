@@ -1,18 +1,44 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title> Home </title>
-        <link rel='stylesheet' href='css/main.css' type="text/css"/>
-        <link type="text/css" href="css/comboBox.css" rel="stylesheet"/>
-        <script type="text/javascript" src="javascript/jquery.js" ></script>
-         <script type="text/javascript" src="javascript/plugin/Hashchange.js" ></script>
-        <script type="text/javascript" src="javascript/jfm/Master.js" ></script>
-        <script>
-            fm.basedir='javascript';
-            fm.Include("App");
-        </script>
-    </head>
-    <body>
-        <div></div>
-    </body>
+<head>
+<title>Home</title>
+<link rel='stylesheet' href='css/main.css' type="text/css" />
+<link type="text/css" href="css/comboBox.css" rel="stylesheet" />
+<script type="text/javascript" src="javascript/jquery.js"></script>
+<script type="text/javascript" src="javascript/plugin/Hashchange.js"></script>
+<script type="text/javascript" src="javascript/jfm/Master.js"></script>
+<script>
+	fm.basedir = 'javascript';
+	fm.Include("App");
+</script>
+</head>
+<body>
+	<div></div>
+	<div id="fb-root"></div>
+      <script>
+        window.fbAsyncInit = function() {
+          FB.init({
+            appId      : '254360796617', // App ID
+            channelUrl : 'http://localhost:8888/channel.html', // Channel File
+            status     : true, // check login status
+            cookie     : true, // enable cookies to allow the server to access the session
+            xfbml      : true  // parse XFBML
+          });
+          // Additional initialization code here
+        };
+        // Load the SDK Asynchronously
+        (function(d){
+           var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+           if (d.getElementById(id)) {return;}
+           js = d.createElement('script'); js.id = id; js.async = true;
+           js.src = "//connect.facebook.net/en_US/all.js";
+           ref.parentNode.insertBefore(js, ref);
+         }(document));
+      </script>
+      <div 
+        class="fb-registration" 
+        data-fields="[{'name':'name'}, {'name':'email'}]" 
+        data-redirect-uri="http://localhost:8888/chat"
+      </div>
+</body>
 </html>
