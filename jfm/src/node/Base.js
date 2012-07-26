@@ -7,6 +7,7 @@ fm.AbstractClass("Base");
 Base = function(){    
     this.Abstract.method = function(){};
     this.POST = function(req, resp, t){
+       
        var method = req.params.method || 'method';
        var cls = this.getSub();
        cls[method](req, resp, t);

@@ -27,8 +27,7 @@ App = function( ) {
 		    }
 		});
 		process.on('uncaughtException', function( err ) {
-			console.error(err);
-			console.log("Node NOT Exiting...");
+			console.error(err.stack);
 		});
 	};
 	
@@ -59,11 +58,14 @@ App = function( ) {
 				var user = sessionM.getSession(SessionId);
 				req.cookie = c;
 				req.session = user;
+//				facebook.FacebookAuth .Authenticate(req,function(session){
+//					console.log(session);
+//				});
 				if (!user && webPath[servletName].auth) {
 					resp.writeHead(307, {
 						'Content-Type' : 'text/plain'
 					});
-					resp.write("home");
+					resp.write("login");
 					resp.end();
 					return;
 				}

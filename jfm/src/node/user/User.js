@@ -3,6 +3,7 @@
  * and open the template in the editor.
  */
 fm.Package("user");
+fm.Import("user.Testing");
 fm.Class("User");
 user.User = function( ) {
 	this.toArray = function( ) {

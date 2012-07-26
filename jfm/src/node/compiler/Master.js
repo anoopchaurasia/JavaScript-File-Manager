@@ -7,7 +7,7 @@
  * Created by JetBrains WebStorm. User: Anoop Date: 5/7/11 Time: 11:14 PM To
  * change this template use File | Settings | File Templates.
  */
-
+var fs = require('fs');
 t = new Date().getTime();
 (function( window, undefined ) {
 	// method to check if Object.defineProperty supported by browser.
@@ -138,7 +138,17 @@ t = new Date().getTime();
 		scriptArr.push({
 			packageName : ""
 		});
+		// delete Module._cache[path];
 		require(path);
+		
+		fs.watchFile( path, { persistent: true, interval: 5000 }, function(){
+			scriptArr.push({
+				packageName : ""
+			});
+			delete require.cache[path.replace(/\//g,'\\')];
+			require(path);
+			classManager(scriptArr.pop());
+		});
 		classManager(scriptArr.pop());
 		// if(!docHead){
 		// docHead = document.getElementsByTagName("head")[0];

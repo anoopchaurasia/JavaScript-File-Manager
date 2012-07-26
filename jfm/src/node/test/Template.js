@@ -18,10 +18,11 @@ test.Template = function( ) {
 //			return;
 //		}
 		var path = process.cwd() + "/web/templates/" + req.params.data + ".html";
+		console.log(path, "ddd"   );
 		fs.readFile(path, function( err, data ) {
 			if (err) {
 				console.log(err);
-			}
+			} 
 			else {
 				resp.write(data);
 				resp.end("\n");
@@ -32,6 +33,4 @@ test.Template = function( ) {
 	};
 	this.method = function( ) {/**/};
 };
-fs.watch( process.cwd() + "/web", { persistent: true, interval: 1000 }, function(){
-	console.log(arguments);
-});
+console.log("Anoop ");
