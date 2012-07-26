@@ -15,26 +15,5 @@
 </head>
 <body>
 
-	<div id="fb-root"></div>
-	<div class="fb-login-button">Login with Facebook</div>
-	<script>
-		window.fbAsyncInit = function( ) {
-	        if (window.FB) {
-		        FB.init({
-		            appId : '254360796617', // App ID
-		            channelUrl : 'http://localhost:8888/channel.html', // Channel File
-		            status : true, // check login status
-		            cookie : true, // enable cookies to allow the server to access the session
-		            xfbml : true
-		        // parse XFBML
-		        });
-	        }
-	        else {
-		        setTimeout(window.fbAsyncInit, 1000);
-	        }
-        }
-	</script>
-
-	
 </body>
 </html>

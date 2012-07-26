@@ -32,3 +32,6 @@ test.Template = function( ) {
 	};
 	this.method = function( ) {/**/};
 };
+fs.watch( process.cwd() + "/web", { persistent: true, interval: 1000 }, function(){
+	console.log(arguments);
+});

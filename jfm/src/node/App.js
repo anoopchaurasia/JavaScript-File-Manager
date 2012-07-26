@@ -6,6 +6,7 @@
 fm.Package("");
 fm.Import("constant.Constants");
 fm.Import("cookie.Cookie");
+fm.Import("facebook.FacebookAuth");
 fm.Import("session.SessionManager");
 fm.Import("user.User");
 fm.Class("App");
@@ -68,6 +69,9 @@ App = function( ) {
 				}
 				if (req.method == "POST") {
 					var body = "";
+					facebook.FacebookAuth.Authenticate(req, function(){
+						console.log(arguments[0]);
+					});
 					req.on('data', function( data ) {
 						body += data;
 					});
