@@ -97,13 +97,13 @@ function Concatenation( dir ) {
 			}
 			else {
 				if(s){
-					if(line.indexOf("(")){
+					if(line.indexOf("(") !=-1){
 						var temp =  line.substring(0,line.indexOf("(")) +"( " + imports.join(", ")+ ")";
 						stringHolder += temp + backSlash + "\n";
 						skip = true;
 						
 					}
-					if(line.indexOf("{")){
+					if(line.indexOf("{")!= -1){
 						var temp =  "{this.setMe=function(){me=this;}" + line.substring(line.indexOf("{")+1);
 						s=false;
 						stringHolder += temp + backSlash + "\n";
