@@ -9,11 +9,9 @@ fm.Import("cookie.Cookie");
 fm.Import("facebook.FacebookAuth");
 fm.Import("session.SessionManager");
 fm.Import("user.User");
-fm.Base("Anoop");
 fm.Class("App");
-App = function( base, me, Constants, Cookie, FacebookAuth, SessionManager, User){
-	this.setMe=function(){me=this;}
-
+App = function( me, base, Constants, Cookie, FacebookAuth, SessionManager, User)
+{this.setMe=function(){me=this;}
 	var http, url, qs, servletObj, staticServer, sessionM;
 	
 	this.init = function( ) {
@@ -122,17 +120,5 @@ App = function( base, me, Constants, Cookie, FacebookAuth, SessionManager, User)
 	};
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+fm.isConcatinated = false;
+fm.isConcatinated = true;

@@ -9,11 +9,11 @@ fm.Import("jfm.hash.HashChange");
 fm.Import("com.region.Topbar");
 fm.Import("com.region.Right");
 fm.Class("App");
-App = function( ) {
-	function updateLayout( ) {
-		$(window).ready(function( ) {
+App = function() {
+	function updateLayout() {
+		$(window).ready(function() {
 			var win = jQuery(window);
-			win.resize(function( ) {
+			win.resize(function() {
 				var w = win.width(), h = win.height();
 				var m = $('body').width(w).height(h)[0].resize;
 				m && m(w, h);
@@ -22,12 +22,12 @@ App = function( ) {
 		});
 	}
 	Static.main = function() {
-		
+
 		updateLayout();
 		var t2 = new Date().getTime();
 		var d = new jfm.division.Division({
 			id : "jfm-division",
-			'class':"bg"
+			'class' : "bg"
 		});
 		var top = new Topbar(d);
 		var right = new Right();
@@ -41,3 +41,4 @@ App = function( ) {
 		console.log(new Date().getTime() - t, new Date().getTime() - t2);
 	};
 };
+
