@@ -4,7 +4,8 @@
  */
 
 fm.AbstractClass("Base");
-Base = function(){    
+Base = function( me){this.setMe=function(_me){me=_me;};
+    
     this.Abstract.method = function(){};
     this.POST = function(req, resp, t){
        
@@ -17,3 +18,9 @@ Base = function(){
         this.POST(req, resp);
     };
 };
+
+
+
+
+
+

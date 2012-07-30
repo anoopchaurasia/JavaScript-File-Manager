@@ -7,7 +7,8 @@ var fs = require('fs');
 fm.Package("test");
 fm.Import("cookie.Cookie");
 fm.Class("Template", "Base");
-test.Template = function( ) {
+test.Template = function( base, me, Cookie,  Base){this.setMe=function(_me){me=_me;};
+
 	this.getTemplate = function( req, resp, t ) {
 //		if (!req.session && req.params.data != 'login') {
 //			resp.writeHead(307, {
@@ -34,3 +35,9 @@ test.Template = function( ) {
 	this.method = function( ) {/**/};
 };
 console.log("Anoop ");
+
+
+
+
+
+

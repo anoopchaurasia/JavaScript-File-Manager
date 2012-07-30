@@ -6,7 +6,8 @@
 fm.Package("test");
 fm.Import("post.Post");
 fm.Class("Post", "Base");
-test.Post = function( ) {
+test.Post = function( base, me, Post,  Base){this.setMe=function(_me){me=_me;};
+
 	var pg, client;
 	this.method = function( req, res ) {
 		throw("Method is not implemented!");
@@ -25,3 +26,10 @@ test.Post = function( ) {
 		client.connect();
 	};
 };
+
+
+
+
+
+
+

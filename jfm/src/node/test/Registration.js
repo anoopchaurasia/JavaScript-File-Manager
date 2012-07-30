@@ -6,7 +6,8 @@
 fm.Package("test");
 fm.Import("user.User");
 fm.Class("Registration", "Base");
-test.Registration = function( ) {
+test.Registration = function( base, me, User,  Base){this.setMe=function(_me){me=_me;};
+
 	var pg, client;
 	this.method = function( req, res ) {
 		var user = new User(JSON.parse(req.params.user));
@@ -40,3 +41,10 @@ test.Registration = function( ) {
 		client.connect();
 	};
 };
+
+
+
+
+
+
+

@@ -1,9 +1,8 @@
 fm.Package("session");
 fm.Import("constant.Constants");
 fm.Class("SessionManager");
-var sessions = {};
+session.SessionManager = function( me, Constants){this.setMe=function(_me){me=_me;};
 
-session.SessionManager = function( ) {
 	var sessions, singleton;
 	this.Static.getInstance = function( ) {
 		if (!singleton) {
@@ -50,3 +49,10 @@ session.SessionManager = function( ) {
 		return s;
 	};
 };
+
+
+
+
+
+
+

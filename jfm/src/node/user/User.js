@@ -3,9 +3,9 @@
  * and open the template in the editor.
  */
 fm.Package("user");
-fm.Import("user.Testing");
 fm.Class("User");
-user.User = function( ) {
+user.User = function( me){this.setMe=function(_me){me=_me;};
+
 	this.toArray = function( ) {
 		var userarr = [ this.firstName, this.lastName, this.companyName, this.suite, this.address, this.phone, this.comptype, this.org, this.fromwhere, 1 ];
 		return userarr;
@@ -37,3 +37,10 @@ user.User = function( ) {
 		});
 	};
 };
+
+
+
+
+
+
+

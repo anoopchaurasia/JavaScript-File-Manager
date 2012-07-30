@@ -5,7 +5,8 @@
 
 fm.Package("constant");
 fm.Class("Constants");
-constant.Constants = function( ) {
+constant.Constants = function( me){this.setMe=function(_me){me=_me;};
+
 	var ip = "localhost";
 	this.init = function( ) {		
 		var socket = require("net").createConnection(80, 'www.google.com');
@@ -31,3 +32,9 @@ constant.Constants = function( ) {
 		return ip;
 	};
 };
+
+
+
+
+
+

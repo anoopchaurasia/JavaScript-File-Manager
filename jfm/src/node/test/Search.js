@@ -1,6 +1,7 @@
 fm.Package("test");
 fm.Class("Search", "Base");
-test.Search = function( ) {
+test.Search = function( base, me,  Base){this.setMe=function(_me){me=_me;};
+
 	var client;
 	
 	this.getRelevenceData = function(req, res){
@@ -33,3 +34,10 @@ test.Search = function( ) {
 		client.connect();
 	};
 };
+
+
+
+
+
+
+

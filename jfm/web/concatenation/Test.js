@@ -1,52 +1,27 @@
 var fs = require('fs');
 function Concatenation( dir ) {
 	
-	var concatenatedString = "", ConcatenatedFiles = {}, ext, javascriptSourceFolder = dir, backSlash = "";
+	var concatenatedString = "", ext, javascriptSourceFolder = dir, backSlash = "";
 	
-	function getPathFromImports( path, cl ) {
+	function getClassName( path, second ) {
 		
-		path = path.replace("\\s+", "");
-		var startIndex = path.indexOf('(');
-		var endIndex = path.indexOf(')');
-		path = path.substring(startIndex + 2, endIndex - 1);
-		if (path.indexOf("http") == 0) {
-			return [ path ];
+		path = path.replace(/\\s/g, "");
+		path = path.substring(path.indexOf('(') + 2, path.indexOf(')') - 1).replace(/\'/g, "").replace(/\"/g, "");
+		if (second) {
+			path = path.split(",")[1];
 		}
-		
-		path = path.replace(/\'/g, "").replace(/\"/g, "");
-		if(cl){
-			return path;
-		}
-		path = path.replace(/\./g, "/").trim();
-		var paths = path.split(",");
-		for ( var i = 0; i < paths.length; i++) {
-			paths[i] = javascriptSourceFolder + paths[i].trim() + "." + ext;
-		}
-		return paths;
+		path = path && path.split(".");
+		return path && path[path.length - 1];
 	}
 	
-	function visitAllFiles( path, traverse, cl ) {
-		if (!ConcatenatedFiles[path]) {
-			ConcatenatedFiles[path] = true;
-			processFile(path, traverse, cl);
-		}
-	}
-	
-	function addFiles( pathsstr, from, to ) {
-		
-		var pth = getPathFromImports(pathsstr);
-		for ( var k = from; k < pth.length && k < to; k++) {
-			if (!(pth[k].indexOf("http") == 0)) {
-				visitAllFiles(pth[k], true, getPathFromImports(pathsstr, true));
-			}
-		}
-	}
-	
-	function executeFile( data, traverse, cl ) {
+	function executeFile( data ) {
 		var isCompleted = false, isLineAdded, stringHolder = "";
-		var dataArray = data.split("\n");
-		var imports = ['me'], s, skip;
-		console.log("Comming", traverse);
+		var dataArray = data.split("\n"), add = true, num;
+		var imports = [ 'me' ], s, skip;
+		if(( num = data.replace(/\s/g,"").indexOf("this.setMe=function(_me){me=_me;}")) != -1){
+			add = false;
+		}
+		console.log(num);
 		for ( var k = 0, len = dataArray.length; k < len; k++) {
 			// this statement reads the line from the file and prvar it to
 			// the console.
@@ -54,21 +29,9 @@ function Concatenation( dir ) {
 			isLineAdded = false;
 			if (!isCompleted) {
 				if (line.indexOf("function") == -1) {
-					if (line.indexOf("fm.Package") != -1) {
-						stringHolder = line + backSlash + "\n";
-						isLineAdded = true;
-					}
 					if (line.indexOf("fm.Import") != -1) {
 						stringHolder += line + backSlash + "\n";
-						var t = line.split(".");
-						imports.push(t[t.length-1].replace("\"","").replace(")","").replace(";",""));
-						isLineAdded = true;
-					}
-					if (line.indexOf("fm.Base") != -1) {
-						stringHolder += line + backSlash + "\n";
-						var t = line.split(".");
-						imports.unshift('base');
-						//imports.push(t[t.length-1].replace("\"","").replace(")","").replace(";",""));
+						imports.push(getClassName(line));
 						isLineAdded = true;
 					}
 					if (line.indexOf("fm.Include") != -1) {
@@ -81,7 +44,12 @@ function Concatenation( dir ) {
 					}
 					if ((line.indexOf("fm.Class") != -1 || line.indexOf("fm.Interface") != -1 || line.indexOf("fm.AbstractClass") != -1)) {
 						stringHolder += line + backSlash + "\n";
-						s=true;
+						s = true;
+						var tempN = getClassName(line, true);
+						if (tempN) {
+							imports.push(tempN);
+							imports.unshift('base');
+						}
 						isCompleted = true;
 						isLineAdded = true;
 					}
@@ -92,31 +60,28 @@ function Concatenation( dir ) {
 				
 			}
 			else {
-				if(s){
-					console.log(imports);
-					if(line.indexOf("(") !=-1){
-						var temp =  line.substring(0,line.indexOf("(")) +"( " + imports.join(", ")+ ")";
-						stringHolder += temp + backSlash + "\n";
-						
+				if (s) {
+					if (line.indexOf("(") != -1 && !skip) {
+						var temp = line.substring(0, line.indexOf("(")) + "( " + imports.join(", ") + ")";
+						stringHolder += temp + backSlash;
 						skip = true;
 						
 					}
-					if(line.indexOf("{")!= -1){
+					if (line.indexOf("{") != -1) {
 						var temp = "{";
-						if( line.indexOf("this.setMe") == -1){
-							temp +=  "this.setMe=function(){me=this;}";
+						if (add) {
+							temp += "this.setMe=function(_me){me=_me;};\n";
 						}
-						temp +=  line.substring(line.indexOf("{")+1);
-						s=false;
+						temp += line.substring(line.indexOf("{") + 1);
+						s = false;
 						stringHolder += temp + backSlash + "\n";
 						skip = false;
 						continue;
 					}
 				}
-				if(skip){
+				if (skip) {
 					continue;
 				}
-				line.replace("this.setMe=function(){me=this;}","");
 				stringHolder += line + backSlash + "\n";
 			}
 		}
@@ -124,42 +89,14 @@ function Concatenation( dir ) {
 		
 	}
 	
-	function processFile( path, traverse, cl ) {
-		executeFile(fs.readFileSync(path).toString('utf-8'), traverse, cl);
-	}
-	
-	function prepareConcatenated( filePath1, append ) {
-		visitAllFiles(filePath1, append, filePath1);
-	}
-	
-	function deleteFile( dir ) {
-		fs.unlink(dir, function( ) {
-		// dfdfdf
-		});
-	}
-	
-	this.concatenateJSFiles = function( sFiles, dFile ) {
+	this.concatenateJSFiles = function( sFiles ) {
 		ext = "js";
 		backSlash = "";
-		deleteFile(dFile);
-		// String[] commands;
-		// Runtime rt = Runtime.getRuntime();
 		concatenatedString = "";
-		ConcatenatedFiles = {};
-		var append = true;
-		for ( var i = 0; i < sFiles.length; i++) {
-			prepareConcatenated(sFiles[i], dFile, append);
-			if (append) {
-				concatenatedString += "";
-			}
-			append = true;
-			concatenatedString += "";
-		}
-		//fs.open(sFiles, 'a', 666, function( e, id ) {
-			fs.writeFile(sFiles, concatenatedString, function( ) {
-				
-			});
-		//});
+		executeFile(fs.readFileSync(sFiles).toString('utf-8'));
+		fs.writeFile(sFiles, concatenatedString, function( ) {
+		// asas
+		});
 	};
 };
 
@@ -180,9 +117,39 @@ function runall( ) {
 			System.out.println("Sourse File " + arguments[i]);
 		}
 	}
-	inputFiles.push("../../src/node/App.js");
 	var ajt = new Concatenation(baseDir);
 	debugger;
-	ajt.concatenateJSFiles(inputFiles);
+	walk("D:/workspace/jfm/src/node",function(a, list){
+		var t = Date.now();
+		for(var k =0; k< list.length; k++){
+			ajt.concatenateJSFiles(list[k]);
+		}
+		console.log("time: " +( Date.now() - t));
+	});
+};
+
+var fs = require('fs');
+var walk = function(dir, done) {
+  var results = [];
+  fs.readdir(dir, function(err, list) {
+    if (err) return done(err);
+    var i = 0;
+    (function next() {
+      var file = list[i++];
+      if (!file) return done(null, results);
+      file = dir + '/' + file;
+      fs.stat(file, function(err, stat) {
+        if (stat && stat.isDirectory()) {
+          walk(file, function(err, res) {
+            results = results.concat(res);
+            next();
+          });
+        } else {
+          results.push(file);
+          next();
+        }
+      });
+    })();
+  });
 };
 runall();

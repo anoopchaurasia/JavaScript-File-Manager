@@ -1,6 +1,7 @@
 fm.Package("test");
 fm.Class("Chat", "Base");
-test.Chat = function( ) {
+test.Chat = function( base, me,  Base){this.setMe=function(_me){me=_me;};
+
 	var messages, callbacks, mem, starttime, MESSAGE_BACKLOG;
 	
 	this.Chat = function( ) {
@@ -151,3 +152,10 @@ test.Chat = function( ) {
 	}
 	
 };
+
+
+
+
+
+
+

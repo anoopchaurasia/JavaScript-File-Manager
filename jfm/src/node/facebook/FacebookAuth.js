@@ -1,13 +1,15 @@
 fm.Package("facebook");
 FacebookSession = require("./FacebookSession");
 fm.Class("FacebookAuth");
-facebook.FacebookAuth = function() {
+facebook.FacebookAuth = function( me){this.setMe=function(_me){me=_me;};
+
 	function convertBase64ToHex(base64_string) {
 		var buffer = new Buffer(base64_string, 'base64');
 		return buffer.toString('hex');
 	}
 	var crypto = require('crypto');
 	Static.Authenticate = function(req, cb) {
+		return;
 		var facebook_cookie_raw = req.headers["cookie"].match(/fbsr_[\d]+\=([^; ]+)/);
 		if (facebook_cookie_raw.length == 0) {
 			return;
@@ -63,3 +65,10 @@ facebook.FacebookAuth = function() {
 		};
 	};
 };
+
+
+
+
+
+
+

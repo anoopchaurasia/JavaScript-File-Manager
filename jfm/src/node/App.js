@@ -2,20 +2,16 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 fm.Package("");
 fm.Import("constant.Constants");
 fm.Import("cookie.Cookie");
 fm.Import("facebook.FacebookAuth");
 fm.Import("session.SessionManager");
 fm.Import("user.User");
-fm.Base("Anoop");
 fm.Class("App");
-App = function( base, me, Constants, Cookie, FacebookAuth, SessionManager, User){
-	this.setMe=function(){me=this;}
-
+App = function( me, Constants, Cookie, FacebookAuth, SessionManager, User){this.setMe=function(_me){me=_me;};
 	var http, url, qs, servletObj, staticServer, sessionM;
-	
+	console.log(process.execArgv);
 	this.init = function( ) {
 		fm.Include('web');
 		
@@ -61,9 +57,9 @@ App = function( base, me, Constants, Cookie, FacebookAuth, SessionManager, User)
 				var user = sessionM.getSession(SessionId);
 				req.cookie = c;
 				req.session = user;
-//				facebook.FacebookAuth .Authenticate(req,function(session){
-//					console.log(session);
-//				});
+				// facebook.FacebookAuth .Authenticate(req,function(session){
+				// console.log(session);
+				// });
 				if (!user && webPath[servletName].auth) {
 					resp.writeHead(307, {
 						'Content-Type' : 'text/plain'
@@ -74,7 +70,7 @@ App = function( base, me, Constants, Cookie, FacebookAuth, SessionManager, User)
 				}
 				if (req.method == "POST") {
 					var body = "";
-					facebook.FacebookAuth.Authenticate(req, function(){
+					facebook.FacebookAuth.Authenticate(req, function( ) {
 						console.log(arguments[0]);
 					});
 					req.on('data', function( data ) {
@@ -121,12 +117,6 @@ App = function( base, me, Constants, Cookie, FacebookAuth, SessionManager, User)
 		}).listen(Constants.port);
 	};
 };
-
-
-
-
-
-
 
 
 

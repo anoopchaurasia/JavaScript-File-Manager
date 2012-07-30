@@ -1,6 +1,7 @@
 fm.Package("cookie");
 fm.Class("Cookie");
-cookie.Cookie = function(){	
+cookie.Cookie = function( me){this.setMe=function(_me){me=_me;};
+	
 	
 	Static.getCookie = function(req){
 		var c = req.headers.cookie && req.headers.cookie.split(";");
@@ -15,3 +16,9 @@ cookie.Cookie = function(){
 		return cookie;
 	};
 };
+
+
+
+
+
+

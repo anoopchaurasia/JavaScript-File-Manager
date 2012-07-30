@@ -10,20 +10,6 @@
 var fs = require('fs');
 t = new Date().getTime();
 (function( window, undefined ) {
-	// method to check if Object.defineProperty supported by browser.
-	// IE8 support Object.defineProperty only for dom object.
-	function doesDefinePropertyWork( object ) {
-		try {
-			Object.defineProperty(object, "a", {});
-			return "a" in object;
-		}
-		catch (e) {
-			return false;
-		}
-	}
-	
-	// Checking if setter and getter is supported by browser.
-	var isGetterSetterSupported = doesDefinePropertyWork({}) || Object.prototype.__defineGetter__;
 	
 	// This method is adding a $add method into class prototype wchich is being
 	// used to create setter and getter for its own property.
@@ -50,37 +36,22 @@ t = new Date().getTime();
 			function getter( ) {
 				return valueStorage[key];
 			}
-			
-			if (obj.__defineGetter__) {
-				obj.__defineGetter__(key, getter);
-				obj.__defineSetter__(key, setter);
-			}
-			else if (Object.defineProperty && isGetterSetterSupported) {
-				Object.defineProperty(obj, key, {
-				    get : getter,
-				    set : setter
-				});
-			}
-			else {
-				classRefernece[key] = classRefernece[key] || [];
-				classRefernece[key].push(obj);
-				
-				classProto[key] != undefined && (obj[key] = classProto[key]);
-			}
+			obj.__defineGetter__(key, getter);
+			obj.__defineSetter__(key, setter);
 		};
 	}
 	
 	// intializing fm
-	if (!global.fm) {
-		global.fm = {};
+	if (!window.fm) {
+		window.fm = {};
 	}
 	// Assuming JavaScript base directory is "javascript".
 	
-	global.fm.basedir = "/javascript";
+	window.fm.basedir = "/src/node";
 	
-	// /global.fm.import adds new javascript file to head of document. JAVA:
+	// /window.fm.import adds new javascript file to head of document. JAVA:
 	// import
-	global.fm['import'] = global.fm.Import = function Import( path ) {
+	window.fm['import'] = window.fm.Import = function Import( path ) {
 		path = path.replace(/\s/g, "");
 		add(path);
 		this.Include(path); // function
@@ -90,11 +61,11 @@ t = new Date().getTime();
 	// Keep track of loaded files in storePath.
 	var storePath = [];
 	
-	// /same as global.fm.import but for non jfm files.
-	global.fm['include'] = global.fm.Include = function Include( path ) {
+	// /same as window.fm.import but for non jfm files.
+	window.fm['include'] = window.fm.Include = function Include( path ) {
 		
-		if (!storePath[global.fm.basedir + path]) {
-			storePath[global.fm.basedir + path] = true;
+		if (!storePath[window.fm.basedir + path]) {
+			storePath[window.fm.basedir + path] = true;
 		}
 		else {
 			return this;
@@ -104,7 +75,7 @@ t = new Date().getTime();
 		}
 		path = path.replace(/\s/g, "");
 		if (path.indexOf("http") != 0 && path.lastIndexOf(".js") != path.length - 3) {
-			path = global.fm.basedir + "/" + path.split(".").join("/") + ".js";
+			path = window.fm.basedir + "/" + path.split(".").join("/") + ".js";
 		}
 		include(path);
 		return this;
@@ -141,31 +112,22 @@ t = new Date().getTime();
 		// delete Module._cache[path];
 		require(path);
 		
-		fs.watchFile( path, { persistent: true, interval: 5000 }, function(){
+		fs.watchFile(path, {
+		    persistent : true,
+		    interval : 5000
+		}, function( ) {
 			scriptArr.push({
 				packageName : ""
 			});
-			delete require.cache[path.replace(/\//g,'\\')];
+			delete require.cache[path.replace(/\//g, '\\')];
 			require(path);
 			classManager(scriptArr.pop());
 		});
 		classManager(scriptArr.pop());
-		// if(!docHead){
-		// docHead = document.getElementsByTagName("head")[0];
-		// }
-		// // isNonfm && global.fm.holdReady(true);
-		// var e = document.createElement("script");
-		// //onerror is not supported by IE so this will throw exception only
-		// for non IE browsers.
-		// e.onerror = onReadyState;
-		// e.src = path;
-		// e.type = "text/javascript";
-		// docHead.appendChild(e);
-		//          
 	}
 	var scriptArr = [];
 	// This should be first method to be called from jfm classes.JAVA:package
-	global.fm["package"] = global.fm.Package = function Package( packageName ) {
+	window.fm["package"] = window.fm.Package = function Package( packageName ) {
 		scriptArr.pop();
 		var script = {
 			packageName : packageName || ""
@@ -175,28 +137,28 @@ t = new Date().getTime();
 	};
 	
 	// / this method Add base class for current Class.JAVA:extend
-	global.fm['super'] = global.fm['base'] = global.fm.Base = function Base( baseClass ) {
+	window.fm['super'] = window.fm['base'] = window.fm.Base = function Base( baseClass ) {
 		var script = scriptArr[scriptArr.length - 1];
 		script && (script.baseClass = baseClass) && this.Import(baseClass);
 		return this;
 	};
 	
 	// Set current script as Interface; JAVA:interface
-	global.fm["interface"] = global.fm.Interface = function Interface( ) {
+	window.fm["interface"] = window.fm.Interface = function Interface( ) {
 		var script = scriptArr[scriptArr.length - 1];
 		script.isInterface = true;
 		this.Class.apply(this, arguments);
 		
 	};
 	
-	global.fm['abstractClass'] = global.fm.AbstractClass = function( ) {
+	window.fm['abstractClass'] = window.fm.AbstractClass = function( ) {
 		var script = scriptArr[scriptArr.length - 1];
 		script.isAbstract = true;
 		this.Class.apply(this, arguments);
 	};
 	// Add all implemented interface to class interface list. and import
 	// them.JAVA:implements
-	global.fm['implements'] = global.fm.Implements = function Implements( ) {
+	window.fm['implements'] = window.fm.Implements = function Implements( ) {
 		
 		var script = scriptArr[scriptArr.length - 1];
 		script.interfaces = script.interfaces || [];
@@ -206,8 +168,8 @@ t = new Date().getTime();
 		}
 	};
 	
-	// global.fm.Class creates a jfm class.
-	global.fm['class'] = global.fm.Class = function Class( ) {
+	// window.fm.Class creates a jfm class.
+	window.fm['class'] = window.fm["Class"] = function Class( me ) {
 		
 		var script = scriptArr[scriptArr.length - 1];
 		var a = arguments, o = null;
@@ -217,12 +179,11 @@ t = new Date().getTime();
 		}
 		o = createObj("" + script.packageName);
 		script.Class = "" + (script.packageName == "" ? "" : script.packageName + ".") + script.className;
-		
 		script.Package = o;
 	};
 	
-	// global.fm.stringToObject: map a string into object.
-	global.fm.stringToObject = function stringToObject( classStr ) {
+	// window.fm.stringToObject: map a string into object.
+	window.fm.stringToObject = function stringToObject( classStr ) {
 		var Class = window, classStrArr = classStr.split(".");
 		for ( var n = 0; Class && n < classStrArr.length; n++) {
 			Class = Class[classStrArr[n]];
@@ -235,7 +196,7 @@ t = new Date().getTime();
 		if (!str || str.length == 0) {
 			return window;
 		}
-		var d = str.split("."), j, o = global;
+		var d = str.split("."), j, o = window;
 		for (j = 0; j < d.length; j = j + 1) {
 			o[d[j]] = o[d[j]] || {};
 			o = o[d[j]];
@@ -248,7 +209,7 @@ t = new Date().getTime();
 		var newImports = {}, splited;
 		for ( var k = 0; imp && k < imp.length; k++) {
 			splited = imp[k].split(".");
-			newImports[splited[splited.length - 1]] = global.fm.stringToObject(imp[k]);
+			newImports[splited[splited.length - 1]] = window.fm.stringToObject(imp[k]);
 		}
 		return newImports;
 	}
@@ -276,17 +237,6 @@ t = new Date().getTime();
 		Const = saveState.pop();
 		Abstract = saveState.pop();
 		Static = saveState.pop();
-		
-	}
-	
-	// Return whether object is empty.
-	function isNotAEmptyObject( obj ) {
-		for ( var k in obj) {
-			if (obj.hasOwnProperty(k)) {
-				return true;
-			}
-		}
-		return false;
 	}
 	
 	// Extend to one level.
@@ -326,23 +276,6 @@ t = new Date().getTime();
 		    methods : methods,
 		    fields : fields
 		};
-	}
-	
-	// add all transient fields to list.
-	function addTransient( internalObj, tempObj ) {
-		var temp = {}, k, tr = tempObj["transient"] || [];
-		tr.push("shortHand");
-		for (k = 0; k < tr.length; k++) {
-			(temp[tr[k]] = true);
-		}
-		eachPropertyOf(internalObj.Static, function( v, k ) {
-			temp[k] = true;
-		});
-		eachPropertyOf(internalObj.staticConst, function( v, k ) {
-			temp[k] = true;
-		});
-		internalObj["transient"] = temp;
-		internalObj = tempObj = k = temp = undefined;
 	}
 	
 	function checkForAbstractFields( abs, cls ) {
@@ -386,70 +319,18 @@ t = new Date().getTime();
 	}
 	window.me = window.base = undefined;
 	
-	var gContext = [];
-	
-	function createContext( context ) {
-		var ics = context.ics;
-		context.prototype.added = {};
-		deleteAdded((gContext[gContext.length - 1] || {
-			prototype : {}
-		}).prototype.added);
-		me = context;
-		base = context.base;
-		gContext.push(context);
-		for ( var k in ics) {
-			if (ics.hasOwnProperty(k) && !window[k]) {
-				context.prototype.added[k] = true;
-				window[k] = ics[k];
-			}
-		}
-		return true;
-	}
-	function deleteAdded( added ) {
-		try {
-			for ( var k in added) {
-				if (added.hasOwnProperty(k)) {
-					delete window[k];
-				}
-			}
-		}
-		catch (e) {
-			console.log(e);
-		}
-	}
-	
-	function deleteContext( ) {
-		var pop = gContext.pop();
-		deleteAdded(pop.prototype.added);
-		me = gContext[gContext.length - 1];
-		if (me) {
-			base = me.base;
-			var added = me.prototype.added;
-			for ( var k in added) {
-				if (added.hasOwnProperty(k) && !window[k]) {
-					window[k] = me.ics[k];
-				}
-			}
-		}
-		else {
-			base = undefined;
-		}
-	}
-	
 	// Change the context of function.
 	function changeContext( fun, context, bc ) {
 		return function( ) {
-			var added = me != context && createContext(context);
 			var temp = fun.apply(context, arguments);
 			bc && (temp = bc());
-			added && deleteContext();
 			return temp;
 		};
 	}
 	
 	function defaultConstrct( ) {
 		if (arguments.length > 0) {
-			global.fm.stackTrace("Class does not have any constructor ");
+			window.fm.stackTrace("Class does not have any constructor ");
 		}
 	}
 	
@@ -560,20 +441,8 @@ t = new Date().getTime();
 				return currentObj[key];
 			}
 			
-			if (obj.__defineGetter__) {
-				obj.__defineGetter__(key, getter);
-				obj.__defineSetter__(key, setter);
-			}
-			else if (Object.defineProperty && isGetterSetterSupported) {
-				Object.defineProperty(obj, key, {
-				    get : getter,
-				    set : setter
-				});
-			}
-			
-			else {
-				currentObj[key] != undefined && (obj[key] = currentObj[key]);
-			}
+			obj.__defineGetter__(key, getter);
+			obj.__defineSetter__(key, setter);
 		};
 	}
 	
@@ -582,7 +451,7 @@ t = new Date().getTime();
 		var clss = currentObj.getClass();
 		for ( var k in currentObj) {
 			if (currentObj.hasOwnProperty(k) && typeof currentObj[k] == 'function' && k != fn) {
-				currentObj[k] = changeContext(currentObj[k], currentObj);
+				currentObj[k] = currentObj[k].bind(currentObj);
 				currentObj[k].$name = k;
 				currentObj[k].$Class = clss;
 			}
@@ -639,12 +508,28 @@ t = new Date().getTime();
 		}
 	}
 	
+	function createArgumentString( base, imports ) {
+		var str = [];
+		if (base) {
+			str.push('pofn.base');
+		}
+		str.push('undefined');
+		if (imports) {
+			for ( var k in imports) {
+				imports.hasOwnProperty(k) && str.push('pofn.ics.' + k);
+			}
+		}
+		return str.join(",");
+	}
+	;
+	
 	// Set relevent class information.
 	function getReleventClassInfo( Class, fn, pofn ) {
 		
 		addPrototypeBeforeCall(Class, this.isAbstract);
-		
-		var tempObj = new Class(pofn.ics, pofn.base), k, len;
+		var tempObj, k, len;
+		eval("tempObj= new Class(" + createArgumentString(pofn.base, pofn.ics) + ");");
+		tempObj.setMe && tempObj.setMe(pofn);
 		this.shortHand = tempObj.shortHand;
 		var info = separeteMethodsAndFields(tempObj);
 		this.methods = info.methods = pofn.base ? info.methods.concat(pofn.base.prototype.$get('methods')) : info.methods;
@@ -674,7 +559,6 @@ t = new Date().getTime();
 		this.Const = simpleExtend(tempObj.Const, {});
 		delete this.Const.Static;
 		checkAvailability(tempObj, this.Static, this.staticConst, this.Abstract, this.Const);
-		addTransient(this, tempObj);
 		this.privateConstructor = !!tempObj["Private"] && tempObj["Private"][fn];
 		deleteAddedProtoTypes(Class);
 		temp = k = tempObj = info = Class = fn = currentScript = undefined;
@@ -689,6 +573,20 @@ t = new Date().getTime();
 		        || (!this.__base___ && pofn.isAbstract && script.Class + " is an abstract class");
 	}
 	
+	function createArgumentStringObj( base, imports ) {
+		var str = [];
+		if (base) {
+			str.push('baseObj');
+		}
+		str.push('undefined');
+		if (imports) {
+			for ( var k in imports) {
+				imports.hasOwnProperty(k) && str.push('pofn.ics.' + k);
+			}
+		}
+		return str.join(",");
+	}
+	
 	function createClassInstance( pofn, script, fn, Class ) {
 		var baseObj, ex = getException.call(this, script, pofn);
 		if (ex) {
@@ -697,12 +595,12 @@ t = new Date().getTime();
 		
 		baseObj = pofn.base && getBaseClassObject(pofn.base, this.__base___ ? this.get$arr() : []);
 		addPrototypeBeforeCall(Class, pofn.isAbstract);
-		var added = createContext(pofn);
-		var currentObj = new Class(pofn.ics, baseObj);
+		
+		var currentObj;
+		eval("currentObj= new Class(" + createArgumentStringObj(baseObj, pofn.ics) + ");");
+		currentObj.setMe && currentObj.setMe(currentObj);
 		//
-		added && deleteContext();
 		addExtras(currentObj, baseObj, fn);
-		delete currentObj["transient"];
 		delete currentObj.shortHand;
 		delete currentObj.init;
 		deleteAddedProtoTypes(Class);
@@ -713,7 +611,6 @@ t = new Date().getTime();
 		if (!this.__base___) {
 			delete currentObj.$add;
 		}
-		
 		return currentObj;
 	}
 	
@@ -740,7 +637,7 @@ t = new Date().getTime();
 		
 		this.hashCode = getHashCode();
 		
-		script.baseClass && (this.base = global.fm.stringToObject(script.baseClass));
+		script.baseClass && (this.base = window.fm.stringToObject(script.baseClass));
 		
 		creareSetGet(this);
 		this.ics = getAllImportClass(script.imports);
@@ -775,7 +672,6 @@ t = new Date().getTime();
 		};
 		this.constructor = defaultConstrct;
 		if (typeof this.main == 'function') {
-			this.main = changeContext(this.main, this);
 			this.main();
 			delete this.main;
 		}
@@ -792,7 +688,7 @@ t = new Date().getTime();
 					if (isSame) {
 						val.$name = k;
 						val.$Class = cls;
-						obj[k] = changeContext(val, obj);
+						obj[k] = val.bind(obj);
 					}
 					else {
 						obj[k] == undefined && (obj[k] = self[k]);
@@ -833,7 +729,7 @@ t = new Date().getTime();
 		var Class = po[fn];
 		po[fn] = function manager( ) {
 			var currentObj = createClassInstance.call(this, po[fn], script, fn, Class);
-			var added = createContext(currentObj);
+			
 			if (!this.__base___) {
 				currentObj.constructor.apply(currentObj, arguments);
 				// Calling base constructor if not called explicitly.
@@ -842,13 +738,8 @@ t = new Date().getTime();
 				}
 			}
 			!this.__base___ && currentObj.el && currentObj.el[0] && (currentObj.el[0].jfm = currentObj);
-			added && deleteContext();
 			return currentObj;
 		};
 		executeOnready.call(po[fn], script, fn, Class);
 	}
 })(global);
-
-    
- 
-
