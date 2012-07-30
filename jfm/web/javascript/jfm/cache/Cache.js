@@ -7,7 +7,8 @@
 fm.Package("jfm.cache");
 fm.Import("jfm.server.Server");
 fm.Class("Cache");
-jfm.cache.Cache = function(){
+jfm.cache.Cache = function( me, Server){this.setMe=function(_me){me=_me;};
+
     var tmplServ, tmpltMethod, tempalateStorage, singleton ;
     this.shortHand = "Cache";
     this.getTemplate = function(name, path, cb){
@@ -44,3 +45,4 @@ jfm.cache.Cache = function(){
         tempalateStorage = {};
     };
 };
+

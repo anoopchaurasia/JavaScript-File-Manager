@@ -1,6 +1,7 @@
 fm.Package("jfm.util");
 fm.Class("Utility");
-jfm.util.Utility = function() {
+jfm.util.Utility = function( me){this.setMe=function(_me){me=_me;};
+
 
 	this.Static = {
 		urlRE : /https?:\/\/([-\w\.]+)+(:\d+)?(\/([^\s]*(\?\S+)?)?)?/g,
@@ -42,3 +43,8 @@ jfm.util.Utility = function() {
 	}
 
 };
+
+
+
+
+

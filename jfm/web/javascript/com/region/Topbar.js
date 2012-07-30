@@ -8,7 +8,8 @@ fm.Import("jfm.html.Span");
 fm.Import("com.post.Top");
 fm.Import("jfm.html.Combobox");
 fm.Class("Topbar", 'jfm.html.Container');
-com.region.Topbar = function() {
+com.region.Topbar = function( base, me, Span, Top, Combobox, Container){this.setMe=function(_me){me=_me;};
+
 
 	var openedMenu;
 
@@ -81,3 +82,5 @@ com.region.Topbar = function() {
 	}
 
 };
+
+

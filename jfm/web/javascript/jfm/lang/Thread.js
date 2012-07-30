@@ -6,7 +6,8 @@
 fm.Package("jfm.lang");
 fm.Implements("jfm.lang.Runnable");
 fm.Class("Thread");
-jfm.lang.Thread = function() {
+jfm.lang.Thread = function( me){this.setMe=function(_me){me=_me;};
+
 	var _obj, looper, _isLive;
 	this.shortHand = "Thread";
 	this.Thread = function(object) {
@@ -59,3 +60,4 @@ jfm.lang.Thread = function() {
 		waitList = undefined;
 	};
 };
+

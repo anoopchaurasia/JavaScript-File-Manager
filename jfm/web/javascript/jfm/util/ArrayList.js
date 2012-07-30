@@ -7,7 +7,8 @@
 fm.Package("jfm.util");
 fm.Implements("jfm.util.List");
 fm.Class("ArrayList");
-ArayList = function(){
+ArayList = function( me){this.setMe=function(_me){me=_me;};
+
     var size, list;
     this.ArayList = function(){
         size = 0;
@@ -112,3 +113,8 @@ ArayList = function(){
             throw  "Index out of bound";
     }
 };
+
+
+
+
+

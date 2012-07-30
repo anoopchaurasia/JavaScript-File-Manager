@@ -8,7 +8,8 @@
  
 fm.Package("com.test2");
 fm.AbstractClass( "BaseOfBaseClass");
-BaseOfBaseClass = function( ){
+BaseOfBaseClass = function( me){this.setMe=function(_me){me=_me;};
+
 
     this.Const.AL = "ALCONST";
     Abstract.abcde = function(){};
@@ -22,3 +23,4 @@ BaseOfBaseClass = function( ){
         return 678;
     }
 };
+

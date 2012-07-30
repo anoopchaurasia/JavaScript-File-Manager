@@ -5,7 +5,8 @@
 
 fm.Package("jfm.lang");
 fm.Class("System");
-System = function(){
+System = function( me){this.setMe=function(_me){me=_me;};
+
     this.shortHand = "System";    
     this.Static.out = {
         print:function(data){Server.getInstance("clientSystem", "out_print").serviceCall({data: data });},
@@ -16,3 +17,4 @@ System = function(){
         println:function println(data){Server.getInstance("clientSystem", "err_print").serviceCall({data: (data + "\n") });}
     };
 };
+

@@ -8,6 +8,9 @@
 
 fm.Package("com.test2");
 fm.Interface("FirstInterface", "com.test.SecondInterface");
-FirstInterface = function(){
+FirstInterface = function( base, me, SecondInterface){this.setMe=function(_me){me=_me;};
+
     this.interfaceMethod = function(){};
 };
+
+

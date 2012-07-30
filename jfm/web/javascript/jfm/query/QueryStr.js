@@ -1,6 +1,7 @@
 fm.Package("jfm.query");
 fm.Class("QueryStr");
-jfm.query.QueryStr = function( ) {
+jfm.query.QueryStr = function( me){this.setMe=function(_me){me=_me;};
+
 	var keyValue;
 	this.shortHand = "QueryStr";
 	Static.main = function( ) {
@@ -16,3 +17,5 @@ jfm.query.QueryStr = function( ) {
 		return keyValue[name];
 	};
 };
+
+

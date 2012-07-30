@@ -7,7 +7,8 @@
  */
 fm.Package("jfm.lang");
 fm.Class("Character");
-jfm.lang.Character = function (){
+jfm.lang.Character = function ( me){this.setMe=function(_me){me=_me;};
+
 
     this.shortHand = "Character";
     Static.Const = {
@@ -125,3 +126,4 @@ jfm.lang.Character = function (){
         SINGLEQUOTE: 222
     }   
 };
+

@@ -5,7 +5,8 @@
 
 fm.Package("jfm.tmpl");
 fm.Class("Scriptlet");
-jfm.tmpl.Scriptlet = function(){
+jfm.tmpl.Scriptlet = function( me){this.setMe=function(_me){me=_me;};
+
     var replace = "";
     var stack = [];
     this.shortHand = "Scriptlet";    
@@ -91,3 +92,9 @@ jfm.tmpl.Scriptlet = function(){
         }  
     };
 };
+
+
+
+
+
+

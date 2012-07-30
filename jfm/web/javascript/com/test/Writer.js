@@ -1,7 +1,8 @@
 
 fm.Package("com.test");
 fm.Class("Writer");
-com.test.Writer = function (im, base) {
+com.test.Writer = function ( me){this.setMe=function(_me){me=_me;};
+
     var textarea, form;
     function send(text){        
         Server.getInstance("chat", "setDataToFile").serviceCall({data:text});
@@ -21,3 +22,4 @@ com.test.Writer = function (im, base) {
             
     };
 };
+

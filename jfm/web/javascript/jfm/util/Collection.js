@@ -1,6 +1,7 @@
 fm.Package("jfm.util");
 fm.Interface("Collection", "jfm.util.Store");
-jfm.util.Collection = function () {
+jfm.util.Collection = function ( base, me, Store){this.setMe=function(_me){me=_me;};
+
 	
     this.add = function(){};
     this.addAll = function(){};
@@ -10,3 +11,8 @@ jfm.util.Collection = function () {
     this.retainAll = function(){};
     this.toArray =  function(){};
 };
+
+
+
+
+

@@ -7,7 +7,8 @@
 fm.Package("jfm.menu");
 fm.Import("jfm.menu.MenuItem");
 fm.Class("Menu","jfm.html.Container");
-jfm.menu.Menu = function(im, base){
+jfm.menu.Menu = function( base, me, MenuItem, Container){this.setMe=function(_me){me=_me;};
+
         
         this.Menu = function(items,ct){  
         var it = [];
@@ -23,3 +24,4 @@ jfm.menu.Menu = function(im, base){
         this.add(it);
     };
 };
+

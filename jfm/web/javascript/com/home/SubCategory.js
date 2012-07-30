@@ -1,6 +1,7 @@
 fm.Package("com.home");
 fm.Class("SubCategory", "jfm.html.Container");
-com.home.SubCategory = function( ) {
+com.home.SubCategory = function( base, me, Container){this.setMe=function(_me){me=_me;};
+
 	var division;
 	Static.main = function( args ) {
 		division = args[0];
@@ -24,3 +25,5 @@ com.home.SubCategory = function( ) {
 		}, null, 'html');
 	};
 };
+
+

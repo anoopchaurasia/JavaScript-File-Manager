@@ -1,7 +1,8 @@
 
 fm.Package("jfm.component");
 fm.Class("Component");
-jfm.component.Component = function(){
+jfm.component.Component = function( me){this.setMe=function(_me){me=_me;};
+
     
     this.shortHand = "Component";
     
@@ -103,3 +104,5 @@ jfm.component.Component = function(){
         return (c? c : "" ) + " "+ cls;
     };
 };
+
+

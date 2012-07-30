@@ -1,7 +1,8 @@
 
 fm.Package( "com.test" );
 fm.Class( "HomeBaseClass", "com.test2.BaseOfBaseClass");
-com.test.HomeBaseClass = function( ic, base ){
+com.test.HomeBaseClass = function( base, me, BaseOfBaseClass){this.setMe=function(_me){me=_me;};
+
     var me = this;
     this.D ="D";
     Const.Anoop = "Anoop";
@@ -15,3 +16,4 @@ com.test.HomeBaseClass = function( ic, base ){
     //TODO: Implement Base methods in interface
    // this.AB = function(){};
 };
+

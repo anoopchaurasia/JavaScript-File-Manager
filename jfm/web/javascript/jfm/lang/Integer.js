@@ -1,7 +1,8 @@
 fm.Package("jfm.lang");
 fm.Implements("jfm.io.Serializable");
 fm.Class("Integer");
-jfm.lang.Integer = function () {
+jfm.lang.Integer = function ( me){this.setMe=function(_me){me=_me;};
+
     var _value = 0,
     digits;
     this.shortHand = "Integer";
@@ -125,3 +126,4 @@ jfm.lang.Integer = function () {
        return "<span>" + _value + "</html>";
     };
 };
+

@@ -4,7 +4,8 @@
  */
 fm.Package("jfm.html");
 fm.Class("FormManager");
-jfm.html.FormManager = function(){
+jfm.html.FormManager = function( me){this.setMe=function(_me){me=_me;};
+
     this.shortHand ="FormManager";
     
     function hasElem( o ){
@@ -196,4 +197,6 @@ jfm.html.FormManager = function(){
         return createHtml(prop, "", 1000, "config" );
     };
 };
+
+
 

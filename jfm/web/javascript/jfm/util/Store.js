@@ -1,6 +1,7 @@
 fm.Package("jfm.util");
 fm.Interface("Store");
-jfm.util.Store = function () {
+jfm.util.Store = function ( me){this.setMe=function(_me){me=_me;};
+
 	
     this.clear = function(){};
     //this.equals = function(){}; //Implement it later
@@ -9,3 +10,8 @@ jfm.util.Store = function () {
     this.remove = function(){};
     this.size = function(){};	
 };
+
+
+
+
+

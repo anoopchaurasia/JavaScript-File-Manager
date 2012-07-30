@@ -4,14 +4,15 @@
  */
 
 fm.Package("com.home");
+
 fm.Import("com.post.Left");
 fm.Import("com.post.Top");
-
 fm.Import("jfm.cache.Cache");
 fm.Import("jfm.html.form.Text");
 fm.Import("jfm.server.Server");
 fm.Class("Home", "jfm.html.Container");
-com.home.Home = function( ) {
+com.home.Home = function( base, me, Left, Top, Cache, Text, Server, Container){this.setMe=function(_me){me=_me;};
+
 	
 	Static.main = function( args ) {
 		this.onHashChange(args);
@@ -37,3 +38,5 @@ com.home.Home = function( ) {
 		division.center.add(this);
 	};
 };
+
+

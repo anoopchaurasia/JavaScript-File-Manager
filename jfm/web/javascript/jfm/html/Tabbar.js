@@ -4,7 +4,8 @@
  */
 fm.Package("jfm.html");
 fm.Class("Tabbar", "jfm.html.Container");
-jfm.html.Tabbar = function(im, base){
+jfm.html.Tabbar = function( base, me, Container){this.setMe=function(_me){me=_me;};
+
     
     this.shortHand = "Tabbar";
     this.init = function(){      
@@ -19,4 +20,6 @@ jfm.html.Tabbar = function(im, base){
     };
     
 };
+
+
 

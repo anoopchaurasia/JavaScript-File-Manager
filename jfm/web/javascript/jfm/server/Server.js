@@ -9,7 +9,8 @@
 fm.Package("jfm.server");
 fm.Import("jfm.io.Serialize");
 fm.Class("Server");
-jfm.server.Server = function(im){
+jfm.server.Server = function( me, Serialize){this.setMe=function(_me){me=_me;};
+
     var me = this;
     this.url = location.protocol + "//" + location.host + "/" ;
     this.method = "process";
@@ -72,3 +73,8 @@ jfm.server.Server = function(im){
         }
     };
 };
+
+
+
+
+

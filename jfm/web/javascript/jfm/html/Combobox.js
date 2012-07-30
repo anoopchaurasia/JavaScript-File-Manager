@@ -5,7 +5,8 @@
 
 fm.Package("jfm.html");
 fm.Class("Combobox", "jfm.html.Container");
-jfm.html.Combobox = function(){
+jfm.html.Combobox = function( base, me, Container){this.setMe=function(_me){me=_me;};
+
     
     this.shortHand = "Combobox";
     var element, onChangeCB, self,notFoundCallback,
@@ -197,7 +198,7 @@ jfm.html.Combobox = function(){
 
         return $("<div />", {
             "class" : "combo_popup",
-            css : cssProp,
+            css : cssProp
         }).css(_settings.resultBoxCSS).appendTo('body');
     }
 
@@ -617,3 +618,5 @@ jfm.html.Combobox = function(){
         return createIndexArray( list );
     }
 };
+
+

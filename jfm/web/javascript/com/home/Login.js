@@ -8,7 +8,8 @@ fm.Import("jfm.cache.Cache");
 fm.Import("jfm.html.FormManager");
 fm.Import("jfm.html.form.Text");
 fm.Class("Login", "jfm.html.Container");
-com.home.Login = function( ) {
+com.home.Login = function( base, me, Cache, FormManager, Text, Container){this.setMe=function(_me){me=_me;};
+
 	var h;
 	Static.main = function( division ) {
 		h = new me(division);
@@ -45,3 +46,5 @@ com.home.Login = function( ) {
 		});
 	};
 };
+
+

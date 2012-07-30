@@ -8,7 +8,8 @@ fm.Import("jfm.html.Span");
 fm.Import("jfm.html.Img");
 fm.Import("jfm.html.Anchor");
 fm.Class("Items");
-jfm.html.Items = function(im){
+jfm.html.Items = function( me, Span, Img, Anchor){this.setMe=function(_me){me=_me;};
+
     Static.getItems = function(c){
         var items = [];
         for(var k in c){
@@ -45,3 +46,5 @@ jfm.html.Items = function(im){
         return items;
     };
 };
+
+

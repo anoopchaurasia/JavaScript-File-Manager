@@ -7,8 +7,10 @@
  */
 fm.Package("jfm.io")
 fm.Interface("Serializable");
-jfm.io.Serializable = function(){
+jfm.io.Serializable = function( me){this.setMe=function(_me){me=_me;};
+
     this.setSerializable = function(){};
     this.getSerializable = function(){};
     
 };
+

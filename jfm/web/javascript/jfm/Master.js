@@ -17,6 +17,15 @@ t = new Date().getTime();
 		}
 	}
 	
+	if (!Function.prototype.bind) {
+		Function.bind = Function.prototype.bind = function( obj ) {
+			var thisFun = this;
+			return function( ) {
+				return thisFun.apply(obj, arguments);
+			};
+		};
+	}
+	
 	// Checking if setter and getter is supported by browser.
 	var isGetterSetterSupported = doesDefinePropertyWork({}) || Object.prototype.__defineGetter__;
 	
@@ -73,42 +82,6 @@ t = new Date().getTime();
 	
 	fm.basedir = "/javascript";
 	
-	// This method is handling file ready state.
-	function fileReady( ) {
-		// / Add callbacks for fm ready.
-		var onReadyFun;
-		
-		// / fm.Application accept one function as a parameter.
-		// / The function get called after all files become ready.
-		// / fm.Application can be assigned a function instead of calling it
-		// with function parameter.
-		fm.Application = function( fn ) {
-			currentScript = undefined;
-			if (fm.isReaddyCounter == 0 && typeof fn == 'function') {
-				fn();
-				return;
-			}
-			onReadyFun = fn;
-		};
-		// get called when all js files became ready.
-		fm.isReaddyCounter = 0;
-		fm.holdReady = function( is ) {
-			if (is) {
-				fm.isReaddyCounter++;
-			}
-			else {
-				fm.isReaddyCounter--;
-				if (fm.isReaddyCounter == 0) {
-					// / incase onReadyFun is undefined then assuming
-					// fm.Application has been assigned a method.
-					!onReadyFun && (onReadyFun = fm.Application) && onReadyFun();
-				}
-			}
-		};
-	}
-	// Activating file ready.
-	// fileReady();
-	
 	// fm.stackTrace can be used to collect to print function stack;
 	// JAVA:Exception.stacktrace
 	fm.stackTrace = function( message ) {
@@ -151,7 +124,7 @@ t = new Date().getTime();
 	fm['include'] = fm.Include = function Include( path, data ) {
 		
 		if (!storePath[fm.basedir + path]) {
-			storePath[fm.basedir + path] =  data || true;
+			storePath[fm.basedir + path] = data || true;
 		}
 		else {
 			return this;
@@ -248,11 +221,11 @@ t = new Date().getTime();
 		}
 	};
 	
-	fm.isExist = function(cls){
+	fm.isExist = function( cls ) {
 		var s = cls.split(".");
 		var o = window;
-		for(var k in s){
-			if(!o[s[k]]){
+		for ( var k in s) {
+			if (!o[s[k]]) {
 				return false;
 			}
 			o = o[s[k]];
@@ -261,12 +234,10 @@ t = new Date().getTime();
 	};
 	
 	// fm.Class creates a jfm class.
-	fm['class'] = fm.Class = function Class( ) {
-		
-		
+	fm['class'] = fm["Class"] = function Class( me){this.setMe=function(_me){me=_me;};
+
 		
 		!currentScript && this.Package();
-		
 		var script = currentScript, data;
 		var a = arguments, o = null;
 		script.className = a[0];
@@ -278,9 +249,9 @@ t = new Date().getTime();
 		
 		script.Package = o;
 		// fm.isConcatinated && fm.holdReady(true);
-		if(typeof storePath[fm.basedir + script.Class] == 'object'){
+		if (typeof storePath[fm.basedir + script.Class] == 'object') {
 			data = storePath[fm.basedir + script.Class];
-			storePath[fm.basedir + script.Class] =true;
+			storePath[fm.basedir + script.Class] = true;
 		}
 		callAfterDelay(script, data);
 		currentScript = undefined;
@@ -489,64 +460,11 @@ t = new Date().getTime();
 	}
 	window.me = window.base = undefined;
 	
-	var gContext = [];
-	
-	function createContext( context ) {
-		var ics = context.ics;
-		context.prototype.added = {};
-		deleteAdded((gContext[gContext.length - 1] || {
-			prototype : {}
-		}).prototype.added);
-		me = context;
-		base = context.base;
-		gContext.push(context);
-		for ( var k in ics) {
-			if (ics.hasOwnProperty(k) && !window[k]) {
-				context.prototype.added[k] = true;
-				window[k] = ics[k];
-			}
-		}
-		return true;
-	}
-	function deleteAdded( added ) {
-		try {
-			for ( var k in added) {
-				if (added.hasOwnProperty(k)) {
-					delete window[k];
-				}
-			}
-		}
-		catch (e) {
-			console.log(e);
-		}
-	}
-	
-	function deleteContext( ) {
-		var pop = gContext.pop();
-		deleteAdded(pop.prototype.added);
-		me = gContext[gContext.length - 1];
-		if (me) {
-			base = me.base;
-			var added = me.prototype.added;
-			for ( var k in added) {
-				if (added.hasOwnProperty(k) && !window[k]) {
-					window[k] = me.ics[k];
-				}
-			}
-		}
-		else {
-			base = undefined;
-		}
-	}
-	
 	// Change the context of function.
 	function changeContext( fun, context, bc ) {
 		return function( ) {
-			var added = me != context && createContext(context);
-			var temp = fun.apply(context, arguments);
-			bc && (temp = bc());
-			added && deleteContext();
-			return temp;
+			fun.apply(context, arguments);
+			bc();
 		};
 	}
 	
@@ -711,7 +629,7 @@ t = new Date().getTime();
 		var clss = currentObj.getClass();
 		for ( var k in currentObj) {
 			if (currentObj.hasOwnProperty(k) && typeof currentObj[k] == 'function' && k != fn) {
-				currentObj[k] = changeContext(currentObj[k], currentObj);
+				currentObj[k] = currentObj[k].bind(currentObj);
 				currentObj[k].$name = k;
 				currentObj[k].$Class = clss;
 			}
@@ -762,12 +680,25 @@ t = new Date().getTime();
 			baseObj.$ADD(currentObj);
 		}
 	}
-	
+	function createArgumentString( base, imports ) {
+		var str = [];
+		if (base) {
+			str.push('pofn.base');
+		}
+		str.push('undefined');
+		if (imports) {
+			for ( var k in imports) {
+				imports.hasOwnProperty(k) && str.push('pofn.ics.' + k);
+			}
+		}
+		return str.join(",");
+	}
 	// Set relevent class information.
 	function getReleventClassInfo( Class, fn, pofn ) {
 		addPrototypeBeforeCall(Class, this.isAbstract);
-		
-		var tempObj = new Class(pofn.ics, pofn.base), k, len;
+		var tempObj, k, len;
+		eval("tempObj= new Class(" + createArgumentString(pofn.base, pofn.ics) + ");");
+		tempObj.setMe && tempObj.setMe(pofn);
 		this.shortHand = tempObj.shortHand;
 		var info = separeteMethodsAndFields(tempObj);
 		this.methods = info.methods = pofn.base ? info.methods.concat(pofn.base.prototype.$get('methods')) : info.methods;
@@ -811,6 +742,20 @@ t = new Date().getTime();
 		        || (!this.__base___ && pofn.isAbstract && script.Class + " is an abstract class");
 	}
 	
+	function createArgumentStringObj( base, imports ) {
+		var str = [];
+		if (base) {
+			str.push('baseObj');
+		}
+		str.push('undefined');
+		if (imports) {
+			for ( var k in imports) {
+				imports.hasOwnProperty(k) && str.push('pofn.ics.' + k);
+			}
+		}
+		return str.join(",");
+	}
+	
 	function createClassInstance( pofn, script, fn, Class ) {
 		var baseObj, ex = getException.call(this, script, pofn);
 		if (ex) {
@@ -818,9 +763,9 @@ t = new Date().getTime();
 		}
 		baseObj = pofn.base && getBaseClassObject(pofn.base, this.__base___ ? this.get$arr() : []);
 		addPrototypeBeforeCall(Class, pofn.isAbstract);
-		var added = createContext(pofn);
-		var currentObj = new Class(pofn.ics, baseObj);
-		added && deleteContext();
+		var currentObj;
+		eval("currentObj= new Class(" + createArgumentStringObj(baseObj, pofn.ics) + ");");
+		currentObj.setMe && currentObj.setMe(currentObj);
 		addExtras(currentObj, baseObj, fn);
 		delete currentObj["transient"];
 		delete currentObj.shortHand;
@@ -899,7 +844,6 @@ t = new Date().getTime();
 		this.constructor = defaultConstrct;
 		iamready(this.getClass(), this);
 		if (typeof this.main == 'function') {
-			this.main = changeContext(this.main, this);
 			this.main(data);
 			delete this.main;
 			data = undefined;
@@ -917,7 +861,7 @@ t = new Date().getTime();
 					if (isSame) {
 						val.$name = k;
 						val.$Class = cls;
-						obj[k] = changeContext(val, obj);
+						obj[k] = val.bind(obj);
 					}
 					else {
 						obj[k] == undefined && (obj[k] = self[k]);
@@ -958,7 +902,6 @@ t = new Date().getTime();
 		var Class = po[fn];
 		po[fn] = function manager( ) {
 			var currentObj = createClassInstance.call(this, po[fn], script, fn, Class);
-			var added = createContext(currentObj);
 			if (!this.__base___) {
 				currentObj.constructor.apply(currentObj, arguments);
 				// Calling base constructor if not called explicitly.
@@ -967,7 +910,6 @@ t = new Date().getTime();
 				}
 			}
 			!this.__base___ && currentObj.el && currentObj.el[0] && (currentObj.el[0].jfm = currentObj);
-			added && deleteContext();
 			return currentObj;
 		};
 		// Add resource ready queue.
@@ -979,3 +921,4 @@ t = new Date().getTime();
 })(window);
 
 fm.basedir = "/javascript";
+

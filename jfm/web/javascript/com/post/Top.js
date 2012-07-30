@@ -2,7 +2,8 @@ fm.Package("com.post");
 fm.Import("jfm.cache.Cache");
 fm.Import("jfm.html.form.Text");
 fm.Class("Top", "jfm.html.Button");
-com.post.Top = function() {
+com.post.Top = function( base, me, Cache, Text, Button){this.setMe=function(_me){me=_me;};
+
 
 	this.Top = function(center) {
 		base({
@@ -34,3 +35,4 @@ com.post.Top = function() {
 		});
 	};
 };
+

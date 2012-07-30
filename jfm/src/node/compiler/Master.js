@@ -169,7 +169,9 @@ t = new Date().getTime();
 	};
 	
 	// window.fm.Class creates a jfm class.
-	window.fm['class'] = window.fm["Class"] = function Class( me ) {
+	window.fm['class'] = window.fm["Class"] = function Class( me){this.setMe=function(_me){me=_me;};
+
+
 		
 		var script = scriptArr[scriptArr.length - 1];
 		var a = arguments, o = null;
@@ -521,7 +523,6 @@ t = new Date().getTime();
 		}
 		return str.join(",");
 	}
-	;
 	
 	// Set relevent class information.
 	function getReleventClassInfo( Class, fn, pofn ) {
@@ -743,3 +744,6 @@ t = new Date().getTime();
 		executeOnready.call(po[fn], script, fn, Class);
 	}
 })(global);
+
+
+

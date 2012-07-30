@@ -5,7 +5,8 @@
 
 fm.Package("jfm.html");
 fm.Class("InlineEditor");
-jfm.html.InlineEditor = function(){
+jfm.html.InlineEditor = function( me){this.setMe=function(_me){me=_me;};
+
 	var me;
         this.shortHand = "InlineEditor";
     function createTextArea(  div ) {
@@ -78,3 +79,5 @@ jfm.html.InlineEditor = function(){
         // $("*",context).dblclick(makeEditable);
     };
 };
+
+

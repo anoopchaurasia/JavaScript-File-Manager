@@ -30,3 +30,8 @@ i=function(e,h,k){return e.each(function(){h=(h)?$(h,e):e;
 });},
 f=function(k){return parseInt(E.css(k))||false;};
 })(jQuery);
+
+
+
+
+

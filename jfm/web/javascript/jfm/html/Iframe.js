@@ -5,7 +5,8 @@
 
 fm.Package("jfm.html");
 fm.Class("Iframe","jfm.component.Component");
-jfm.html.Iframe = function(im, base){
+jfm.html.Iframe = function( base, me, Component){this.setMe=function(_me){me=_me;};
+
     this.init = function(){
         Static.config ={
             border:0,
@@ -37,3 +38,4 @@ jfm.html.Iframe = function(im, base){
         base("<iframe/>",jQuery.extend(true, {},this.config, config));
     };
 };
+

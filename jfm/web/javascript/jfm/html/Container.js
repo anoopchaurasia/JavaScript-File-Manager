@@ -4,7 +4,8 @@
  */
 fm.Package("jfm.html");
 fm.Class("Container", 'jfm.component.Component');
-jfm.html.Container = function(){    
+jfm.html.Container = function( base, me, Component){this.setMe=function(_me){me=_me;};
+    
     this.shortHand = "Container";
     this.Container = function(config){
         var draggable = config && config.draggable;
@@ -21,3 +22,5 @@ jfm.html.Container = function(){
     };
 
 };
+
+

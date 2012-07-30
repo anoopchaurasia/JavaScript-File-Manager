@@ -4,7 +4,8 @@ fm.Import("jfm.util.Utility");
 fm.Include("jfm.util.Date");
 fm.Import("jfm.html.Container");
 fm.Class("Chat", "jfm.division.Division");
-com.chat.Chat = function( ) {
+com.chat.Chat = function( base, me, Cache, Utility, Container, Division){this.setMe=function(_me){me=_me;};
+
 	var chatSer, since;
 	
 	function updateLayout( ) {
@@ -233,3 +234,5 @@ com.chat.Chat = function( ) {
 		// always view the most recent message when it is added
 	}
 };
+
+

@@ -17,7 +17,8 @@ fm.Import("jfm.cache.Cache");
 fm.Import("jfm.html.FormManager");
 fm.Class("Center", 'jfm.html.Container');
 
-com.region.Center = function(){
+com.region.Center = function( base, me, Text, Combobox, Cache, FormManager, Container){this.setMe=function(_me){me=_me;};
+
     this.Center = function(){
         base({
             width:'100%',
@@ -31,4 +32,6 @@ com.region.Center = function(){
        
     };
 };
+
+
 

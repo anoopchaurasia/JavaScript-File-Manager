@@ -9,7 +9,8 @@
  */
 fm.Package("jfm.html");
 fm.Class("Img");
-jfm.html.Img = function(im, base){    
+jfm.html.Img = function( me){this.setMe=function(_me){me=_me;};
+    
     this.shortHand = "Img";
     this.init = function(){
         var config = Static.config  = {};
@@ -30,3 +31,5 @@ jfm.html.Img = function(im, base){
         }
     };
 };
+
+

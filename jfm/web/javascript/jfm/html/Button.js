@@ -5,7 +5,8 @@
 fm.Package("jfm.html");
 fm.Import("jfm.html.Items");
 fm.Class("Button", 'jfm.component.Component');
-jfm.html.Button = function(im, base){    
+jfm.html.Button = function( base, me, Items, Component){this.setMe=function(_me){me=_me;};
+    
 
     this.shortHand = "Button";
     this.init = function(){
@@ -21,3 +22,5 @@ jfm.html.Button = function(im, base){
         this.add(items);
     };
 };
+
+

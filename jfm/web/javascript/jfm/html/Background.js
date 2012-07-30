@@ -6,7 +6,8 @@
 fm.Package("jfm.html");
 fm.Import("jfm.html.Container");
 fm.Class("Background");
-jfm.html.Background = function (im){    
+jfm.html.Background = function ( me, Container){this.setMe=function(_me){me=_me;};
+    
     var loadingImg, counter, backgComp;    
     this.shortHand = "Background";
     
@@ -74,3 +75,4 @@ jfm.html.Background = function (im){
         });
     }
 };
+

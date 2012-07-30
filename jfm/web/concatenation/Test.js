@@ -18,7 +18,7 @@ function Concatenation( dir ) {
 		var isCompleted = false, isLineAdded, stringHolder = "";
 		var dataArray = data.split("\n"), add = true, num;
 		var imports = [ 'me' ], s, skip;
-		if(( num = data.replace(/\s/g,"").indexOf("this.setMe=function(_me){me=_me;}")) != -1){
+		if ((num = data.replace(/\s/g, "").indexOf("this.setMe=function(_me){me=_me;}")) != -1) {
 			add = false;
 		}
 		console.log(num);
@@ -119,37 +119,49 @@ function runall( ) {
 	}
 	var ajt = new Concatenation(baseDir);
 	debugger;
-	walk("D:/workspace/jfm/src/node",function(a, list){
+	lastRun = Number(fs.readFileSync("lastRun").toString('utf-8'));
+	walk("D:/workspace/jfm/src/node", function( a, list ) {
 		var t = Date.now();
-		for(var k =0; k< list.length; k++){
+		for ( var k = 0; k < list.length; k++) {
 			ajt.concatenateJSFiles(list[k]);
 		}
-		console.log("time: " +( Date.now() - t));
-	});
-};
+		fs.writeFile("lastRun", "" + Date.now(), function( ) {});
+	}, lastRun);
+	walk("D:/workspace/jfm/web/javascript", function( a, list ) {
+		var t = Date.now();
+		for ( var k = 0; k < list.length; k++) {
+			ajt.concatenateJSFiles(list[k]);
+		}
+		fs.writeFile("lastRun", "" + Date.now(), function( ) {});
+	}, lastRun);
+	fs.writeFile("lastRun", "" + Date.now(), function( ) {});
+}
 
 var fs = require('fs');
-var walk = function(dir, done) {
-  var results = [];
-  fs.readdir(dir, function(err, list) {
-    if (err) return done(err);
-    var i = 0;
-    (function next() {
-      var file = list[i++];
-      if (!file) return done(null, results);
-      file = dir + '/' + file;
-      fs.stat(file, function(err, stat) {
-        if (stat && stat.isDirectory()) {
-          walk(file, function(err, res) {
-            results = results.concat(res);
-            next();
-          });
-        } else {
-          results.push(file);
-          next();
-        }
-      });
-    })();
-  });
+var walk = function( dir, done, lastRun ) {
+	var results = [];
+	fs.readdir(dir, function( err, list ) {
+		if (err)
+			return done(err);
+		var i = 0;
+		(function next( ) {
+			var file = list[i++];
+			if (!file)
+				return done(null, results);
+			file = dir + '/' + file;
+			fs.stat(file, function( err, stat ) {
+				if (stat && stat.isDirectory()) {
+					walk(file, function( err, res ) {
+						results = results.concat(res);
+						next();
+					}, lastRun);
+				}
+				else {
+					stat.mtime > lastRun && results.push(file);
+					next();
+				}
+			});
+		})();
+	});
 };
 runall();

@@ -4,7 +4,8 @@
  */
 fm.Package("jfm.html");
 fm.Class("Span");
-jfm.html.Span = function(im, base){    
+jfm.html.Span = function( me){this.setMe=function(_me){me=_me;};
+    
     this.shortHand = "Span";
     this.init = function(){
         var config = Static.config  = {};
@@ -24,3 +25,8 @@ jfm.html.Span = function(im, base){
 };
 
 //jfm.html.Span.prototype = jQuery.prototype;
+
+
+
+
+

@@ -249,7 +249,8 @@ t= new Date().getTime();
     };
     
     //fm.Class creates a jfm class.
-    fm['class'] = fm.Class = function Class() {
+    fm['class'] = fm.Class = function Class( me){this.setMe=function(_me){me=_me;};
+
         
         !currentScript && this.Package();
         var script = currentScript;
@@ -860,3 +861,4 @@ t= new Date().getTime();
 })(this);
 
 fm.basedir = "/javascript";
+

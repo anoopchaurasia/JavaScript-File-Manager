@@ -1,7 +1,8 @@
 fm.Package("jfm.division");
 fm.Import("jfm.division.Part");
 fm.Class("Division", "jfm.html.Container");
-jfm.division.Division = function NAMEN( ) {
+jfm.division.Division = function NAMEN( base, me, Part, Container){this.setMe=function(_me){me=_me;};
+
 	var width, height, me;
 	this.addTo = function( container ) {
 		var timeoutID;
@@ -123,3 +124,5 @@ jfm.division.Division = function NAMEN( ) {
 		return obj;
 	}
 };
+
+

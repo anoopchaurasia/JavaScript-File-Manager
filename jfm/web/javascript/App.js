@@ -9,7 +9,9 @@ fm.Import("jfm.hash.HashChange");
 fm.Import("com.region.Topbar");
 fm.Import("com.region.Right");
 fm.Class("App");
-App = function() {
+
+App = function( me, Division, QueryStr, HashChange, Topbar, Right){this.setMe=function(_me){me=_me;};
+
 	function updateLayout() {
 		$(window).ready(function() {
 			var win = jQuery(window);
@@ -40,5 +42,6 @@ App = function() {
 		d.addTo('body');
 		console.log(new Date().getTime() - t, new Date().getTime() - t2);
 	};
+	
 };
 
