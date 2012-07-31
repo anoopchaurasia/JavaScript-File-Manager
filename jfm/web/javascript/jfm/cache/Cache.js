@@ -7,7 +7,7 @@
 fm.Package("jfm.cache");
 fm.Import("jfm.server.Server");
 fm.Class("Cache");
-jfm.cache.Cache = function( me, Server){this.setMe=function(_me){me=_me;};
+jfm.cache.Cache = function (me, Server){this.setMe=function(_me){me=_me;};
 
     var tmplServ, tmpltMethod, tempalateStorage, singleton ;
     this.shortHand = "Cache";

@@ -1,7 +1,7 @@
 fm.Package("test");
 var fs = require('fs');
 fm.Class("SubCategory", "Base");
-test.SubCategory = function( base, me,  Base){this.setMe=function(_me){me=_me;};
+test.SubCategory = function (base, me, Base){this.setMe=function(_me){me=_me;};
 
 	
 	this.method = function(req, res){

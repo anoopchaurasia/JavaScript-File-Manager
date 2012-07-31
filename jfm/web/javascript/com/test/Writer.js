@@ -1,7 +1,7 @@
 
 fm.Package("com.test");
 fm.Class("Writer");
-com.test.Writer = function ( me){this.setMe=function(_me){me=_me;};
+com.test.Writer = function (me){this.setMe=function(_me){me=_me;};
 
     var textarea, form;
     function send(text){        

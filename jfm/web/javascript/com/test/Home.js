@@ -6,7 +6,7 @@ fm.Import("jfm.lang.Integer");
 fm.Import("jfm.io.Serialize");
 fm.Implements("jfm.io.Serializable");
 fm.Class("Home", "com.test.HomeBaseClass");
-Home = function ( base, me, HashMap, Integer, Serialize, HomeBaseClass){this.setMe=function(_me){me=_me;};
+Home = function (base, me, HashMap, Integer, Serialize, HomeBaseClass){this.setMe=function(_me){me=_me;};
 
     var singleton;
     Static.Const.M = "asas";

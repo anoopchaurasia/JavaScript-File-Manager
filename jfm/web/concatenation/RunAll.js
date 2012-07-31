@@ -25,10 +25,11 @@ function Concatenation( dir ) {
 		return paths;
 	}
 	
-	function visitAllFiles( path, traverse, cl ) {
+	function visitAllFiles( path, traverse) {
 		if (!ConcatenatedFiles[path]) {
 			ConcatenatedFiles[path] = true;
-			processFile(path, traverse, cl);
+			console.log(path);
+			processFile(path, traverse);
 		}
 	}
 	
@@ -37,92 +38,53 @@ function Concatenation( dir ) {
 		var pth = getPathFromImports(pathsstr);
 		for ( var k = from; k < pth.length && k < to; k++) {
 			if (!(pth[k].indexOf("http") == 0)) {
-				visitAllFiles(pth[k], true, getPathFromImports(pathsstr, true));
+				visitAllFiles(pth[k], true);
 			}
 		}
 	}
 	
-	function executeFile( data, traverse, cl ) {
-		var isCompleted = false, isLineAdded, stringHolder = "";
-		var dataArray = data.split("\n");
-		var imports = ['me', 'base'], s, skip;
-	
-		for ( var k = 0, len = dataArray.length; k < len; k++) {
-			// this statement reads the line from the file and prvar it to
-			// the console.
-			var line = dataArray[k];
-			isLineAdded = false;
-			if (!isCompleted && traverse) {
-				if (line.indexOf("function") == -1) {
-					if (line.indexOf("fm.Package") != -1) {
-						stringHolder = line + backSlash + "\n";
-						isLineAdded = true;
-					}
-					if (line.indexOf("fm.Import") != -1) {
-						stringHolder += line + backSlash + "\n";
-						var t = line.split(".");
-						imports.push(t[t.length-1].replace("\"","").replace(")","").replace(";",""));
-						addFiles(line, 0, 1);
-						isLineAdded = true;
-					}
-					if (line.indexOf("fm.Base") != -1) {
-						stringHolder += line + backSlash + "\n";
-						var t = line.split(".");
-						imports.push(t[t.length-1].replace("\"","").replace(")","").replace(";",""));
-						addFiles(line, 0, 1);
-						isLineAdded = true;
-					}
-					if (line.indexOf("fm.Include") != -1) {
-						stringHolder += line + backSlash + "\n";
-						addFiles(line, 0, 1);
-						isLineAdded = true;
-					}
-					if (line.indexOf("fm.Implements") != -1) {
-						stringHolder += line + backSlash + "\n";
-						addFiles(line, 0, 999);
-						isLineAdded = true;
-					}
-					if ((line.indexOf("fm.Class") != -1 || line.indexOf("fm.Interface") != -1 || line.indexOf("fm.AbstractClass") != -1)) {
-						stringHolder += line + backSlash + "\n";
-						addFiles(line, 1, 2);
-						s=true;
-						isCompleted = true;
-						isLineAdded = true;
-					}
-				}
-				if (!isLineAdded) {
-					concatenatedString += line + backSlash + "\n";
-				}
-				
-			}
-			else {
-				if(s){
-					if(line.indexOf("(") !=-1){
-						var temp =  line.substring(0,line.indexOf("(")) +"( " + imports.join(", ")+ ")";
-						stringHolder += temp + backSlash + "\n";
-						skip = true;
-						
-					}
-					if(line.indexOf("{")!= -1){
-						var temp =  "{this.setMe=function(){me=this;}" + line.substring(line.indexOf("{")+1);
-						s=false;
-						stringHolder += temp + backSlash + "\n";
-						skip = false;
-						continue;
-					}
-				}
-				if(skip){
-					continue;
-				}
-				stringHolder += line + backSlash + "\n";
-			}
-		}
-		concatenatedString += stringHolder;
+	function executeFile( data, traverse ) {
 		
+		
+		
+		
+		var result;
+		var d = data.replace(/\s/g, ""), reg;
+		reg = /fm.import\((.*?)\)/gi;
+		
+		while (result = reg.exec(d)) {
+			result = result[1];
+			result = result.substring(1, result.length - 1).replace(/\./g, "/") + ".js";
+			visitAllFiles(javascriptSourceFolder+result, true);
+		}
+		
+		result = /fm.class\((.*?)\)/gi.exec(d) || /fm.Interface\((.*?)\)/gi.exec(d) || /fm.AbstractClass\((.*?)\)/gi.exec(d);
+		if (result) {
+			result = result[1];
+			result = result.substring(1, result.length - 1).split(",")[1];
+			if (result) {
+				result = result.substring(1).trim().replace(/\./g, "/") + ".js";
+				visitAllFiles(javascriptSourceFolder + result, true);
+			}
+		}
+		
+		
+		
+		reg = /fm.Implements\((.*?)\)/gi;
+		if (result = reg.exec(d)) {
+			result = result[1].split(",");
+			
+			for(var k =0; k < result.length; k++){
+				;
+				visitAllFiles(javascriptSourceFolder + result[k].substring(1, result[k].length - 1).replace(/\./g, "/") + ".js", true);
+			}
+		}
+		
+		concatenatedString += data;
 	}
 	
-	function processFile( path, traverse, cl ) {
-		executeFile(fs.readFileSync(path).toString('utf-8'), traverse, cl);
+	function processFile( path, traverse ) {
+		executeFile(fs.readFileSync(path).toString('utf-8'), traverse);
 	}
 	
 	function prepareConcatenated( filePath1, append ) {
@@ -160,29 +122,15 @@ function Concatenation( dir ) {
 			});
 		});
 	};
-};
+}
 
 function runall( ) {
+	//require("./Test.js");
 	var baseDir = "D:/workspace/jfm/web/javascript/", outputFile = "../contjs/Master.js";
 	var inputFiles = [];
-	for ( var i = 0; i < arguments.length; i++) {
-		if (arguments[i].equals("-b")) {
-			baseDir = arguments[++i];
-			System.out.println("Base dir " + arguments[i]);
-		}
-		else if (arguments[i].equals("-o")) {
-			outputFile = arguments[++i];
-			System.out.println("Output File " + arguments[i]);
-		}
-		else if (!arguments[i].equals("-s")) {
-			inputFiles.push(arguments[i]);
-			System.out.println("Sourse File " + arguments[i]);
-		}
-	}
 	inputFiles.push("../javascript/jfm/Master.js");
 	inputFiles.push("../javascript/App.js");
 	var ajt = new Concatenation(baseDir);
-	debugger;
 	ajt.concatenateJSFiles(inputFiles, outputFile);
-};
+}
 runall();

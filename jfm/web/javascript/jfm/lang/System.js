@@ -5,7 +5,7 @@
 
 fm.Package("jfm.lang");
 fm.Class("System");
-System = function( me){this.setMe=function(_me){me=_me;};
+System = function (me){this.setMe=function(_me){me=_me;};
 
     this.shortHand = "System";    
     this.Static.out = {

@@ -1,7 +1,7 @@
 fm.Package("com.post");
 fm.Import("jfm.cache.Cache");
 fm.Class("Left", "jfm.html.Container");
-com.post.Left = function( base, me, Cache, Container){this.setMe=function(_me){me=_me;};
+com.post.Left = function (base, me, Cache, Container){this.setMe=function(_me){me=_me;};
 
 	
 	this.Left = function(cb){

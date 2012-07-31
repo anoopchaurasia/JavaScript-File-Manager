@@ -2,7 +2,7 @@ fm.Package("jfm.html.form");
 fm.Import("jfm.html.Constants");
 fm.Import("jfm.html.Popup");
 fm.Class("Text");
-jfm.html.form.Text = function( me, Constants, Popup){this.setMe=function(_me){me=_me;};
+jfm.html.form.Text = function (me, Constants, Popup){this.setMe=function(_me){me=_me;};
 
     var originalColor, placeholder, datatype;
     this.init = function(){

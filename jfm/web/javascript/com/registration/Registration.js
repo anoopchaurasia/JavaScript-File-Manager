@@ -8,7 +8,7 @@ fm.Import("jfm.html.form.Text");
 fm.Import("jfm.html.Combobox");
 fm.Import("jfm.html.FormManager");
 fm.Class("Registration", "jfm.html.Container");
-com.registration.Registration = function( base, me, Cache, Text, Combobox, FormManager, Container){this.setMe=function(_me){me=_me;};
+com.registration.Registration = function (base, me, Cache, Text, Combobox, FormManager, Container){this.setMe=function(_me){me=_me;};
 
 	var r;
 	Static.main = function( division ) {

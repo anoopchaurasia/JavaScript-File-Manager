@@ -4,7 +4,7 @@
  */
 fm.Package("post");
 fm.Class("Post");
-post.Post = function( me){this.setMe=function(_me){me=_me;};
+post.Post = function (me){this.setMe=function(_me){me=_me;};
 
 	this.toArray = function( ) {
 		var arr = [];

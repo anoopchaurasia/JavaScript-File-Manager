@@ -7,7 +7,7 @@ fm.Import("jfm.lang.Character");
 fm.Import("jfm.html.Img");
 fm.Import("jfm.html.Span");
 fm.Class("Popup", "jfm.html.Container");
-jfm.html.Popup = function ( base, me, Character, Img, Span, Container){this.setMe=function(_me){me=_me;};
+jfm.html.Popup = function (base, me, Character, Img, Span, Container){this.setMe=function(_me){me=_me;};
     
     this.shortHand = "Popup";
     var pHead, pBody, pClose, callback, singleton;

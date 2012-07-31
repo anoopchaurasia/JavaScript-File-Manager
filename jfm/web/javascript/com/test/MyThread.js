@@ -4,7 +4,7 @@
  */
 fm.Package("com.test");
 fm.Class("MyThread", "jfm.lang.Thread");
-com.test.MyThread = function( base, me, Thread){this.setMe=function(_me){me=_me;};
+com.test.MyThread = function (base, me, Thread){this.setMe=function(_me){me=_me;};
     
     this.shortHand = "MyThread";
     this.run = function(t){        

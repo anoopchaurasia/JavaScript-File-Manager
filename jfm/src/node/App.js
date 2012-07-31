@@ -9,7 +9,7 @@ fm.Import("facebook.FacebookAuth");
 fm.Import("session.SessionManager");
 fm.Import("user.User");
 fm.Class("App");
-App = function( me, Constants, Cookie, FacebookAuth, SessionManager, User){this.setMe=function(_me){me=_me;};
+App = function (me, Constants, Cookie, FacebookAuth, SessionManager, User){this.setMe=function(_me){me=_me;};
 	var http, url, qs, servletObj, staticServer, sessionM;
 	console.log(process.execArgv);
 	this.init = function( ) {

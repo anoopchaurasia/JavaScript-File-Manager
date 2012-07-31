@@ -7,7 +7,7 @@ fm.Package("test");
 fm.Import("constant.Constants");
 fm.Import("user.User");
 fm.Class("Home", "Base");
-test.Home = function( base, me, Constants, User,  Base){this.setMe=function(_me){me=_me;};
+test.Home = function (base, me, Constants, User, Base){this.setMe=function(_me){me=_me;};
 
 	var client, email ;
 	function sendMail( mail, res ) {

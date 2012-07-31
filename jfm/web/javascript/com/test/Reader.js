@@ -3,7 +3,7 @@ fm.Package("com.test");
 fm.Import("jfm.lang.Thread");
 fm.Implements("jfm.lang.Runnable");
 fm.Class("Reader");
-com.test.Reader = function ( me, Thread){this.setMe=function(_me){me=_me;};
+com.test.Reader = function (me, Thread){this.setMe=function(_me){me=_me;};
 
     var cont, timeStamp;
     this.run = function(t){

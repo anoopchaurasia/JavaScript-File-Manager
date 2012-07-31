@@ -8,7 +8,7 @@ fm.Import("jfm.html.Span");
 fm.Import("com.post.Top");
 fm.Import("jfm.html.Combobox");
 fm.Class("Right", 'jfm.html.Container');
-com.region.Right = function( base, me, Span, Top, Combobox, Container){this.setMe=function(_me){me=_me;};
+com.region.Right = function (base, me, Span, Top, Combobox, Container){this.setMe=function(_me){me=_me;};
 
 	
 	this.Right = function( division ) {

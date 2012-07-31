@@ -5,7 +5,7 @@
 
 fm.Package("jfm.html");
 fm.Class("Combobox", "jfm.html.Container");
-jfm.html.Combobox = function( base, me, Container){this.setMe=function(_me){me=_me;};
+jfm.html.Combobox = function (base, me, Container){this.setMe=function(_me){me=_me;};
 
     
     this.shortHand = "Combobox";

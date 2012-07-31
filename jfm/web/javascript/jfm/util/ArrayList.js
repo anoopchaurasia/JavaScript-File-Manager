@@ -7,7 +7,7 @@
 fm.Package("jfm.util");
 fm.Implements("jfm.util.List");
 fm.Class("ArrayList");
-ArayList = function( me){this.setMe=function(_me){me=_me;};
+ArayList = function (me){this.setMe=function(_me){me=_me;};
 
     var size, list;
     this.ArayList = function(){

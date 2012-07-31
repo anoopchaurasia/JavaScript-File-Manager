@@ -5,7 +5,7 @@ fm.Import("jfm.cache.Cache");
 fm.Import("jfm.html.form.Text");
 fm.Import("jfm.server.Server");
 fm.Class("Posting", "jfm.html.Container");
-com.post.Posting = function( base, me, Left, Top, Cache, Text, Server, Container){this.setMe=function(_me){me=_me;};
+com.post.Posting = function (base, me, Left, Top, Cache, Text, Server, Container){this.setMe=function(_me){me=_me;};
 
 	
 	Static.main = function(args){

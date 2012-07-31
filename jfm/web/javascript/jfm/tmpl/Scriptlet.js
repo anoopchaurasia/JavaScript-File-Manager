@@ -5,7 +5,7 @@
 
 fm.Package("jfm.tmpl");
 fm.Class("Scriptlet");
-jfm.tmpl.Scriptlet = function( me){this.setMe=function(_me){me=_me;};
+jfm.tmpl.Scriptlet = function (me){this.setMe=function(_me){me=_me;};
 
     var replace = "";
     var stack = [];

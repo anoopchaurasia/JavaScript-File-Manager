@@ -1,6 +1,6 @@
 fm.Package("cookie");
 fm.Class("Cookie");
-cookie.Cookie = function( me){this.setMe=function(_me){me=_me;};
+cookie.Cookie = function (me){this.setMe=function(_me){me=_me;};
 	
 	
 	Static.getCookie = function(req){

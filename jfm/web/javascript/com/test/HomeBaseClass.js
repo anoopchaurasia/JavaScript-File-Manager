@@ -1,7 +1,7 @@
 
 fm.Package( "com.test" );
 fm.Class( "HomeBaseClass", "com.test2.BaseOfBaseClass");
-com.test.HomeBaseClass = function( base, me, BaseOfBaseClass){this.setMe=function(_me){me=_me;};
+com.test.HomeBaseClass = function (base, me, BaseOfBaseClass){this.setMe=function(_me){me=_me;};
 
     var me = this;
     this.D ="D";

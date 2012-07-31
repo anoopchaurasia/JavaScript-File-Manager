@@ -9,7 +9,7 @@
  */
 fm.Package("jfm.html");
 fm.Class("Img");
-jfm.html.Img = function( me){this.setMe=function(_me){me=_me;};
+jfm.html.Img = function (me){this.setMe=function(_me){me=_me;};
     
     this.shortHand = "Img";
     this.init = function(){

@@ -4,7 +4,7 @@
  */
 fm.Package("user");
 fm.Class("User");
-user.User = function( me){this.setMe=function(_me){me=_me;};
+user.User = function (me){this.setMe=function(_me){me=_me;};
 
 	this.toArray = function( ) {
 		var userarr = [ this.firstName, this.lastName, this.companyName, this.suite, this.address, this.phone, this.comptype, this.org, this.fromwhere, 1 ];

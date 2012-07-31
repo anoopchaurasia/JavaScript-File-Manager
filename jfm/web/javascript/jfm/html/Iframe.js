@@ -5,7 +5,7 @@
 
 fm.Package("jfm.html");
 fm.Class("Iframe","jfm.component.Component");
-jfm.html.Iframe = function( base, me, Component){this.setMe=function(_me){me=_me;};
+jfm.html.Iframe = function (base, me, Component){this.setMe=function(_me){me=_me;};
 
     this.init = function(){
         Static.config ={

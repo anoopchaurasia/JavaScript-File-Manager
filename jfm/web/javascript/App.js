@@ -10,7 +10,7 @@ fm.Import("com.region.Topbar");
 fm.Import("com.region.Right");
 fm.Class("App");
 
-App = function( me, Division, QueryStr, HashChange, Topbar, Right){this.setMe=function(_me){me=_me;};
+App = function (me, Division, QueryStr, HashChange, Topbar, Right){this.setMe=function(_me){me=_me;};  
 
 	function updateLayout() {
 		$(window).ready(function() {

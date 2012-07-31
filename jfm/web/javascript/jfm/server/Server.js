@@ -9,7 +9,7 @@
 fm.Package("jfm.server");
 fm.Import("jfm.io.Serialize");
 fm.Class("Server");
-jfm.server.Server = function( me, Serialize){this.setMe=function(_me){me=_me;};
+jfm.server.Server = function (me, Serialize){this.setMe=function(_me){me=_me;};
 
     var me = this;
     this.url = location.protocol + "//" + location.host + "/" ;

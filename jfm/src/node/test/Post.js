@@ -6,7 +6,7 @@
 fm.Package("test");
 fm.Import("post.Post");
 fm.Class("Post", "Base");
-test.Post = function( base, me, Post,  Base){this.setMe=function(_me){me=_me;};
+test.Post = function (base, me, Post, Base){this.setMe=function(_me){me=_me;};
 
 	var pg, client;
 	this.method = function( req, res ) {

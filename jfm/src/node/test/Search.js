@@ -1,6 +1,6 @@
 fm.Package("test");
 fm.Class("Search", "Base");
-test.Search = function( base, me,  Base){this.setMe=function(_me){me=_me;};
+test.Search = function (base, me, Base){this.setMe=function(_me){me=_me;};
 
 	var client;
 	

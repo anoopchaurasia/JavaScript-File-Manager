@@ -1,7 +1,7 @@
 fm.Package("jfm.util");
 fm.Implements("jfm.util.Map", "jfm.io.Serializable");
 fm.Class("HashMap");
-jfm.util.HashMap = function ( me){this.setMe=function(_me){me=_me;};
+jfm.util.HashMap = function (me){this.setMe=function(_me){me=_me;};
 
     var __map, size;
     this.shortHand = "HashMap";

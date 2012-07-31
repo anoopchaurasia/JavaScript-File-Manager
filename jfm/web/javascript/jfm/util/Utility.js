@@ -1,6 +1,6 @@
 fm.Package("jfm.util");
 fm.Class("Utility");
-jfm.util.Utility = function( me){this.setMe=function(_me){me=_me;};
+jfm.util.Utility = function (me){this.setMe=function(_me){me=_me;};
 
 
 	this.Static = {

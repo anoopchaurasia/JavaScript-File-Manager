@@ -1,7 +1,7 @@
 fm.Package("session");
 fm.Import("constant.Constants");
 fm.Class("SessionManager");
-session.SessionManager = function( me, Constants){this.setMe=function(_me){me=_me;};
+session.SessionManager = function (me, Constants){this.setMe=function(_me){me=_me;};
 
 	var sessions, singleton;
 	this.Static.getInstance = function( ) {

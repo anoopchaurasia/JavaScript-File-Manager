@@ -10,7 +10,7 @@
 var fs = require('fs');
 t = new Date().getTime();
 (function( window, undefined ) {
-	
+	//this is master jfm
 	// This method is adding a $add method into class prototype wchich is being
 	// used to create setter and getter for its own property.
 	function creareSetGet( classProto ) {

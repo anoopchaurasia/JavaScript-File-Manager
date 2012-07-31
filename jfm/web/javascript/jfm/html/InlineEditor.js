@@ -5,7 +5,7 @@
 
 fm.Package("jfm.html");
 fm.Class("InlineEditor");
-jfm.html.InlineEditor = function( me){this.setMe=function(_me){me=_me;};
+jfm.html.InlineEditor = function (me){this.setMe=function(_me){me=_me;};
 
 	var me;
         this.shortHand = "InlineEditor";

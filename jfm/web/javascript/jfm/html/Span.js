@@ -4,7 +4,7 @@
  */
 fm.Package("jfm.html");
 fm.Class("Span");
-jfm.html.Span = function( me){this.setMe=function(_me){me=_me;};
+jfm.html.Span = function (me){this.setMe=function(_me){me=_me;};
     
     this.shortHand = "Span";
     this.init = function(){

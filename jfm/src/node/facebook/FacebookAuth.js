@@ -1,7 +1,7 @@
 fm.Package("facebook");
 FacebookSession = require("./FacebookSession");
 fm.Class("FacebookAuth");
-facebook.FacebookAuth = function( me){this.setMe=function(_me){me=_me;};
+facebook.FacebookAuth = function (me){this.setMe=function(_me){me=_me;};
 
 	function convertBase64ToHex(base64_string) {
 		var buffer = new Buffer(base64_string, 'base64');

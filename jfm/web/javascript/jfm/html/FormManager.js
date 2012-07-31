@@ -4,7 +4,7 @@
  */
 fm.Package("jfm.html");
 fm.Class("FormManager");
-jfm.html.FormManager = function( me){this.setMe=function(_me){me=_me;};
+jfm.html.FormManager = function (me){this.setMe=function(_me){me=_me;};
 
     this.shortHand ="FormManager";
     

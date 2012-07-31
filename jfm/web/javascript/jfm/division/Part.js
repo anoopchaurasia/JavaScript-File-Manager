@@ -1,7 +1,7 @@
  
 fm.Package("jfm.division");
 fm.Class("Part","jfm.component.Component");
-jfm.division.Part = function( base, me, Component){this.setMe=function(_me){me=_me;};
+jfm.division.Part = function (base, me, Component){this.setMe=function(_me){me=_me;};
 
     var set, division;    
     this.Part = function(config, divsn, s){

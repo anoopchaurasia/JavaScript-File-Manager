@@ -6,7 +6,7 @@
 
 fm.Package("jfm.form");
 fm.Class("FormFields");
-jfm.form.FormFields = function( me){this.setMe=function(_me){me=_me;};
+jfm.form.FormFields = function (me){this.setMe=function(_me){me=_me;};
 
     
     this.init = function(){

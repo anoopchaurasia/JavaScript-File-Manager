@@ -8,7 +8,7 @@
 fm.Package("jfm.io");
 fm.Import("jfm.lang.Character");
 fm.Class("Serialize");
-jfm.io.Serialize = function( me, Character){this.setMe=function(_me){me=_me;};
+jfm.io.Serialize = function (me, Character){this.setMe=function(_me){me=_me;};
 
 
     this.shortHand = "Serialize";

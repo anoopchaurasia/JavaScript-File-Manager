@@ -1,6 +1,6 @@
 fm.Package("jfm.hash");
 fm.Class("HashChange");
-jfm.hash.HashChange = function( me){this.setMe=function(_me){me=_me;};
+jfm.hash.HashChange = function (me){this.setMe=function(_me){me=_me;};
 
 	var division;
 	

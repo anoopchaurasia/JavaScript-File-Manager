@@ -4,7 +4,7 @@
  */
 fm.Package("jfm.html");
 fm.Class("Anchor", "jfm.component.Component");
-jfm.html.Anchor = function( base, me, Component){this.setMe=function(_me){me=_me;};
+jfm.html.Anchor = function (base, me, Component){this.setMe=function(_me){me=_me;};
 
     this.shortHand = "Anchor";
     this.Anchor = function(config){
