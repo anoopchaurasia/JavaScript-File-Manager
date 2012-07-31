@@ -18,9 +18,13 @@ function Concatenation( dir ) {
 		var isCompleted = false, isLineAdded, stringHolder = "";
 		var dataArray = data.split("\n"), add = true, num;
 		var imports = [ 'me' ], s, skip;
-		if ((num = data.replace(/\s/g, "").indexOf("this.setMe=function(_me){me=_me;}")) != -1) {
+		var d = data.replace(/\s/g, "");
+		if ((num = d.indexOf("this.setMe=function(_me){me=_me;}")) != -1) {
 			add = false;
-		}
+		}s:function(res){
+      var result, reg = /fm\.import\((.*?)\)/igm;
+while(result = reg.exec(res.replace(/\s/g, ""))){
+console.log(result [1]);
 		console.log(num);
 		for ( var k = 0, len = dataArray.length; k < len; k++) {
 			// this statement reads the line from the file and prvar it to

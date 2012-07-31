@@ -14,7 +14,6 @@ App = function( me, Constants, Cookie, FacebookAuth, SessionManager, User){this.
 	console.log(process.execArgv);
 	this.init = function( ) {
 		fm.Include('web');
-		
 		http = require('http');
 		sessionM = session.SessionManager.getInstance();
 		url = require('url'), qs = require('querystring');
