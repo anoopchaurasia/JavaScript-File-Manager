@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 fm.Import("jfm.division.Division");
 fm.Import("jfm.query.QueryStr");
 fm.Import("jfm.hash.HashChange");
@@ -26,7 +25,6 @@ App = function (me, Division, QueryStr, HashChange, Topbar, Right){this.setMe=fu
 	Static.main = function() {
 
 		updateLayout();
-		var t2 = new Date().getTime();
 		var d = new jfm.division.Division({
 			id : "jfm-division",
 			'class' : "bg"
@@ -40,7 +38,7 @@ App = function (me, Division, QueryStr, HashChange, Topbar, Right){this.setMe=fu
 		d.left.add(right);
 		d.top.add(top);
 		d.addTo('body');
-		console.log(new Date().getTime() - t, new Date().getTime() - t2);
+	//	console.log(new Date().getTime() - t, new Date().getTime() - t2);
 	};
 	
 };

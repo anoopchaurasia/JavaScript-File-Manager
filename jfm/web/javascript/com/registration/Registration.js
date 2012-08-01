@@ -11,9 +11,9 @@ fm.Class("Registration", "jfm.html.Container");
 com.registration.Registration = function (base, me, Cache, Text, Combobox, FormManager, Container){this.setMe=function(_me){me=_me;};
 
 	var r;
-	Static.main = function( division ) {
+	Static.main = function(  ) {
 		r = new me();
-		this.onHashChange(division);
+		this.onHashChange(args[0]);
 	};
 	
 	Static.onHashChange = function(division){

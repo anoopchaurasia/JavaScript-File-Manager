@@ -62,15 +62,12 @@ t = new Date().getTime();
 	var storePath = [];
 	
 	// /same as window.fm.import but for non jfm files.
-	window.fm['include'] = window.fm.Include = function Include( path ) {
-		
-		if (!storePath[window.fm.basedir + path]) {
-			storePath[window.fm.basedir + path] = true;
+	window.fm['include'] = window.fm.Include = function Include( path, data ) {
+		var temp = fm.basedir.replace(/\//gim, "");
+		if (!storePath[temp + path]) {
+			storePath[temp + path] = true;
 		}
 		else {
-			return this;
-		}
-		if (path.indexOf("http") != 0) {
 			return this;
 		}
 		path = path.replace(/\s/g, "");
@@ -81,12 +78,6 @@ t = new Date().getTime();
 		return this;
 	};
 	
-	// /onReadyState method get called when browser fail to load a javascript
-	// file.
-	function onReadyState( ) {
-		console.error("Unable to load file: " + this.src + ". Please check the file name and parh.");
-		return false;
-	}
 	
 	// Add imports for current loaded javascript file.
 	// Add imported javascript file for current class into currentScript.
@@ -105,7 +96,7 @@ t = new Date().getTime();
 	}
 	
 	// Create script tag inside head.
-	function include( path ) {
+	function include( path, data ) {
 		scriptArr.push({
 			packageName : ""
 		});

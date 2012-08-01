@@ -17,17 +17,17 @@ jfm.hash.HashChange = function (me){this.setMe=function(_me){me=_me;};
 			}
 			case ("home"): {
 				if(fm.isExist("com.home.Home")){
-					com.home.Home.onHashChange([division, {}]);
+					com.home.Home.onHashChange(division, {});
 				}else{
-					fm.Include("com.home.Home",[division, {}]);
+					fm.Include("com.home.Home",division, {});
 				}
 				break;
 			}
 			case ("chat"):{
 				if(fm.isExist("com.home.Chat")){
-					com.home.Chat.onHashChange([division, {}]);
+					com.home.Chat.onHashChange(division, {});
 				}else{
-					fm.Include("com.home.Chat",[division, {}]);
+					fm.Include("com.home.Chat",division, {});
 				}
 				break;
 			}

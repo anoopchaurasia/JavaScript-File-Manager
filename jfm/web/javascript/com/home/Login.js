@@ -11,9 +11,9 @@ fm.Class("Login", "jfm.html.Container");
 com.home.Login = function (base, me, Cache, FormManager, Text, Container){this.setMe=function(_me){me=_me;};
 
 	var h;
-	Static.main = function( division ) {
-		h = new me(division);
-		this.onHashChange(division);
+	Static.main = function( args  ) {
+		h = new me(args[0]);
+		this.onHashChange(args[0]);
 	};
 	
 	Static.onHashChange = function( division ) {

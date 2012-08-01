@@ -3,7 +3,6 @@
  * change this template use File | Settings | File Templates.
  */
 
-t = new Date().getTime();
 (function( window, undefined ) {
 	// method to check if Object.defineProperty supported by browser.
 	// IE8 support Object.defineProperty only for dom object.
@@ -44,11 +43,11 @@ t = new Date().getTime();
 				valueStorage[key] = val;
 			}
 			
-			function setter( val ) {
+			function setter( newval ) {
 				if (isConst) {
 					throw this + "." + key + " can not be changed.";
 				}
-				valueStorage[key] = val;
+				valueStorage[key] = newval;
 			}
 			
 			function getter( ) {
@@ -121,15 +120,20 @@ t = new Date().getTime();
 	var storePath = [];
 	
 	// /same as fm.import but for non jfm files.
-	fm['include'] = fm.Include = function Include( path, data ) {
-		
-		if (!storePath[fm.basedir + path]) {
-			storePath[fm.basedir + path] = data || true;
+	fm['include'] = fm.Include = function Include( ) {
+		var args = [];
+		for (var k =1; k < arguments.length; k++){
+			args.push(arguments[k]);
+		}
+		var path = arguments[0];
+		var temp = fm.basedir.replace(/\//gim,"");
+		if (!storePath[temp+ path]) {
+			storePath[temp + path] = args || true;
 		}
 		else {
 			return this;
 		}
-		if (isConcatinated && path.indexOf("http") != 0) {
+		if (window.isConcatinated && path.indexOf("http") != 0) {
 			return this;
 		}
 		path = path.replace(/\s/g, "");
@@ -163,7 +167,6 @@ t = new Date().getTime();
 		script.imports.push(path);
 		return true;
 	}
-	
 	var docHead;
 	
 	// Create script tag inside head.
@@ -234,9 +237,7 @@ t = new Date().getTime();
 	};
 	
 	// fm.Class creates a jfm class.
-	fm['class'] = fm["Class"] = function Class( me){this.setMe=function(_me){me=_me;};
-
-		
+	fm['class'] = fm["Class"] = function Class( ){ 
 		!currentScript && this.Package();
 		var script = currentScript, data;
 		var a = arguments, o = null;
@@ -248,10 +249,11 @@ t = new Date().getTime();
 		script.Class = "" + (script.packageName == "" ? "" : script.packageName + ".") + script.className;
 		
 		script.Package = o;
+		var temp = fm.basedir.replace(/\//gim,"");
 		// fm.isConcatinated && fm.holdReady(true);
-		if (typeof storePath[fm.basedir + script.Class] == 'object') {
-			data = storePath[fm.basedir + script.Class];
-			storePath[fm.basedir + script.Class] = true;
+		if (typeof storePath[temp  + script.Class] == 'object') {
+			data = storePath[temp  + script.Class];
+			storePath[temp  + script.Class] = true;
 		}
 		callAfterDelay(script, data);
 		currentScript = undefined;
@@ -260,11 +262,11 @@ t = new Date().getTime();
 	// callAfterDelay:Delay the call for classManager so that file get compiled
 	// completely.
 	// And classManager get all information about the function.
-	function callAfterDelay( currentScript, data ) {
+	function callAfterDelay( script, data ) {
 		setTimeout(function( ) {
 			// Calling classmanager after a short delay so that file get
 			// completely ready.
-			classManager(currentScript, data);
+			classManager(script, data);
 			// fm.holdReady(false);
 		});
 	}
@@ -409,11 +411,11 @@ t = new Date().getTime();
 		for (k = 0; k < tr.length; k++) {
 			(temp[tr[k]] = true);
 		}
-		eachPropertyOf(internalObj.Static, function( v, k ) {
-			temp[k] = true;
+		eachPropertyOf(internalObj.Static, function( v, key ) {
+			temp[key] = true;
 		});
-		eachPropertyOf(internalObj.staticConst, function( v, k ) {
-			temp[k] = true;
+		eachPropertyOf(internalObj.staticConst, function( v, key ) {
+			temp[key] = true;
 		});
 		internalObj["transient"] = temp;
 		internalObj = tempObj = k = temp = undefined;
@@ -453,8 +455,8 @@ t = new Date().getTime();
 				}
 			}
 			
-			eachPropertyOf(pofn.prototype.$get('fields'), function( v, k ) {
-				pofn.prototype.$add(pofnS, k, v, true, true);
+			eachPropertyOf(pofn.prototype.$get('fields'), function( v, key ) {
+				pofn.prototype.$add(pofnS, key, v, true, true);
 			});
 		};
 	}
@@ -477,11 +479,11 @@ t = new Date().getTime();
 	function addShortHand( str, protoClass ) {
 		var indx = str.lastIndexOf(".");
 		var o = createObj(str.substring(0, indx));
-		var name = str.substring(1 + indx);
-		if (o[name]) {
-			console.error("Short hand " + str + " for " + protoClass + " has conflict with. " + o[name]);
+		var nam = str.substring(1 + indx);
+		if (o[nam]) {
+			console.error("Short hand " + str + " for " + protoClass + " has conflict with. " + o[nam]);
 		}
-		o[name] = protoClass;
+		o[nam] = protoClass;
 	}
 	
 	// Wait for resource to be ready
@@ -671,7 +673,7 @@ t = new Date().getTime();
 				if (baseObj && baseObj.prototype.isAbstract) {
 					baseObj.prototype.setAbstractMethods(solidObj);
 				}
-			}
+			};
 		}
 		
 		if (baseObj) {

@@ -46,7 +46,11 @@ function Concatenation(dir) {
 	function processFile(path) {
 		if (!ConcatenatedFiles[path]) {
 			ConcatenatedFiles[path] = true;
-			executeFile(fs.readFileSync(path).toString('utf-8'));
+			try{
+				executeFile(fs.readFileSync(path).toString('utf-8'));
+			}catch (e) {
+				console.log(e);
+			}
 		}
 
 	}
@@ -76,9 +80,9 @@ function Concatenation(dir) {
 		});
 	};
 }
-
-function runall() {
+function runall( ) {
 	require("./Test.js");
+
 	var baseDir = "D:/workspace/jfm/web/javascript/", outputFile = "../contjs/Master.js";
 	var inputFiles = [];
 	inputFiles.push("D:/workspace/jfm/web/javascript/jfm/Master.js");

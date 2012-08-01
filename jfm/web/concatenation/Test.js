@@ -44,7 +44,7 @@ function Concatenation( ) {
 
 function runall( ) {
 	
-	var ajt = new Concatenation();
+	var ajt = new Concatenation(),
 	lastRun = Number(fs.readFileSync("lastRun").toString('utf-8'));
 	walk("D:/workspace/jfm/src/node", ajt.concatenateJSFiles, lastRun);
 	walk("D:/workspace/jfm/web/javascript", ajt.concatenateJSFiles, lastRun);
