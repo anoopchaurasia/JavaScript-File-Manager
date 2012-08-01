@@ -1,3 +1,4 @@
+isConcatinated = true;
 /**
  * Created by JetBrains WebStorm. User: Anoop Date: 5/7/11 Time: 11:14 PM To
  * change this template use File | Settings | File Templates.
@@ -15,6 +16,15 @@ t = new Date().getTime();
 		catch (e) {
 			return false;
 		}
+	}
+	
+	if (!Function.prototype.bind) {
+		Function.bind = Function.prototype.bind = function( obj ) {
+			var thisFun = this;
+			return function( ) {
+				return thisFun.apply(obj, arguments);
+			};
+		};
 	}
 	
 	// Checking if setter and getter is supported by browser.
@@ -73,42 +83,6 @@ t = new Date().getTime();
 	
 	fm.basedir = "/javascript";
 	
-	// This method is handling file ready state.
-	function fileReady( ) {
-		// / Add callbacks for fm ready.
-		var onReadyFun;
-		
-		// / fm.Application accept one function as a parameter.
-		// / The function get called after all files become ready.
-		// / fm.Application can be assigned a function instead of calling it
-		// with function parameter.
-		fm.Application = function( fn ) {
-			currentScript = undefined;
-			if (fm.isReaddyCounter == 0 && typeof fn == 'function') {
-				fn();
-				return;
-			}
-			onReadyFun = fn;
-		};
-		// get called when all js files became ready.
-		fm.isReaddyCounter = 0;
-		fm.holdReady = function( is ) {
-			if (is) {
-				fm.isReaddyCounter++;
-			}
-			else {
-				fm.isReaddyCounter--;
-				if (fm.isReaddyCounter == 0) {
-					// / incase onReadyFun is undefined then assuming
-					// fm.Application has been assigned a method.
-					!onReadyFun && (onReadyFun = fm.Application) && onReadyFun();
-				}
-			}
-		};
-	}
-	// Activating file ready.
-	// fileReady();
-	
 	// fm.stackTrace can be used to collect to print function stack;
 	// JAVA:Exception.stacktrace
 	fm.stackTrace = function( message ) {
@@ -151,12 +125,12 @@ t = new Date().getTime();
 	fm['include'] = fm.Include = function Include( path, data ) {
 		
 		if (!storePath[fm.basedir + path]) {
-			storePath[fm.basedir + path] =  data || true;
+			storePath[fm.basedir + path] = data || true;
 		}
 		else {
 			return this;
 		}
-		if (this.isConcatinated && path.indexOf("http") != 0) {
+		if (isConcatinated && path.indexOf("http") != 0) {
 			return this;
 		}
 		path = path.replace(/\s/g, "");
@@ -178,6 +152,7 @@ t = new Date().getTime();
 	// Add imports for current loaded javascript file.
 	// Add imported javascript file for current class into currentScript.
 	function add( path ) {
+		!currentScript && fm.Package();
 		var script = currentScript;
 		script && (!script.imports && (script.imports = []));
 		// checking if same file imported twice for same Class.
@@ -247,11 +222,11 @@ t = new Date().getTime();
 		}
 	};
 	
-	fm.isExist = function(cls){
+	fm.isExist = function( cls ) {
 		var s = cls.split(".");
 		var o = window;
-		for(var k in s){
-			if(!o[s[k]]){
+		for ( var k in s) {
+			if (!o[s[k]]) {
 				return false;
 			}
 			o = o[s[k]];
@@ -259,15 +234,11 @@ t = new Date().getTime();
 		return true;
 	};
 	
-		!currentScript && fm.Package();
 	// fm.Class creates a jfm class.
-	fm['class'] = fm.Class = function Class( me, base)
-{this.setMe=function(){me=this;}
-		
-		
+	fm['class'] = fm["Class"] = function Class( me){this.setMe=function(_me){me=_me;};
+
 		
 		!currentScript && this.Package();
-		
 		var script = currentScript, data;
 		var a = arguments, o = null;
 		script.className = a[0];
@@ -279,9 +250,9 @@ t = new Date().getTime();
 		
 		script.Package = o;
 		// fm.isConcatinated && fm.holdReady(true);
-		if(typeof storePath[fm.basedir + script.Class] == 'object'){
+		if (typeof storePath[fm.basedir + script.Class] == 'object') {
 			data = storePath[fm.basedir + script.Class];
-			storePath[fm.basedir + script.Class] =true;
+			storePath[fm.basedir + script.Class] = true;
 		}
 		callAfterDelay(script, data);
 		currentScript = undefined;
@@ -490,64 +461,11 @@ t = new Date().getTime();
 	}
 	window.me = window.base = undefined;
 	
-	var gContext = [];
-	
-	function createContext( context ) {
-		var ics = context.ics;
-		context.prototype.added = {};
-		deleteAdded((gContext[gContext.length - 1] || {
-			prototype : {}
-		}).prototype.added);
-		me = context;
-		base = context.base;
-		gContext.push(context);
-		for ( var k in ics) {
-			if (ics.hasOwnProperty(k) && !window[k]) {
-				context.prototype.added[k] = true;
-				window[k] = ics[k];
-			}
-		}
-		return true;
-	}
-	function deleteAdded( added ) {
-		try {
-			for ( var k in added) {
-				if (added.hasOwnProperty(k)) {
-					delete window[k];
-				}
-			}
-		}
-		catch (e) {
-			console.log(e);
-		}
-	}
-	
-	function deleteContext( ) {
-		var pop = gContext.pop();
-		deleteAdded(pop.prototype.added);
-		me = gContext[gContext.length - 1];
-		if (me) {
-			base = me.base;
-			var added = me.prototype.added;
-			for ( var k in added) {
-				if (added.hasOwnProperty(k) && !window[k]) {
-					window[k] = me.ics[k];
-				}
-			}
-		}
-		else {
-			base = undefined;
-		}
-	}
-	
 	// Change the context of function.
 	function changeContext( fun, context, bc ) {
 		return function( ) {
-			var added = me != context && createContext(context);
-			var temp = fun.apply(context, arguments);
-			bc && (temp = bc());
-			added && deleteContext();
-			return temp;
+			fun.apply(context, arguments);
+			bc();
 		};
 	}
 	
@@ -712,7 +630,7 @@ t = new Date().getTime();
 		var clss = currentObj.getClass();
 		for ( var k in currentObj) {
 			if (currentObj.hasOwnProperty(k) && typeof currentObj[k] == 'function' && k != fn) {
-				currentObj[k] = changeContext(currentObj[k], currentObj);
+				currentObj[k] = currentObj[k].bind(currentObj);
 				currentObj[k].$name = k;
 				currentObj[k].$Class = clss;
 			}
@@ -763,12 +681,25 @@ t = new Date().getTime();
 			baseObj.$ADD(currentObj);
 		}
 	}
-	
+	function createArgumentString( base, imports ) {
+		var str = [];
+		if (base) {
+			str.push('pofn.base');
+		}
+		str.push('undefined');
+		if (imports) {
+			for ( var k in imports) {
+				imports.hasOwnProperty(k) && str.push('pofn.ics.' + k);
+			}
+		}
+		return str.join(",");
+	}
 	// Set relevent class information.
 	function getReleventClassInfo( Class, fn, pofn ) {
 		addPrototypeBeforeCall(Class, this.isAbstract);
-		
-		var tempObj = new Class(pofn.ics, pofn.base), k, len;
+		var tempObj, k, len;
+		eval("tempObj= new Class(" + createArgumentString(pofn.base, pofn.ics) + ");");
+		tempObj.setMe && tempObj.setMe(pofn);
 		this.shortHand = tempObj.shortHand;
 		var info = separeteMethodsAndFields(tempObj);
 		this.methods = info.methods = pofn.base ? info.methods.concat(pofn.base.prototype.$get('methods')) : info.methods;
@@ -812,6 +743,20 @@ t = new Date().getTime();
 		        || (!this.__base___ && pofn.isAbstract && script.Class + " is an abstract class");
 	}
 	
+	function createArgumentStringObj( base, imports ) {
+		var str = [];
+		if (base) {
+			str.push('baseObj');
+		}
+		str.push('undefined');
+		if (imports) {
+			for ( var k in imports) {
+				imports.hasOwnProperty(k) && str.push('pofn.ics.' + k);
+			}
+		}
+		return str.join(",");
+	}
+	
 	function createClassInstance( pofn, script, fn, Class ) {
 		var baseObj, ex = getException.call(this, script, pofn);
 		if (ex) {
@@ -819,9 +764,9 @@ t = new Date().getTime();
 		}
 		baseObj = pofn.base && getBaseClassObject(pofn.base, this.__base___ ? this.get$arr() : []);
 		addPrototypeBeforeCall(Class, pofn.isAbstract);
-		var added = createContext(pofn);
-		var currentObj = new Class(pofn.ics, baseObj);
-		added && deleteContext();
+		var currentObj;
+		eval("currentObj= new Class(" + createArgumentStringObj(baseObj, pofn.ics) + ");");
+		currentObj.setMe && currentObj.setMe(currentObj);
 		addExtras(currentObj, baseObj, fn);
 		delete currentObj["transient"];
 		delete currentObj.shortHand;
@@ -900,7 +845,6 @@ t = new Date().getTime();
 		this.constructor = defaultConstrct;
 		iamready(this.getClass(), this);
 		if (typeof this.main == 'function') {
-			this.main = changeContext(this.main, this);
 			this.main(data);
 			delete this.main;
 			data = undefined;
@@ -918,7 +862,7 @@ t = new Date().getTime();
 					if (isSame) {
 						val.$name = k;
 						val.$Class = cls;
-						obj[k] = changeContext(val, obj);
+						obj[k] = val.bind(obj);
 					}
 					else {
 						obj[k] == undefined && (obj[k] = self[k]);
@@ -959,7 +903,6 @@ t = new Date().getTime();
 		var Class = po[fn];
 		po[fn] = function manager( ) {
 			var currentObj = createClassInstance.call(this, po[fn], script, fn, Class);
-			var added = createContext(currentObj);
 			if (!this.__base___) {
 				currentObj.constructor.apply(currentObj, arguments);
 				// Calling base constructor if not called explicitly.
@@ -968,7 +911,6 @@ t = new Date().getTime();
 				}
 			}
 			!this.__base___ && currentObj.el && currentObj.el[0] && (currentObj.el[0].jfm = currentObj);
-			added && deleteContext();
 			return currentObj;
 		};
 		// Add resource ready queue.
@@ -981,18 +923,11 @@ t = new Date().getTime();
 
 fm.basedir = "/javascript";
 
-fm.isConcatinated = true;
-/* 
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
- 
 
 fm.Package("jfm.component");
 fm.Class("Component");
-jfm.component.Component = function( me, base)
-{this.setMe=function(){me=this;}
+jfm.component.Component = function (me){this.setMe=function(_me){me=_me;};
+
     
     this.shortHand = "Component";
     
@@ -1095,10 +1030,12 @@ jfm.component.Component = function( me, base)
     };
 };
 
+
+ 
 fm.Package("jfm.division");
 fm.Class("Part","jfm.component.Component");
-jfm.division.Part = function( me, base)
-{this.setMe=function(){me=this;}
+jfm.division.Part = function (base, me, Component){this.setMe=function(_me){me=_me;};
+
     var set, division;    
     this.Part = function(config, divsn, s){
         set = s;
@@ -1118,14 +1055,15 @@ jfm.division.Part = function( me, base)
         division.updateLayout();
     };
 };
+
 /* 
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 fm.Package("jfm.html");
 fm.Class("Container", 'jfm.component.Component');
-jfm.html.Container = function( me, base)
-{this.setMe=function(){me=this;}    
+jfm.html.Container = function (base, me, Component){this.setMe=function(_me){me=_me;};
+    
     this.shortHand = "Container";
     this.Container = function(config){
         var draggable = config && config.draggable;
@@ -1143,11 +1081,12 @@ jfm.html.Container = function( me, base)
 
 };
 
+
 fm.Package("jfm.division");
 fm.Import("jfm.division.Part");
 fm.Class("Division", "jfm.html.Container");
-jfm.division.Division = function NAMEN( me, base, Part)
-{this.setMe=function(){me=this;}
+jfm.division.Division = function (base, me, Part, Container){this.setMe=function(_me){me=_me;};
+
 	var width, height, me;
 	this.addTo = function( container ) {
 		var timeoutID;
@@ -1270,10 +1209,11 @@ jfm.division.Division = function NAMEN( me, base, Part)
 	}
 };
 
+
 fm.Package("jfm.query");
 fm.Class("QueryStr");
-jfm.query.QueryStr = function( me, base)
-{this.setMe=function(){me=this;}
+jfm.query.QueryStr = function (me){this.setMe=function(_me){me=_me;};
+
 	var keyValue;
 	this.shortHand = "QueryStr";
 	Static.main = function( ) {
@@ -1290,10 +1230,11 @@ jfm.query.QueryStr = function( me, base)
 	};
 };
 
+
 fm.Package("jfm.hash");
 fm.Class("HashChange");
-jfm.hash.HashChange = function( me, base)
-{this.setMe=function(){me=this;}
+jfm.hash.HashChange = function (me){this.setMe=function(_me){me=_me;};
+
 	var division;
 	
 	function onHashChange( hash ) {
@@ -1341,10 +1282,6 @@ jfm.hash.HashChange = function( me, base)
 	};
 };
 
-/* 
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /* 
  * To change this template, choose Tools | Templates
@@ -1352,8 +1289,8 @@ jfm.hash.HashChange = function( me, base)
  */
 fm.Package("jfm.html");
 fm.Class("Span");
-jfm.html.Span = function( me, base)
-{this.setMe=function(){me=this;}    
+jfm.html.Span = function (me){this.setMe=function(_me){me=_me;};
+    
     this.shortHand = "Span";
     this.init = function(){
         var config = Static.config  = {};
@@ -1373,27 +1310,11 @@ jfm.html.Span = function( me, base)
 };
 
 //jfm.html.Span.prototype = jQuery.prototype;
-/* 
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 
-/**
- * Created with JetBrains WebStorm.
- * User: anoop
- * Date: 5/12/12
- * Time: 5:42 PM
- * To change this template use File | Settings | File Templates.
- */
 
-/**
- * Created with JetBrains WebStorm.
- * User: anoop
- * Date: 5/12/12
- * Time: 2:52 AM
- * To change this template use File | Settings | File Templates.
- */
+
+
 /**
  * Created with JetBrains WebStorm.
  * User: anoop
@@ -1403,8 +1324,8 @@ jfm.html.Span = function( me, base)
  */
 fm.Package("jfm.lang");
 fm.Class("Character");
-jfm.lang.Character = function ( me, base)
-{this.setMe=function(){me=this;}
+jfm.lang.Character = function (me){this.setMe=function(_me){me=_me;};
+
 
     this.shortHand = "Character";
     Static.Const = {
@@ -1522,11 +1443,19 @@ jfm.lang.Character = function ( me, base)
         SINGLEQUOTE: 222
     }   
 };
+
+/**
+ * Created with JetBrains WebStorm.
+ * User: anoop
+ * Date: 5/12/12
+ * Time: 2:52 AM
+ * To change this template use File | Settings | File Templates.
+ */
 fm.Package("jfm.io");
 fm.Import("jfm.lang.Character");
 fm.Class("Serialize");
-jfm.io.Serialize = function( me, base, Character)
-{this.setMe=function(){me=this;}
+jfm.io.Serialize = function (me, Character){this.setMe=function(_me){me=_me;};
+
 
     this.shortHand = "Serialize";
     
@@ -1639,11 +1568,20 @@ jfm.io.Serialize = function( me, base, Character)
         return h;
     };
 };
+
+/**
+ * Created with JetBrains WebStorm.
+ * User: anoop
+ * Date: 5/12/12
+ * Time: 5:42 PM
+ * To change this template use File | Settings | File Templates.
+ */
+
 fm.Package("jfm.server");
 fm.Import("jfm.io.Serialize");
 fm.Class("Server");
-jfm.server.Server = function( me, base, Serialize)
-{this.setMe=function(){me=this;}
+jfm.server.Server = function (me, Serialize){this.setMe=function(_me){me=_me;};
+
     var me = this;
     this.url = location.protocol + "//" + location.host + "/" ;
     this.method = "process";
@@ -1706,11 +1644,22 @@ jfm.server.Server = function( me, base, Serialize)
         }
     };
 };
+
+
+
+
+
+/* 
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+
 fm.Package("jfm.cache");
 fm.Import("jfm.server.Server");
 fm.Class("Cache");
-jfm.cache.Cache = function( me, base, Server)
-{this.setMe=function(){me=this;}
+jfm.cache.Cache = function (me, Server){this.setMe=function(_me){me=_me;};
+
     var tmplServ, tmpltMethod, tempalateStorage, singleton ;
     this.shortHand = "Cache";
     this.getTemplate = function(name, path, cb){
@@ -1747,6 +1696,7 @@ jfm.cache.Cache = function( me, base, Server)
         tempalateStorage = {};
     };
 };
+
 /* 
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -1754,19 +1704,11 @@ jfm.cache.Cache = function( me, base, Server)
 
 fm.Package("jfm.html");
 fm.Class("Constants");
-jfm.html.Constants = function Name( me, base)
-{this.setMe=function(){me=this;}
-    
+jfm.html.Constants = function (me){this.setMe=function(_me){me=_me;};
     Static.Const = {
         mail:/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i            
-    };
-};
-
-/* 
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-/* 
+    } ;
+};/* 
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -1777,8 +1719,8 @@ jfm.html.Constants = function Name( me, base)
  */
 fm.Package("jfm.html");
 fm.Class("Img");
-jfm.html.Img = function( me, base)
-{this.setMe=function(){me=this;}    
+jfm.html.Img = function (me){this.setMe=function(_me){me=_me;};
+    
     this.shortHand = "Img";
     this.init = function(){
         var config = Static.config  = {};
@@ -1800,13 +1742,18 @@ jfm.html.Img = function( me, base)
     };
 };
 
+
+/* 
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 fm.Package("jfm.html");
 fm.Import("jfm.lang.Character");
 fm.Import("jfm.html.Img");
 fm.Import("jfm.html.Span");
 fm.Class("Popup", "jfm.html.Container");
-jfm.html.Popup = function ( me, base, Character, Img, Span)
-{this.setMe=function(){me=this;}    
+jfm.html.Popup = function (base, me, Character, Img, Span, Container){this.setMe=function(_me){me=_me;};
+    
     this.shortHand = "Popup";
     var pHead, pBody, pClose, callback, singleton;
     var me = this;    
@@ -1925,12 +1872,13 @@ jfm.html.Popup = function ( me, base, Character, Img, Span)
         this.hide();
     };
 };
+
 fm.Package("jfm.html.form");
 fm.Import("jfm.html.Constants");
 fm.Import("jfm.html.Popup");
 fm.Class("Text");
-jfm.html.form.Text = function( me, base, Constants, Popup)
-{this.setMe=function(){me=this;}
+jfm.html.form.Text = function (me, Constants, Popup){this.setMe=function(_me){me=_me;};
+
     var originalColor, placeholder, datatype;
     this.init = function(){
     	Static.isPlaceHoderSuported = 'placeholder' in document.createElement("input");
@@ -2063,14 +2011,6 @@ jfm.html.form.Text = function( me, base, Constants, Popup)
         }
     }
 };
-/* 
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-/* 
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /* 
  * To change this template, choose Tools | Templates
@@ -2078,8 +2018,8 @@ jfm.html.form.Text = function( me, base, Constants, Popup)
  */
 fm.Package("jfm.html");
 fm.Class("Anchor", "jfm.component.Component");
-jfm.html.Anchor = function( me, base)
-{this.setMe=function(){me=this;}
+jfm.html.Anchor = function (base, me, Component){this.setMe=function(_me){me=_me;};
+
     this.shortHand = "Anchor";
     this.Anchor = function(config){
         if(typeof(config) == 'string'){
@@ -2094,13 +2034,19 @@ jfm.html.Anchor = function( me, base)
 };
 
 
+
+/* 
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 fm.Package("jfm.html");
 fm.Import("jfm.html.Span");
 fm.Import("jfm.html.Img");
 fm.Import("jfm.html.Anchor");
 fm.Class("Items");
-jfm.html.Items = function( me, base, Span, Img, Anchor)
-{this.setMe=function(){me=this;}
+jfm.html.Items = function (me, Span, Img, Anchor){this.setMe=function(_me){me=_me;};
+
     Static.getItems = function(c){
         var items = [];
         for(var k in c){
@@ -2138,11 +2084,16 @@ jfm.html.Items = function( me, base, Span, Img, Anchor)
     };
 };
 
+
+/* 
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 fm.Package("jfm.html");
 fm.Import("jfm.html.Items");
 fm.Class("Button", 'jfm.component.Component');
-jfm.html.Button = function( me, base, Items)
-{this.setMe=function(){me=this;}    
+jfm.html.Button = function (base, me, Items, Component){this.setMe=function(_me){me=_me;};
+    
 
     this.shortHand = "Button";
     this.init = function(){
@@ -2159,12 +2110,13 @@ jfm.html.Button = function( me, base, Items)
     };
 };
 
+
 fm.Package("com.post");
 fm.Import("jfm.cache.Cache");
 fm.Import("jfm.html.form.Text");
 fm.Class("Top", "jfm.html.Button");
-com.post.Top = function( me, base, Cache, Text)
-{this.setMe=function(){me=this;}
+com.post.Top = function (base, me, Cache, Text, Button){this.setMe=function(_me){me=_me;};
+
 
 	this.Top = function(center) {
 		base({
@@ -2196,6 +2148,7 @@ com.post.Top = function( me, base, Cache, Text)
 		});
 	};
 };
+
 /* 
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -2203,8 +2156,8 @@ com.post.Top = function( me, base, Cache, Text)
 
 fm.Package("jfm.html");
 fm.Class("Combobox", "jfm.html.Container");
-jfm.html.Combobox = function( me, base)
-{this.setMe=function(){me=this;}
+jfm.html.Combobox = function (base, me, Container){this.setMe=function(_me){me=_me;};
+
     
     this.shortHand = "Combobox";
     var element, onChangeCB, self,notFoundCallback,
@@ -2396,7 +2349,7 @@ jfm.html.Combobox = function( me, base)
 
         return $("<div />", {
             "class" : "combo_popup",
-            css : cssProp,
+            css : cssProp
         }).css(_settings.resultBoxCSS).appendTo('body');
     }
 
@@ -2817,13 +2770,19 @@ jfm.html.Combobox = function( me, base)
     }
 };
 
+
+/* 
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 fm.Package("com.region");
 fm.Import("jfm.html.Span");
 fm.Import("com.post.Top");
 fm.Import("jfm.html.Combobox");
 fm.Class("Topbar", 'jfm.html.Container');
-com.region.Topbar = function( me, base, Span, Top, Combobox)
-{this.setMe=function(){me=this;}
+com.region.Topbar = function (base, me, Span, Top, Combobox, Container){this.setMe=function(_me){me=_me;};
+
 
 	var openedMenu;
 
@@ -2897,6 +2856,7 @@ com.region.Topbar = function( me, base, Span, Top, Combobox)
 
 };
 
+
 /* 
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -2907,8 +2867,8 @@ fm.Import("jfm.html.Span");
 fm.Import("com.post.Top");
 fm.Import("jfm.html.Combobox");
 fm.Class("Right", 'jfm.html.Container');
-com.region.Right = function( me, base, Span, Top, Combobox)
-{this.setMe=function(){me=this;}
+com.region.Right = function (base, me, Span, Top, Combobox, Container){this.setMe=function(_me){me=_me;};
+
 	
 	this.Right = function( division ) {
 		base({
@@ -2950,18 +2910,25 @@ com.region.Right = function( me, base, Span, Top, Combobox)
 	
 };
 
+
+/* 
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 fm.Import("jfm.division.Division");
 fm.Import("jfm.query.QueryStr");
 fm.Import("jfm.hash.HashChange");
 fm.Import("com.region.Topbar");
 fm.Import("com.region.Right");
 fm.Class("App");
-App = function( me, base, Division, QueryStr, HashChange, Topbar, Right)
-{this.setMe=function(){me=this;}
-	function updateLayout( ) {
-		$(window).ready(function( ) {
+
+App = function (me, Division, QueryStr, HashChange, Topbar, Right){this.setMe=function(_me){me=_me;};  
+
+	function updateLayout() {
+		$(window).ready(function() {
 			var win = jQuery(window);
-			win.resize(function( ) {
+			win.resize(function() {
 				var w = win.width(), h = win.height();
 				var m = $('body').width(w).height(h)[0].resize;
 				m && m(w, h);
@@ -2970,12 +2937,12 @@ App = function( me, base, Division, QueryStr, HashChange, Topbar, Right)
 		});
 	}
 	Static.main = function() {
-		
+
 		updateLayout();
 		var t2 = new Date().getTime();
 		var d = new jfm.division.Division({
 			id : "jfm-division",
-			'class':"bg"
+			'class' : "bg"
 		});
 		var top = new Topbar(d);
 		var right = new Right();
@@ -2988,7 +2955,7 @@ App = function( me, base, Division, QueryStr, HashChange, Topbar, Right)
 		d.addTo('body');
 		console.log(new Date().getTime() - t, new Date().getTime() - t2);
 	};
+	
 };
 
-fm.isConcatinated = false;
-fm.isConcatinated = true;
+isConcatinated = false;

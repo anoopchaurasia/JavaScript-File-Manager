@@ -129,7 +129,7 @@ t = new Date().getTime();
 		else {
 			return this;
 		}
-		if (this.isConcatinated && path.indexOf("http") != 0) {
+		if (isConcatinated && path.indexOf("http") != 0) {
 			return this;
 		}
 		path = path.replace(/\s/g, "");
