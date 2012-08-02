@@ -53,7 +53,7 @@ function runall( ) {
 
 var fs = require('fs');
 var walk = function( dir, cb, lastRun ) {
-	var stat, file;
+	var stat, file,
 	
 	list = fs.readdirSync(dir);
 	if (list) {
@@ -66,7 +66,7 @@ var walk = function( dir, cb, lastRun ) {
 				walk(file, cb, lastRun);
 			}
 			else {
-				stat.mtime > lastRun && cb(file);
+				(new Date(stat.mtime). getTime()) > lastRun && cb(file);
 			}
 		}
 	}

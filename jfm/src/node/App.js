@@ -19,7 +19,7 @@ App = function (me, Constants, Cookie, FacebookAuth, SessionManager, User){this.
 		url = require('url'), qs = require('querystring');
 		servletObj = {};
 		staticServer = new (require('node-static').Server)(undefined, {
-		    cache : 60,
+		    cache : 1,
 		    headers : {
 			    'X-Powered-By' : 'node-static'
 		    }

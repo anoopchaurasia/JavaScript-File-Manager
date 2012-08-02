@@ -17,22 +17,22 @@ jfm.html.Items = function (me, Span, Img, Anchor){this.setMe=function(_me){me=_m
                 switch(k){
                     case 'text':
                     case 'html':{
-                        items.push(new im.Span(c[k])); 
+                        items.push(new Span(c[k])); 
                         delete c[k];
                         break;
                     }
                     case 'icon':{
-                        items.push(new im.Img(c[k])); 
+                        items.push(new Img(c[k])); 
                         delete c[k];
                         break;
                     }
                     case 'iconCls':{
-                        items.push(new im.Img({'class':c[k]})); 
+                        items.push(new Img({'class':c[k]})); 
                         delete c[k];
                         break;  
                     }
                     case 'anchor':{
-                        items.push(new im.Anchor(c[k]));
+                        items.push(new Anchor(c[k]));
                         delete c[k];
                         break; 
                     }

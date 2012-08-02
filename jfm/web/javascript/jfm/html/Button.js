@@ -15,7 +15,7 @@ jfm.html.Button = function (base, me, Items, Component){this.setMe=function(_me)
     };
     
     this.Button = function(config){
-        var items = im.Items.getItems(config);
+        var items = Items.getItems(config);
         config.html = this.config.html;
         config["class"] = Component.getCSSClass(config["class"], this.config['class']);
         base('<button/>', config);

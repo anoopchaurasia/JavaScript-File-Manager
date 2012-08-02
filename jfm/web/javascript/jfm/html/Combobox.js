@@ -27,7 +27,7 @@ jfm.html.Combobox = function (base, me, Container){this.setMe=function(_me){me=_
         notFoundCallback = nfc;
         self = this;
         base({
-            "class":"jfm-combobox"
+            "class": Component.getCSSClass(options.class + " jfm-combobox")
         });
         element = this.el;
         if (list == null ) {
@@ -83,6 +83,10 @@ jfm.html.Combobox = function (base, me, Container){this.setMe=function(_me){me=_
                 return true;
             });
         
+    };
+    
+    this.getSelected = function(){
+    	return {key:this.el.find("input").val(), value: this.el.find("input").attr('key')};
     };
     
     this.updateData= function(list, options){
@@ -386,7 +390,7 @@ jfm.html.Combobox = function (base, me, Container){this.setMe=function(_me){me=_
             _text_box.val(hint).css("color", "#666666");
         }
         else {
-            _text_box.val(_selected_pair.k).css("color", "");
+            _text_box.val(_selected_pair.k).attr('key',_selected_pair.v).css("color", "");
         }
     }
 
@@ -454,12 +458,12 @@ jfm.html.Combobox = function (base, me, Container){this.setMe=function(_me){me=_
         }
         else if (notFoundCallback) {
 
-            _btn.show();
+        	_btn && _btn.show();
             notFoundCallback(searchString, function(list) {
                 _result_box.empty();
                 var newList = separateInKeyValueList(list);
                 createUi(newList, searchString);
-                _btn.hide();
+                _btn && _btn.hide();
             });
         }
         else{

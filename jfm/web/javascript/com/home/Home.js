@@ -7,11 +7,12 @@ fm.Package("com.home");
 
 fm.Import("com.post.Left");
 fm.Import("com.post.Top");
+fm.Import("lib.google.Map");
 fm.Import("jfm.cache.Cache");
 fm.Import("jfm.html.form.Text");
 fm.Import("jfm.server.Server");
 fm.Class("Home", "jfm.html.Container");
-com.home.Home = function (base, me, Left, Top, Cache, Text, Server, Container){this.setMe=function(_me){me=_me;};
+com.home.Home = function (base, me, Left, Top, Map, Cache, Text, Server, Container){this.setMe=function(_me){me=_me;};
 
 	
 	Static.main = function( args ) {
@@ -22,20 +23,15 @@ com.home.Home = function (base, me, Left, Top, Cache, Text, Server, Container){t
 		new me(args[0], args[1]);
 	};
 	
-	function getServerPostingFor( link, center ) {
-		center.reset();
-	}
-	
-	function addToCenter( resp ) {
-		for ( var k = 0; k < resp.length; k++) {
-			console.log(resp[k]);
-		}
-	}
 	
 	this.Home = function( division, user ) {
-		base();
+		base({
+			width : "100%",
+			height : "100%"
+		});
 		division.center.reset();
 		division.center.add(this);
+		this.add(new Map(division));
 	};
 };
 

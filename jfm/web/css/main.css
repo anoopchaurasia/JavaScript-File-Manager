@@ -217,3 +217,11 @@ body {
 .searchProduct input{
 	padding-left: 4px;
 }
+
+.type-combo{
+	width: 80%;
+	float:left;
+}
+.add-category{
+	padding:6px;
+}
