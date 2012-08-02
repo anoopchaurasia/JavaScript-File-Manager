@@ -31,7 +31,7 @@ com.home.Home = function (base, me, Left, Top, Map, Cache, Text, Server, Contain
 		});
 		division.center.reset();
 		division.center.add(this);
-		this.add(new Map(division));
+		//this.add(new Map(division));
 	};
 };
 

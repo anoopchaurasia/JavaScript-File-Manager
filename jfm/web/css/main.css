@@ -1,4 +1,3 @@
-
 * {
 	padding: 0;
 	margin: 0;
@@ -59,7 +58,7 @@ body {
 	padding: 7px 30px;
 	margin: 0 5px;
 	text-shadow: 2px 2px 1px #595959;
-	filter: dropshadow(color =     #595959, offx =     1, offy =     1);
+	filter: dropshadow(color =       #595959, offx =       1, offy =       1);
 }
 
 .jfm-icon {
@@ -80,7 +79,7 @@ body {
 	left: 0;
 	top: 0;
 	opacity: 0.2;
-	filter: alpha(opacity =                 20);
+	filter: alpha(opacity =                   20);
 	zoom: 1;
 }
 
@@ -187,7 +186,7 @@ body {
 	background: -webkit-linear-gradient(top, #88c72a 0%, #709e0e 100%);
 	background: -o-linear-gradient(top, #88c72a 0%, #709e0e 100%);
 	background: -ms-linear-gradient(top, #88c72a 0%, #709e0e 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient(    startColorstr='#709e0e',
+	filter: progid:DXImageTransform.Microsoft.gradient(     startColorstr='#709e0e',
 		endColorstr='#709e0e', GradientType=0 );
 	background: linear-gradient(top, #88c72a 0%, #709e0e 100%);
 	-webkit-box-shadow: 0px 0px 1px #66FF00, inset 0px 0px 1px #FFFFFF;
@@ -199,8 +198,8 @@ body {
 	background-image: url("../img/background-pattern.png");
 }
 
-.bg{
-	border-radius:10px;
+.bg {
+	border-radius: 10px;
 	background-color: white;
 }
 
@@ -208,20 +207,42 @@ body {
 	font-size: 48px;
 	margin-left: 20px;
 	color: #C1F;
-	float:left;
+	float: left;
 }
 
-.searchProduct{
-	height:32px;
+.searchProduct {
+	height: 32px;
 }
-.searchProduct input{
+
+.searchProduct input {
 	padding-left: 4px;
 }
 
-.type-combo{
+.type-combo {
 	width: 80%;
-	float:left;
+	float: left;
 }
-.add-category{
-	padding:6px;
+
+.add-category {
+	padding: 6px;
+}
+
+.register {
+	float: right;
+	margin: 10x 10px;
+}
+.search-location{
+	float:left;
+	width:76%;
+	height:30px;
+}
+.search-location input{
+	width:100%;
+	height: 100%;
+}
+.geo-address{
+	width:290px;
+	overflow:hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }

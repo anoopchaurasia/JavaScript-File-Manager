@@ -14,12 +14,14 @@ jfm.division.Part = function (base, me, Component){this.setMe=function(_me){me=_
     
     this.add = function(elem){        
         set(elem);
+        elem;
     };
     
     this.reset = function(){
         this.el.empty();
         this.el.css({ 'display':'none',height:0, width:0 });
         division.updateLayout();
+        return this;
     };
 };
 

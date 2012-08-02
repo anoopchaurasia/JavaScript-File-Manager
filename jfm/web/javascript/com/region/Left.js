@@ -9,11 +9,11 @@ fm.Import("jfm.html.Button");
 fm.Import("com.post.Top");
 fm.Import("jfm.html.Combobox");
 fm.Class("Left", 'jfm.html.Container');
-com.region.Left = function(base, me, Span, Button, Top, Combobox, Container) {
+com.region.Left = function (base, me, Span, Button, Top, Combobox, Container) {
 	this.setMe = function(_me) {
 		me = _me;
 	};
-
+	//http://searchupc.com/developers/welcome.aspx
 	this.Left = function(division) {
 		base({
 			width : 300,
@@ -23,7 +23,7 @@ com.region.Left = function(base, me, Span, Button, Top, Combobox, Container) {
 				'background-color' : '#FCF0FE'
 			}
 		});
-
+		this.add("<div>Create List: </div>");
 		var states = new Combobox([], {
 			hintText : "Type Keywords (CTRL + SHIFT + c)",
 			inputTabIndex : 3,

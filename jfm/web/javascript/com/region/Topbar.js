@@ -8,63 +8,61 @@ fm.Import("jfm.html.Span");
 fm.Import("com.post.Top");
 fm.Import("jfm.html.Combobox");
 fm.Class("Topbar", 'jfm.html.Container');
-com.region.Topbar = function (base, me, Span, Top, Combobox, Container){this.setMe=function(_me){me=_me;};
-
-
+com.region.Topbar = function (base, me, Span, Top, Combobox, Container) {
+	this.setMe = function( _me ) {
+		me = _me;
+	};
+	
 	var openedMenu;
-
-	function loadFacebook() {
-
+	
+	function loadFacebook( ) {
+		
 		var c = document.createElement("script");
 		c.src = '//connect.facebook.net/en_US/all.js';
 		document.getElementsByTagName('head')[0].appendChild(c);
 	}
-	this.Topbar = function(division) {
-
+	
+	this.Topbar = function( division ) {
 		
-		window.fbAsyncInit = function() {
-			if (window.FB) {
-				FB.init({
-					appId : "254360796617",
-					channelUrl : 'http://localhost:8888/channel.html',
-					status : true,
-					cookie : true,
-					xfbml : true
-				});
-				FB.getLoginStatus(fbLoginStatus);
-				FB.Event.subscribe('auth.statusChange', fbLoginStatus);
-			}
-			else {
-				setTimeout(window.fbAsyncInit, 1000);
-			}
-		};
-
 		base({
-			height : 100,
-			css : {
-				'background-color' : '#FCF0FE'
-			}
+		    height : 100,
+		    css : {
+			    'background-color' : '#FCF0FE'
+		    }
 		});
-
+		
 		loadFacebook();
-
+		
 		var self = this;
 		this.add(new Container({
-			html : "<a href='#'>Kerana</a>",
-			'class' : "logo"
+		    html : "<a href='#'>Kerana</a>",
+		    'class' : "logo"
 		}));
-
-		$(document).click(function() {
+		
+		this.add(new Button({
+		    html : "Register",
+		    'class' : 'register green-btn',
+		    click:function(){
+		    	if(fm.isExist('shop.Register') ){
+		    		new shop.Register(division);
+		    	}
+		    	else{
+		    		fm.Include("shop.Register", division);
+		    	}
+		    }
+		}));
+		
+		$(document).click(function( ) {
 			openedMenu && openedMenu.hide();
 		});
-
-		Cache.getInstance().getTemplate('home', function(data) {
+		
+		Cache.getInstance().getTemplate('home', function( data ) {
 			self.el.append(data);
 			self.el.find(".category").click(division, onCategoryClick);
 		});
 	};
-
-	function onCategoryClick(e) {
+	
+	function onCategoryClick( e ) {
 		if (e.target.nodeName == "SPAN") {
 			openedMenu && openedMenu.hide();
 			openedMenu = $(e.target).next().show();
@@ -80,7 +78,5 @@ com.region.Topbar = function (base, me, Span, Top, Combobox, Container){this.set
 		}
 		return false;
 	}
-
+	
 };
-
-
