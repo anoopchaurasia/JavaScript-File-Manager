@@ -44,11 +44,11 @@ isConcatinated = true;
 				valueStorage[key] = val;
 			}
 			
-			function setter( val ) {
+			function setter( newval ) {
 				if (isConst) {
 					throw this + "." + key + " can not be changed.";
 				}
-				valueStorage[key] = val;
+				valueStorage[key] = newval;
 			}
 			
 			function getter( ) {
@@ -263,11 +263,11 @@ isConcatinated = true;
 	// callAfterDelay:Delay the call for classManager so that file get compiled
 	// completely.
 	// And classManager get all information about the function.
-	function callAfterDelay( currentScript, data ) {
+	function callAfterDelay( script, data ) {
 		setTimeout(function( ) {
 			// Calling classmanager after a short delay so that file get
 			// completely ready.
-			classManager(currentScript, data);
+			classManager(script, data);
 			// fm.holdReady(false);
 		});
 	}
@@ -412,11 +412,11 @@ isConcatinated = true;
 		for (k = 0; k < tr.length; k++) {
 			(temp[tr[k]] = true);
 		}
-		eachPropertyOf(internalObj.Static, function( v, k ) {
-			temp[k] = true;
+		eachPropertyOf(internalObj.Static, function( v, key ) {
+			temp[key] = true;
 		});
-		eachPropertyOf(internalObj.staticConst, function( v, k ) {
-			temp[k] = true;
+		eachPropertyOf(internalObj.staticConst, function( v, key ) {
+			temp[key] = true;
 		});
 		internalObj["transient"] = temp;
 		internalObj = tempObj = k = temp = undefined;
@@ -456,8 +456,8 @@ isConcatinated = true;
 				}
 			}
 			
-			eachPropertyOf(pofn.prototype.$get('fields'), function( v, k ) {
-				pofn.prototype.$add(pofnS, k, v, true, true);
+			eachPropertyOf(pofn.prototype.$get('fields'), function( v, key ) {
+				pofn.prototype.$add(pofnS, key, v, true, true);
 			});
 		};
 	}
@@ -480,11 +480,11 @@ isConcatinated = true;
 	function addShortHand( str, protoClass ) {
 		var indx = str.lastIndexOf(".");
 		var o = createObj(str.substring(0, indx));
-		var name = str.substring(1 + indx);
-		if (o[name]) {
-			console.error("Short hand " + str + " for " + protoClass + " has conflict with. " + o[name]);
+		var nam = str.substring(1 + indx);
+		if (o[nam]) {
+			console.error("Short hand " + str + " for " + protoClass + " has conflict with. " + o[nam]);
 		}
-		o[name] = protoClass;
+		o[nam] = protoClass;
 	}
 	
 	// Wait for resource to be ready
@@ -674,7 +674,7 @@ isConcatinated = true;
 				if (baseObj && baseObj.prototype.isAbstract) {
 					baseObj.prototype.setAbstractMethods(solidObj);
 				}
-			}
+			};
 		}
 		
 		if (baseObj) {
