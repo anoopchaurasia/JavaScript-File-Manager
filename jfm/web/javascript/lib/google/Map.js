@@ -1,6 +1,6 @@
 fm.Package("lib.google");
 fm.Class("Map", "jfm.html.Container");
-lib.google.Map = function(base, me, Container) {
+lib.google.Map = function (base, me, Container) {
 	this.setMe = function(_me) {
 		me = _me;
 	};
@@ -50,28 +50,30 @@ lib.google.Map = function(base, me, Container) {
 		return marker;
 	};
 
-	Static.initialize = function() {
-
-		var mapOptions = {
-			center : new google.maps.LatLng(-34.397, 150.644),
-			zoom : 12,
-			mapTypeId : google.maps.MapTypeId.ROADMAP,
-			panControl : false,
-			scaleControl : false,
-			rotateControl : false,
-			streetViewControl : false,
-			zoomControl : {
-				position : google.maps.ControlPosition.RIGHT_BOTTOM,
-				style : google.maps.ZoomControlStyle.SMALL
-			}
-		};
-		gmap = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
-		navigator.geolocation.getCurrentPosition(GetLocation);
-		delete window.initialize;
-	};
+	
 
 	this.Map = function() {
 		dragendCB = [];
+		
+		window.initialize = function() {
+
+			var mapOptions = {
+				center : new google.maps.LatLng(-34.397, 150.644),
+				zoom : 12,
+				mapTypeId : google.maps.MapTypeId.ROADMAP,
+				panControl : false,
+				scaleControl : false,
+				rotateControl : false,
+				streetViewControl : false,
+				zoomControl : {
+					position : google.maps.ControlPosition.RIGHT_BOTTOM,
+					style : google.maps.ZoomControlStyle.SMALL
+				}
+			};
+			gmap = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+			navigator.geolocation.getCurrentPosition(GetLocation);
+			delete window.initialize;
+		};
 		base({
 			width : "100%",
 			height : "100%",
@@ -80,7 +82,7 @@ lib.google.Map = function(base, me, Container) {
 		if (window.google && google.maps) {
 			setTimeout(initialize, 1000);
 		}
-		fm.Include("http://maps.googleapis.com/maps/api/js?sensor=false&callback=lib.google.Map.initialize");
+		fm.Include("http://maps.googleapis.com/maps/api/js?sensor=false&callback=initialize");
 	};
 
 };

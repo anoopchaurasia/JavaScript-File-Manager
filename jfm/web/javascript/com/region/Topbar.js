@@ -16,7 +16,7 @@ com.region.Topbar = function (base, me, Span, Top, Combobox, Container) {
 	var openedMenu;
 	
 	function loadFacebook( ) {
-		
+		return ;
 		var c = document.createElement("script");
 		c.src = '//connect.facebook.net/en_US/all.js';
 		document.getElementsByTagName('head')[0].appendChild(c);
@@ -38,13 +38,13 @@ com.region.Topbar = function (base, me, Span, Top, Combobox, Container) {
 		    html : "<a href='#'>Kerana</a>",
 		    'class' : "logo"
 		}));
-		
+		var s;
 		this.add(new Button({
 		    html : "Register",
 		    'class' : 'register green-btn',
 		    click:function(){
 		    	if(fm.isExist('shop.Register') ){
-		    		new shop.Register(division);
+		    		s = new shop.Register(division);
 		    	}
 		    	else{
 		    		fm.Include("shop.Register", division);
