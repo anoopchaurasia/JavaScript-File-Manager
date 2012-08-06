@@ -160,10 +160,8 @@ t = new Date().getTime();
 	};
 	
 	// window.fm.Class creates a jfm class.
-	window.fm['class'] = window.fm["Class"] = function Class( me){this.setMe=function(_me){me=_me;};
+	window.fm['class'] = window.fm["Class"] = function Class( ){
 
-
-		
 		var script = scriptArr[scriptArr.length - 1];
 		var a = arguments, o = null;
 		script.className = a[0];
@@ -522,6 +520,7 @@ t = new Date().getTime();
 		var tempObj, k, len;
 		eval("tempObj= new Class(" + createArgumentString(pofn.base, pofn.ics) + ");");
 		tempObj.setMe && tempObj.setMe(pofn);
+		delete tempObj.setMe;
 		this.shortHand = tempObj.shortHand;
 		var info = separeteMethodsAndFields(tempObj);
 		this.methods = info.methods = pofn.base ? info.methods.concat(pofn.base.prototype.$get('methods')) : info.methods;
@@ -591,6 +590,7 @@ t = new Date().getTime();
 		var currentObj;
 		eval("currentObj= new Class(" + createArgumentStringObj(baseObj, pofn.ics) + ");");
 		currentObj.setMe && currentObj.setMe(currentObj);
+		delete currentObj.setMe;
 		//
 		addExtras(currentObj, baseObj, fn);
 		delete currentObj.shortHand;

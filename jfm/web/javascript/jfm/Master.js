@@ -701,6 +701,7 @@
 		var tempObj, k, len;
 		eval("tempObj= new Class(" + createArgumentString(pofn.base, pofn.ics) + ");");
 		tempObj.setMe && tempObj.setMe(pofn);
+		delete tempObj.setMe;
 		this.shortHand = tempObj.shortHand;
 		var info = separeteMethodsAndFields(tempObj);
 		this.methods = info.methods = pofn.base ? info.methods.concat(pofn.base.prototype.$get('methods')) : info.methods;
@@ -768,6 +769,7 @@
 		var currentObj;
 		eval("currentObj= new Class(" + createArgumentStringObj(baseObj, pofn.ics) + ");");
 		currentObj.setMe && currentObj.setMe(currentObj);
+		delete currentObj.setMe;
 		addExtras(currentObj, baseObj, fn);
 		delete currentObj["transient"];
 		delete currentObj.shortHand;
