@@ -64,7 +64,6 @@ function Concatenation(dir) {
 	}
 
 	function processFile(path) {
-		console.log(path);
 		if (!ConcatenatedFiles[path]) {
 			ConcatenatedFiles[path] = true;
 			try {
@@ -86,7 +85,10 @@ function Concatenation(dir) {
 	this.concatenateJSFiles = function(sFiles, dFile) {
 		ext = "js";
 		backSlash = "";
+		var len = sFiles.length;
+		dFile = dFile || "../contjs/" + sFiles[len - 1].substring( sFiles[len - 1].lastIndexOf("/") + 1) + ".js"
 		deleteFile(dFile);
+		
 		concatenatedString += "";
 		ConcatenatedFiles = {};
 		for ( var i = 0; i < sFiles.length; i++) {
@@ -111,6 +113,7 @@ function Concatenation(dir) {
 		}
 	};
 }
+
 function runall() {
 	require("./Test.js");
 	var baseDir = "D:/workspace/jfm/web/javascript/", outputFile = "../contjs/Master.js";
@@ -118,6 +121,6 @@ function runall() {
 	inputFiles.push("D:/workspace/jfm/web/javascript/jfm/Master.js");
 	inputFiles.push("D:/workspace/jfm/web/javascript/App.js");
 	var ajt = new Concatenation(baseDir);
-	ajt.concatenateJSFiles(inputFiles, outputFile);
+	ajt.concatenateJSFiles(inputFiles);
 }
 runall();

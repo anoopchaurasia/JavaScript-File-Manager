@@ -141,9 +141,7 @@
 		}
 		path = path.replace(/\s/g, "");
 		if (path.indexOf("http") != 0 && path.lastIndexOf(".js") != path.length - 3) {
-			var p = path.split(".");
-			p = p[p.length-1];
-			path = fm.basedir + "/" + p + ".js";
+			path = fm.basedir + "/" + path.split(".").join("/") + ".js";
 		}
 		include(path);
 		return this;
