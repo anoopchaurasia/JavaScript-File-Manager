@@ -1,7 +1,7 @@
 var fs = require('fs');
 function Concatenation(dir) {
 
-	var concatenatedString = "", ConcatenatedFiles = {}, javascriptSourceFolder = dir;
+	var classIndex = 0, isConcatinatedAdded = false, concatenatedString = "", ConcatenatedFiles = {}, javascriptSourceFolder = dir;
 
 	function executeFile(data) {
 
@@ -12,16 +12,10 @@ function Concatenation(dir) {
 			concatenatedString += data;
 			return;
 		}
-		reg = /fm.import\((.*?)\)/gi;
-
-		while (result = reg.exec(d)) {
-			result = result[1];
-			result = result.substring(1, result.length - 1).replace(/\./g, "/") + ".js";
-			processFile(javascriptSourceFolder + result);
-		}
 
 		result = /fm.class\((.*?)\)/gi.exec(d) || /fm.Interface\((.*?)\)/gi.exec(d) || /fm.AbstractClass\((.*?)\)/gi.exec(d);
 		if (result) {
+			classIndex = result.index;
 			result = result[1];
 			result = result.substring(1, result.length - 1).split(",")[1];
 			if (result) {
@@ -29,6 +23,25 @@ function Concatenation(dir) {
 				processFile(javascriptSourceFolder + result);
 			}
 		}
+
+		reg = /fm.include\((.*?)\)/gi;
+		
+		while (result = reg.exec(d)) {
+			if(result.index > classIndex) continue;
+			result = result[1];
+			result = result.substring(1, result.length - 1).replace(/\./g, "/") + ".js";
+			processFile(javascriptSourceFolder + result);
+		}
+
+		reg = /fm.import\((.*?)\)/gi;
+		
+		while (result = reg.exec(d)) {
+			if(result.index > classIndex) continue;
+			result = result[1];
+			result = result.substring(1, result.length - 1).replace(/\./g, "/") + ".js";
+			processFile(javascriptSourceFolder + result);
+		}
+
 
 		reg = /fm.Implements\((.*?)\)/gi;
 		if (result = reg.exec(d)) {
@@ -39,16 +52,20 @@ function Concatenation(dir) {
 				processFile(javascriptSourceFolder + result[k].substring(1, result[k].length - 1).replace(/\./g, "/") + ".js");
 			}
 		}
-
+		if (!isConcatinatedAdded) {
+			isConcatinatedAdded = true;
+			concatenatedString += "fm.isConcatinated = true; \n";
+		}
 		concatenatedString += data;
 	}
 
 	function processFile(path) {
 		if (!ConcatenatedFiles[path]) {
 			ConcatenatedFiles[path] = true;
-			try{
+			try {
 				executeFile(fs.readFileSync(path).toString('utf-8'));
-			}catch (e) {
+			}
+			catch (e) {
 				console.log(e);
 			}
 		}
@@ -65,12 +82,12 @@ function Concatenation(dir) {
 		ext = "js";
 		backSlash = "";
 		deleteFile(dFile);
-		concatenatedString += "isConcatinated = true;\n";
+		concatenatedString += "";
 		ConcatenatedFiles = {};
 		for ( var i = 0; i < sFiles.length; i++) {
 			processFile(sFiles[i]);
 		}
-		concatenatedString += "isConcatinated = false;\n";
+		concatenatedString += "fm.isConcatinated = false;\n";
 		fs.open(dFile, 'a', 666, function(e, id) {
 			fs.write(id, concatenatedString, null, 'utf8', function() {
 				fs.close(id, function() {
@@ -80,9 +97,8 @@ function Concatenation(dir) {
 		});
 	};
 }
-function runall( ) {
+function runall() {
 	require("./Test.js");
-
 	var baseDir = "D:/workspace/jfm/web/javascript/", outputFile = "../contjs/Master.js";
 	var inputFiles = [];
 	inputFiles.push("D:/workspace/jfm/web/javascript/jfm/Master.js");

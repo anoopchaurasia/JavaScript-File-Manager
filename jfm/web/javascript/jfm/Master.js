@@ -4,6 +4,9 @@
  */
 
 (function( window, undefined ) {
+	if(window.fm && window.fm['package']){
+		return ;
+	}
 	// method to check if Object.defineProperty supported by browser.
 	// IE8 support Object.defineProperty only for dom object.
 	function doesDefinePropertyWork( object ) {
@@ -133,7 +136,7 @@
 		else {
 			return this;
 		}
-		if (window.isConcatinated && path.indexOf("http") != 0) {
+		if (fm.isConcatinated && path.indexOf("http") != 0 && fm.isExist(path)) {
 			return this;
 		}
 		path = path.replace(/\s/g, "");
@@ -250,7 +253,6 @@
 		
 		script.Package = o;
 		var temp = fm.basedir.replace(/\//gim,"");
-		// fm.isConcatinated && fm.holdReady(true);
 		if (typeof storePath[temp  + script.Class] == 'object') {
 			data = storePath[temp  + script.Class];
 			storePath[temp  + script.Class] = true;
@@ -850,9 +852,8 @@
 		if (typeof this.main == 'function') {
 			this.main(data);
 			delete this.main;
-			data = undefined;
 		}
-		return;
+		data = undefined;
 	}
 	
 	function createSetterGetterHelper( self, obj, source, isConst, isStatic ) {

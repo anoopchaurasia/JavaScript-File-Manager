@@ -2,6 +2,8 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+fm.Include("jquery");
+fm.Include("plugin.Hashchange");
 fm.Import("jfm.division.Division");
 fm.Import("jfm.query.QueryStr");
 fm.Import("jfm.hash.HashChange");
@@ -40,6 +42,5 @@ App = function (me, Division, QueryStr, HashChange, Topbar, Left){this.setMe=fun
 		d.addTo('body');
 	//	console.log(new Date().getTime() - t, new Date().getTime() - t2);
 	};
-	
 };
 
