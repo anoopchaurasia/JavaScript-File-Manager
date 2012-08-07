@@ -141,7 +141,9 @@
 		}
 		path = path.replace(/\s/g, "");
 		if (path.indexOf("http") != 0 && path.lastIndexOf(".js") != path.length - 3) {
-			path = fm.basedir + "/" + path.split(".").join("/") + ".js";
+			var p = path.split(".");
+			p = p[p.length-1];
+			path = fm.basedir + "/" + p + ".js";
 		}
 		include(path);
 		return this;
@@ -896,6 +898,10 @@
 		if (!po || !fn) {
 			return;
 		}
+		if(po[fn] instanceof classManager){
+			console.log("class Already exist", script.Class);
+			return;
+		}
 		if (!po[fn] && (po[fn] = window[fn])) {
 			try {
 				delete window[fn];
@@ -1615,6 +1621,1733 @@ jfm.division.Division = function (base, me, Part, Container){this.setMe=function
 };
 
 
+fm.Package("jfm.query");
+fm.Class("QueryStr");
+jfm.query.QueryStr = function (me){this.setMe=function(_me){me=_me;};
+
+	var keyValue;
+	this.shortHand = "QueryStr";
+	Static.main = function( ) {
+		var hu = window.location.search.substring(1), gy = hu.split("&"), val;
+		keyValue = {};
+		for ( var i = 0; i < gy.length; i++) {
+			val = gy[i].split("=");
+			keyValue[val[0]] = val[1];
+		}
+		keyValue;
+	};
+	Static.getQuery = function(name){
+		return keyValue[name];
+	};
+};
+
+
+fm.Package("jfm.hash");
+fm.Class("HashChange");
+jfm.hash.HashChange = function (me){this.setMe=function(_me){me=_me;};
+
+	var division;
+	
+	function onHashChange( hash ) {
+		var hash = location.hash.substring(1) || hash;
+		switch (hash) {
+			case("registration"):{
+				if(fm.isExist("com.registration.Registration")){
+					com.registration.Registration.onHashChange(division);
+				}else{
+					fm.Include("com.registration.Registration", division);
+				}
+				break;
+			}
+			case ("home"): {
+				if(fm.isExist("com.home.Home")){
+					com.home.Home.onHashChange(division, {});
+				}else{
+					fm.Include("com.home.Home",division, {});
+				}
+				break;
+			}
+			case ("chat"):{
+				if(fm.isExist("com.home.Chat")){
+					com.home.Chat.onHashChange(division, {});
+				}else{
+					fm.Include("com.home.Chat",division, {});
+				}
+				break;
+			}
+			default: {
+				if(fm.isExist("com.home.Login")){
+					com.home.Login.onHashChange(division);
+				}else{
+					fm.Include("com.home.Login", division);
+				}
+			}
+		}
+	}
+	
+	this.HashChange = function( d ) {
+		division = d;
+		console.log("a");
+		jQuery(window).hashchange(onHashChange);
+		onHashChange ("home");
+	};
+};
+
+
+/* 
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+fm.Package("jfm.html");
+fm.Class("Span");
+jfm.html.Span = function (me){this.setMe=function(_me){me=_me;};
+    
+    this.shortHand = "Span";
+    this.init = function(){
+        var config = Static.config  = {};
+        config["class"] = " jfm-text";
+    };
+    
+    this.Span = function(config){
+       if( typeof config == 'string'){
+            var t= config;
+            config = {};
+            config.text = t;
+        }
+        config["class"] = Component.getCSSClass(config["class"], this.config['class']);
+        this.el = jQuery('<span/>' , config);
+    }; 
+   
+};
+
+//jfm.html.Span.prototype = jQuery.prototype;
+
+
+
+
+
+/* 
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/* 
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+fm.Package("jfm.html");
+fm.Class("Img");
+jfm.html.Img = function (me){this.setMe=function(_me){me=_me;};
+    
+    this.shortHand = "Img";
+    this.init = function(){
+        var config = Static.config  = {};
+        config["class"] = "jfm-icon";
+    };
+    
+    this.Img = function(config){
+        if( typeof config == 'string'){
+            config = {
+                src : config
+            };
+        }
+        config["class"] = Component.getCSSClass(config['class'], this.config['class']);
+        if(config.src){
+            this.el = jQuery('<img/>' , config);
+        }else{
+            this.el = jQuery('<span/>' , config);
+        }
+    };
+};
+
+
+/* 
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+fm.Package("jfm.html");
+fm.Class("Anchor", "jfm.component.Component");
+jfm.html.Anchor = function (base, me, Component){this.setMe=function(_me){me=_me;};
+
+    this.shortHand = "Anchor";
+    this.Anchor = function(config){
+        if(typeof(config) == 'string'){
+            config = {
+                html:config
+            };
+        }
+        var items = jfm.html.Items.getItems(config);
+        base('<a/>', config);
+        this.add(items);
+    };
+};
+
+
+
+/* 
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+fm.Package("jfm.html");
+fm.Import("jfm.html.Span");
+fm.Import("jfm.html.Img");
+fm.Import("jfm.html.Anchor");
+fm.Class("Items");
+jfm.html.Items = function (me, Span, Img, Anchor){this.setMe=function(_me){me=_me;};
+
+    Static.getItems = function(c){
+        var items = [];
+        for(var k in c){
+            if(c.hasOwnProperty(k)){
+                switch(k){
+                    case 'text':
+                    case 'html':{
+                        items.push(new Span(c[k])); 
+                        delete c[k];
+                        break;
+                    }
+                    case 'icon':{
+                        items.push(new Img(c[k])); 
+                        delete c[k];
+                        break;
+                    }
+                    case 'iconCls':{
+                        items.push(new Img({'class':c[k]})); 
+                        delete c[k];
+                        break;  
+                    }
+                    case 'anchor':{
+                        items.push(new Anchor(c[k]));
+                        delete c[k];
+                        break; 
+                    }
+                }
+            }
+        }
+        if('items' in c){
+            items.concat(c.items);
+            delete c.items;
+        }
+        return items;
+    };
+};
+
+
+/* 
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+fm.Package("jfm.html");
+fm.Import("jfm.html.Items");
+fm.Class("Button", 'jfm.component.Component');
+jfm.html.Button = function (base, me, Items, Component){this.setMe=function(_me){me=_me;};
+    
+
+    this.shortHand = "Button";
+    this.init = function(){
+        var c = Static.Const.config = {};
+        c['class']  = "jfm-button-div jfm-button";
+    };
+    
+    this.Button = function(config){
+        var items = Items.getItems(config);
+        config.html = this.config.html;
+        config["class"] = Component.getCSSClass(config["class"], this.config['class']);
+        base('<button/>', config);
+        this.add(items);
+    };
+};
+
+
+/**
+ * Created with JetBrains WebStorm.
+ * User: anoop
+ * Date: 5/12/12
+ * Time: 2:54 AM
+ * To change this template use File | Settings | File Templates.
+ */
+fm.Package("jfm.lang");
+fm.Class("Character");
+jfm.lang.Character = function (me){this.setMe=function(_me){me=_me;};
+
+
+    this.shortHand = "Character";
+    Static.Const = {
+        UTF_CHAR : /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
+        CHARS : {
+            '\b' : '\\b',
+            '\t' : '\\t',
+            '\n' : '\\n',
+            '\f' : '\\f',
+            '\r' : '\\r',
+            '"' : '\\"',
+            '\\' : '\\\\'
+        },
+        rCRLF : /\r?\n/g,
+        EMPTY : "",
+        OPEN_O : '{',
+        CLOSE_O : '}',
+        OPEN_A : '[',
+        CLOSE_A : ']',
+        COMMA : ',',
+        COMMA_CR : ",\n",
+        CR : "\n",
+        COLON : ':',
+        COLON_SP : ': ',
+        QUOTE : '"'        
+    };
+    Static.Const.keys = {
+        BACKSPACE: 8,
+        TAB: 9,
+        ENTER: 13,
+        SHIFT: 16,
+        CTRL: 17,
+        ALT: 18,
+        BREAK: 19,
+        CAPSLOCK: 20,
+        ESCAPE: 27,
+        PAGEUP: 33,
+        PAGEDOWN: 34,
+        END: 35,
+        HOME: 36,
+        LEFTARROW: 37,
+        UPARROW: 38,
+        RIGHTARROW: 39,
+        DOWNARROW: 40,
+        INSERT: 45,
+        DELETE: 46,
+        ZERO: 48,
+        ONE: 49,
+        TWO: 50,
+        THREE: 51,
+        FOUR: 52,
+        FIVE: 53,
+        SIX: 54,
+        SEVEN: 55,
+        EIGHT: 56,
+        NINE: 57,
+        A: 65,
+        B: 66,
+        C: 67,
+        D: 68,
+        E: 69,
+        F: 70,
+        G: 71,
+        H: 72,
+        I: 73,
+        J: 74,
+        K: 75,
+        L: 76,
+        M: 77,
+        N: 78,
+        O: 79,
+        P: 80,
+        Q: 81,
+        R: 82,
+        S: 83,
+        T: 84,
+        U: 85,
+        V: 86,
+        W: 87,
+        X: 88,
+        Y: 89,
+        Z: 90,
+        LEFT_WINDOW_KEY:91,
+        RIGHT_WINDOW_KEY: 92,
+        SELECT_KEY: 93,
+        MULTIPLY: 106,
+        ADD: 107,
+        SUBTRACT: 109,
+        DECIMAL_POINT: 110,
+        DIVIDE: 111,
+        F1: 112,
+        F2: 113,
+        F3: 114,
+        F4: 115,
+        F5: 116,
+        F6: 117,
+        F7: 118,
+        F8: 119,
+        F9: 120,
+        F10: 121,
+        F11: 122,
+        F12: 123,
+        NUM_LOCK: 144,
+        SCROLLLOCK: 145,
+        SEMICOLON: 186,
+        EQUAL: 187,
+        COMMA: 188,
+        DASH: 189,
+        PERIOD: 190,
+        FORWARDSLASH: 191,
+        GRAVEACCENT: 192,
+        OPENBRACKET: 219,
+        BACKSLASH: 220,
+        CLOSEBRAKET: 221,
+        SINGLEQUOTE: 222
+    }   
+};
+
+/**
+ * Created with JetBrains WebStorm.
+ * User: anoop
+ * Date: 5/12/12
+ * Time: 2:52 AM
+ * To change this template use File | Settings | File Templates.
+ */
+fm.Package("jfm.io");
+fm.Import("jfm.lang.Character");
+fm.Class("Serialize");
+jfm.io.Serialize = function (me, Character){this.setMe=function(_me){me=_me;};
+
+
+    this.shortHand = "Serialize";
+    
+    function _char(c) {
+
+        if (!Character.CHARS[c]) {
+            Character.CHARS[c] = '\\u' + ('0000' + (+(c.charCodeAt(0))).toString(16))
+            .slice(-4);
+        }
+        return Character.CHARS[c];
+    }
+    function _string(s) {
+        return Character.QUOTE + s.replace(Character.UTF_CHAR, _char) + Character.QUOTE;
+    }
+    
+    function serialize(h, key, maxLevel) {
+        if(maxLevel <= 0 ){
+            return undefined;
+        }    
+        var value = h[key], a = [], arr,  t, k, v, bluePrint;
+        t = typeof value;
+        if(value instanceof window.jQuery){
+            return null;
+        }
+        switch (t) {
+            case "object" :
+                if(value==null){
+                    return undefined;
+                }
+                break;
+            case "string" :
+                return _string(value);
+            case "number" :
+                return isFinite(value) ? value : Character.NULL;
+            case "boolean" :
+                return value;
+            default :
+                return undefined;
+        }
+        arr = value.length !== undefined && value instanceof Array ? true : false;
+        var temp;
+        if (arr) { // Array
+            for (var i = value.length - 1; i >= 0; --i) {
+                temp = serialize(value, i, maxLevel - 1);
+                temp && a.push(temp);
+            }
+        }
+        else {
+        
+            for (k in value) {
+                if (value.hasOwnProperty(k) ) {                                          
+                    v = serialize(value, k, maxLevel - 1);
+                    if (v) {
+                        a.push( _string(k) + Character.COLON + v);
+                    }
+                }
+            }
+        }        
+        return arr ? Character.OPEN_A + a.join(Character.COMMA) + Character.CLOSE_A : Character.OPEN_O + a.join(Character.COMMA) + Character.CLOSE_O;
+    }
+    
+    this.Static.serialize = function(obj, maxLevel){
+        return serialize({
+            "" :obj
+        }, "", maxLevel || 1000 );
+    };
+    Static.JavaSerialize = function(obj){
+        if(obj.getClass && obj.getSerializable){
+            obj = obj.getSerializable();
+        }
+        var newObj = {};
+        if(typeof obj == 'object'){
+            for(var k in obj){
+                if(obj.hasOwnProperty(k)){
+                    if(obj[k].getClass && obj[k].getSerializable){
+                        newObj[k] = this.JavaSerialize(obj[k].getSerializable());
+                    }
+                    else{
+                        newObj[k] = this.JavaSerialize(obj[k]);
+                    }
+                }
+            }
+        }else{
+            newObj = obj;
+        }
+        return newObj;
+    };
+    this.Static.un = function __serialize__(d, cls){     
+        d = typeof d == 'object' ? d : jQuery.parseJSON(d);
+        var clsObj =  fm.stringToObject(cls);
+        var bluePrint = jQuery.parseJSON(bluePrints[cls]) || {};
+        var h = new clsObj(), s = {};
+        for(var k in d){            
+            if( bluePrint[k]  ){
+                if(bluePrint[k].pos == "_s_"   ){
+                    s[k] = bluePrint[k].type ? __serialize__(d[k], bluePrint[k].type) : d[k];
+                }
+                else if(bluePrint[k].type){
+                    h[k] = __serialize__(d[k], bluePrint[k].type);
+                }
+                else{
+                    h[k] = d[k];
+                }
+            }
+            else{
+                h[k] = d[k];                
+            }
+        }
+        h.setSerializable(s);
+        return h;
+    };
+};
+
+/**
+ * Created with JetBrains WebStorm.
+ * User: anoop
+ * Date: 5/12/12
+ * Time: 5:42 PM
+ * To change this template use File | Settings | File Templates.
+ */
+
+fm.Package("jfm.server");
+fm.Import("jfm.io.Serialize");
+fm.Class("Server");
+jfm.server.Server = function (me, Serialize){this.setMe=function(_me){me=_me;};
+
+    var me = this;
+    this.url = location.protocol + "//" + location.host + "/" ;
+    this.method = "process";
+    this.shortHand = "Server";
+    this.type = "html";
+    this.async = true;
+    this.parameters = {};
+    var singleton;
+    
+    this.errorCallback = function(msg) {
+    	location.hash = msg.responseText;
+        console.log(msg);
+    };
+    this.callback = function(msg) {
+    	console.log("callback", msg);
+    };
+    
+    this.Static.makeInstance = function(url){
+    	return new jfm.server.Server(url);
+    };
+    
+    this.Static.getInstance = function( url){  
+
+    	
+        if(!singleton){
+            singleton = new jfm.server.Server( url);
+            me = singleton;
+        }
+        else{
+        	singleton.url = url;
+        }
+        return singleton;
+    };
+    this.Private.Server = function( url){
+
+        this.url = url || this.url;
+    };
+    this.serviceCall = function( parameters, method, cb, err, type, async) {
+        try {
+            this.parameters = parameters || this.parameters || {};
+            this.parameters.method = method;
+            var param = this.parameters;
+            for(var k in this.parameters){
+                param.hasOwnProperty(k) && (typeof param[k] == 'object') && (param[k]=im.Serialize.serialize(param[k] ));
+            }   
+            async = async != undefined? async : this.async;
+            var aj = $.ajax({
+                url : this.url,
+                type : "POST",
+                data : param,
+                success : cb || this.callback,
+                error : err ||  this.errorCallback,
+                dataType : type || this.type,
+                async : async
+            });
+            return aj;
+        }
+        catch (r) {
+            (cb || me.errorCallback)(r);
+        }
+    };
+};
+
+
+
+
+
+/* 
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+
+fm.Package("jfm.cache");
+fm.Import("jfm.server.Server");
+fm.Class("Cache");
+jfm.cache.Cache = function (me, Server){this.setMe=function(_me){me=_me;};
+
+    var tmplServ, tmpltMethod, tempalateStorage, singleton ;
+    this.shortHand = "Cache";
+    this.getTemplate = function(name, path, cb){
+        
+        if(typeof path == 'string'){
+            name = path + "/" +name;
+        }
+        else if (typeof path == 'function'){
+            cb = path;
+        }
+        if(tempalateStorage[name]){
+        	cb && cb(tempalateStorage[name]);
+            return tempalateStorage[name];
+        }
+        var async = cb ? true:false;
+        tmplServ.serviceCall({
+            data:name
+        },tmpltMethod, function(resp){
+            tempalateStorage[name] = resp;  
+            cb && cb(resp);
+        }, null, 'html', async);
+        
+        return tempalateStorage[name];
+    };
+    this.Static.getInstance = function(){        
+        if(!singleton){
+            singleton = new Cache();
+        }
+        return singleton;
+    };
+    this.Cache = function(){
+    	tmplServ = Server.makeInstance("template");
+        tmpltMethod = "getTemplate";
+        tempalateStorage = {};
+    };
+};
+
+/* 
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+fm.Package("jfm.html");
+fm.Class("Constants");
+jfm.html.Constants = function (me){this.setMe=function(_me){me=_me;};
+    Static.Const = {
+        mail:/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i            
+    } ;
+};/* 
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+fm.Package("jfm.html");
+fm.Import("jfm.lang.Character");
+fm.Import("jfm.html.Img");
+fm.Import("jfm.html.Span");
+fm.Class("Popup", "jfm.html.Container");
+jfm.html.Popup = function (base, me, Character, Img, Span, Container){this.setMe=function(_me){me=_me;};
+    
+    this.shortHand = "Popup";
+    var pHead, pBody, pClose, callback, singleton;
+    var me = this;    
+    this.Private.Popup = function(cb){
+        callback = cb;
+        var Top = document.documentElement.scrollTop,
+        Left = document.documentElement.scrollLeft + 100;
+        var config = {
+            'class':"jfm-popup",
+            css:{
+                top:Top,
+                left:Left,
+                display:'none'
+            }
+        };
+        base(config);
+        pBody = new im.Container({
+            'class':"jfm-body"
+        });
+        pHead = new im.Container({
+            'class':"jfm-head unselectable"
+        });
+        pClose = new im.Img({
+            'class':"jfm-close", 
+            src:"img/close-button.jpg",
+            width:'auto',
+            height:'auto'
+        }); 
+        this.add([pClose, pHead, pBody]);
+        pClose.el.bind('click',function(){
+            me.hide();
+        });
+        this.method('keyup',function (e) {
+            if (e.keyCode == Character.keys.ESCAPE) {
+                me.hide();
+            }
+        });
+        this.el.appendTo('body');
+    };
+    Static.getInstance = function(){
+        if(!singleton){
+            singleton = new jfm.html.Popup();
+        }
+        return singleton;
+    };
+        
+    this.pBody = function(elem){
+        pBody.el.empty();
+        pBody.add(elem);
+        return  pBody.el.children();
+    };
+    
+    
+    this.hide = function (){    	
+        this.el.hide();
+        if (callback) callback();
+        return true;
+    };
+    
+    this.pHead = function(elem) {
+        pHead.el.empty().show().width(pBody.el.width());
+        pHead.add(elem);       
+        return pHead;
+    };
+    
+    this.getContainer = function(){
+        return pBody.el.children();
+    };
+    
+    this.show = function (leftMargin, topMargin) {
+
+        this.updateLayout(leftMargin, topMargin);
+        this.el.fadeIn(250,function(){
+            pHead.el.width(pBody.el.width());
+        });
+        this.el.trigger("focus");
+    };
+    
+    this.updateLayout = function(leftMargin, topMargin){
+       
+        var width = parseInt(this.el.css("width"),10),
+        height = parseInt(this.el.css("height"),10),
+        top = $(document).scrollTop(),
+        left =$(document).scrollLeft(),
+        screenWidth = $(window).width() - 10,
+        screenHeight = $(window).height() - 24;
+        if(isNaN(width)) width = this.el.width();
+        if(isNaN(height))height = this.el.height();
+        left = left + (screenWidth - width) / 2;            
+        top = (screenHeight - height) > 0 ? top + (screenHeight - height) / 2 : top;
+        leftMargin = leftMargin?leftMargin:0;
+        topMargin = topMargin?topMargin:10;
+        this.el.css({
+            top: top+topMargin,
+            left: left +leftMargin
+        });
+        pHead.el.width(pBody.el.width());
+    };
+    
+    this.showHint = function(el){        
+       
+        var span = new Span({text:el.attr('hintText'), css:{'text-align':'right', color:'#666'}});
+        span.el.width(el.width() + 20).height(el.height() -3).css("margin-top",'3px');
+        this.pBody(span.el);
+        pBody.el.css("margin",0);
+        pHead.el.hide();        
+        pClose.el.hide();
+        var left =  el.position().left - el.width() - 30, top =  el.position().top;
+        this.el.css({left:left, top: top,"padding":"0","margin":"0"});
+        this.el.show();
+    };
+    
+    this.hideHint = function(){
+        pBody.el.css("margin",'');
+        this.el.css({"padding":"","margin":""});
+        this.hide();
+    };
+};
+
+fm.Package("jfm.html.form");
+fm.Import("jfm.html.Constants");
+fm.Import("jfm.html.Popup");
+fm.Class("Text");
+jfm.html.form.Text = function (me, Constants, Popup){this.setMe=function(_me){me=_me;};
+
+    var originalColor, placeholder, datatype;
+    this.init = function(){
+    	Static.isPlaceHoderSuported = 'placeholder' in document.createElement("input");
+    };
+    this.Text = function(config){
+        
+        if(config instanceof jQuery){
+            this.el = config;
+        }
+        else if(config.nodeType == 1){
+            this.el = jQuery.apply(this, arguments);
+        }
+        else{
+            this.el = jQuery.call(this,'<input />', config);
+        }
+        this.el.attr("autocomplete","off");
+        this.el.blur(el_blur).click(el_click).keyup(el_keyup).keydown(el_keydown);
+        originalColor = this.el.css('color');
+        datatype = this.el.attr("datatype");
+        !this.isPlaceHoderSuported && ( placeholder = this.el.attr('placeholder') );
+        placeholder && enableHint(this.el);
+        addLogo(this.el);
+    };    
+    
+    Static.convertToJfm = function(inputs){  
+        var arr = [];
+        if(inputs instanceof jQuery){
+            inputs.each(function(){
+                if(this.type == 'text'){
+                    arr.push(new jfm.html.form.Text(this));
+                }
+            });
+        }
+        return arr;
+    };
+    
+    function addLogo(el){
+        var icon;
+       switch(datatype){        
+            case 'email':{
+                icon = "<span class='typeIcon' ></span>";
+                break;
+            }
+            case 'number':{
+                icon = "<img class='typeIcon' src='http://www.tutorialsscripts.com/free-icons/alphabet-characters/lower-case-letter/n-icon/red-small-letter-character-n-icon-256-x-256.jpg' />";
+                break;
+            }
+       }
+       if(icon){
+           el.parent().addClass("iconHandler");
+           el.width(el.width() - 33);
+           el.before(icon).after("<span class='validityHinter'></span>");
+       }
+    }
+    
+    function varifyValue(value){
+        switch(datatype){
+            case 'email':{
+                mailCheck(value);
+                break;
+            }
+            case 'number':{
+                numbercheck(value);
+                break;
+            }
+        }
+    }
+    
+    this.verify = function(value){
+        varifyValue(value);
+    };
+    
+    function mailCheck(value){
+        if(value && value.search(Constants.mail) == -1){
+            throw "Please enter a valid email address.";
+        }
+    }
+    
+    function numbercheck(value){
+        if(value && isNaN(value)){
+            throw "Only Number is allowed!";
+        }
+    }
+    
+    function el_keydown(e){
+        if(placeholder){
+            if(this.value == placeholder && String.fromCharCode(e.keyCode)){
+                this.value = "";
+                this.style.color = originalColor;
+            }           
+        }
+    }
+    
+    function el_keyup(e){
+        if(!this.value && placeholder){            
+            this.style.color = "#666666";
+            this.value = placeholder;
+            textSelect(this, 0, 0);
+        }
+    }
+    
+    function el_blur(){
+        try{
+            varifyValue(this.value); 
+            this.value && jQuery(this).next().show().removeClass("fail").addClass("pass");
+        }catch(e){
+        	jQuery(this).next().show().removeClass("pass").addClass("fail");
+        }
+    }
+    function el_click(){
+        this.value == placeholder && textSelect(this);
+    }
+    function textSelect(inp) {
+        if (inp.createTextRange) {
+            var r = inp.createTextRange();
+            r.collapse(true);
+            r.moveEnd('character', 0);
+            r.moveStart('character', 0);
+            r.select();
+        }else if(inp.setSelectionRange) {
+            inp.focus();
+            inp.setSelectionRange(0, 0);
+        }
+    }
+    
+    function enableHint (self){        
+        if(!self.val()){            
+            self.css('color','#666');
+            self.val( placeholder );
+        }
+    }
+};
+
+fm.Package("com.post");
+fm.Import("jfm.cache.Cache");
+fm.Import("jfm.html.form.Text");
+fm.Class("Top", "jfm.html.Button");
+com.post.Top = function (base, me, Cache, Text, Button){this.setMe=function(_me){me=_me;};
+
+
+	this.Top = function(center) {
+		base({
+			html : "Post",
+			'class':'green-btn',
+			css : {
+				'background-color' : "#ccc",
+				"position" : "absolute",
+				"right" : "5px"
+			}
+		});
+		
+		this.el.click(function(e) {
+			Cache.getInstance().getTemplate("post", function(resp) {
+				center.reset();
+				center.add(new Container({
+					html : resp
+				}));
+				center.el.find("form").submit(function(e){
+					e.preventDefault();
+					var data = jfm.html.FormManager.getData(this);
+					Server.getInstance("post").serviceCall(data,'save');
+					return false;
+				});
+				setTimeout(function() {
+					jfm.html.form.Text.convertToJfm(center.el.find("input[type='text']"));
+				}, 100);
+			});
+		});
+	};
+};
+
+/* 
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+fm.Package("jfm.html");
+fm.Class("Combobox", "jfm.html.Container");
+jfm.html.Combobox = function (base, me, Container){this.setMe=function(_me){me=_me;};
+
+    
+    this.shortHand = "Combobox";
+    var element, onChangeCB, self,notFoundCallback,
+    _selected_pair,
+    _key_list,
+    _settings,
+    _text_box,
+    _indexedList,
+    _value_list,
+    _result_box,
+    _btn,
+    _selected_element = $("noelem"),
+    KEY_UP = 38,
+    KEY_DOWN = 40,
+    KEY_ENTER = 13;
+    
+    this.Combobox = function(list, options, nfc ){
+        notFoundCallback = nfc;
+        self = this;
+        base({
+            "class": Component.getCSSClass(options.class + " jfm-combobox")
+        });
+        element = this.el;
+        if (list == null ) {
+            throw "list size is zero!";
+        }
+        
+        _settings = {
+            defaultText : "",
+            name:"",
+            maxDisplayResult : 1000,
+            triggerAtStart : true,
+            hideButton : false,
+            showLoadingIcon : false,
+            ignoreNumberOfCharacters : 0,
+            noFillUpAtStart : false,
+            depth : 2,
+            hintText : "",
+            inputBoxCSS : {},
+            onKeyDown: undefined,
+            onKeyUp: undefined,
+            resultBoxCSS : {},
+            inputTabIndex : -1,
+            shortKey : "ctrl + shift + c",
+            searchFunction : undefined,
+            resultFunction : undefined
+        };
+        _settings = jQuery.extend(_settings, options);
+        
+        ui();
+        list = this.updateData(list, options);
+        
+        _text_box.attr('tabindex', _settings.inputTabIndex).keyup(
+            textboxKeyUp).keydown(textboxKeyDown).click(textboxClick)
+        .focus(textboxOnFocus).blur(textboxOnBlur);
+        _result_box.mousemove(result_mouseEnterEvnt).bind("FocusOn",
+            result_focusOnEvnt).click(result_clickOnEvnt);
+        $(document).bind("click", function(e) {
+            if (_btn && (_btn.get(0) == e.target))
+                return;
+            if ((_text_box.get(0) == e.target))
+                return;
+            _result_box.hide();
+        });
+        $(document).keydown(
+            function(e) {
+                if (  checkMatchKeys ( e )) {
+                    if ( element[0].offsetLeft != 0
+                        && element[0].offsetTop != 0) {
+                        textboxClick();
+                        return false;
+                    }
+                }
+                return true;
+            });
+        
+    };
+    
+    this.getSelected = function(){
+    	return {key:this.el.find("input").val(), value: this.el.find("input").attr('key')};
+    };
+    
+    this.updateData= function(list, options){
+        !list && (list = []);
+        if( list.length > 0 && typeof list[0] == 'string'){
+            list = converList(list);
+        }
+        else if( list.nodeName == "SELECT"){
+            var templist = createListFromSelect(list);
+            options.name = options.name || list.name;
+            jQuery(list).after( this.el);
+            jQuery(list).hide();
+            list = templist;            
+        }
+        indexing(list);
+        return list;
+    }
+    
+    this.onChange = function(data){
+        if(typeof data == 'function'){
+            onChangeCB = data;
+        }
+        else if(typeof onChangeCB == 'function'){
+            onChangeCB(data.v, data.k);
+        }
+    }
+    
+    function createListFromSelect(list){
+        var option = jQuery(list).find('option:first'),
+        newList = [];
+        while(option.length){
+            newList.push({
+                k:option.html(), 
+                v: option.val()
+                });
+            option = option.next();
+        }
+        return newList;
+    }
+    
+    function converList(list){
+        
+        var newList = [], temp;
+        for(var k=0; k < list.length; k++){
+            temp = {
+                v:k, 
+                k : list[k]
+                };
+            newList.push(temp);
+        }
+        return newList;
+    }
+    
+    function getShortKey() {
+
+        var keys = _settings.shortKey.replace(/\s/g, "").toLowerCase()
+        .split("+");
+        if (keys.length == 0) {
+            return false;
+        }
+        var baseKeys = {
+            ctrlKey:false, 
+            shiftKey:false, 
+            altKey:false
+        };
+        var otherKey = {};
+        for( var k in keys ){
+            if( keys[ k ].length > 1){
+                baseKeys[ keys[ k ] + "Key" ] = true;
+            }
+            else{
+
+                otherKey[ keys[ k ].toLowerCase() ] = true;
+            }
+        }
+        return {
+            base : baseKeys, 
+            other: otherKey
+        };
+    }
+    
+    function checkMatchKeys( e ){
+        var keys = getShortKey( );
+        var base = keys.base;
+        var other = keys.other;
+        var checkMatchKeys = function ( e ){
+            if( e["ctrlKey"] == base[ "ctrlKey" ] && e["shiftKey"] == base[ "shiftKey" ] && e["altKey"] == base[ "altKey" ] ){
+                if( other[ String.fromCharCode( e.keyCode ).toLowerCase() ] ){
+                    return true;
+                }
+            }
+            return false;
+        };
+        return checkMatchKeys( e );
+
+    }
+    
+    function createTextBox() {
+
+        return $("<input />", {
+            "class" : "input_combo",
+            name : _settings.name
+        }).css(_settings.inputBoxCSS).appendTo(element);
+    }
+
+    function createResultContainer() {
+
+        var cssProp = {
+            'display' : 'none',
+            "overflow" : "auto",
+            "overflow-x" : "hidden"
+        };
+
+        return $("<div />", {
+            "class" : "combo_popup",
+            css : cssProp
+        }).css(_settings.resultBoxCSS).appendTo('body');
+    }
+
+    function createBtn() {
+
+        return $("<div />", {
+            "class" : "combo_btn"
+        }).appendTo(element);
+    }
+    
+    function createLoadingBtn() {
+
+        return $("<div />", {
+            "class" : "combo-loading",
+            css : {
+                display : 'none'
+            }
+        }).appendTo(element);
+    }
+    
+    function ui() {
+
+        element.css({
+            position : "relative"
+        }).empty();
+
+        _text_box = createTextBox();
+        _result_box = createResultContainer();
+        if (!_settings.hideButton) {
+            _btn = createBtn();
+            _btn.click(textboxClick);
+        }
+        else if (_settings.showLoadingIcon) {
+
+            _btn = createLoadingBtn();
+        }
+    }
+
+    function separateInKeyValueList(list) {
+        var key_list = [];
+        _value_list = [];
+        for ( var k = 0, len = list.length; k < len; k++) {
+            _value_list.push(list[k].v);
+            key_list.push({
+                k : list[k].k,
+                v : k
+            });
+        }
+        return key_list;
+    }
+    
+    function indexing(list) {
+
+        var newList = separateInKeyValueList(list);
+        _key_list = newList;
+        list = null;
+        _indexedList = indexSortedArray( newList, _settings.depth, 0 );
+
+        if (_settings.hintText != "") {
+            setTextboxValues(_settings.hintText);
+        }
+        else if ( _settings.triggerAtStart && !_settings.noFillUpAtStart ) {
+            _selected_pair = searchResultInIndexedArray(
+                _settings.defaultText, _indexedList, _settings )[0];
+            _selected_pair = _selected_pair || newList[0];
+            setTextboxValues();
+            self.onChange( _selected_pair );
+        }
+        newList = null;
+        return _indexedList;
+    }
+
+    function textboxKeyUp(e) {
+
+        switch (e.keyCode) {
+            case KEY_DOWN :
+            case KEY_UP :
+                break;
+            case KEY_ENTER :
+                _selected_element.trigger("click");
+                $(this).trigger('blur');
+                return false;
+                break;
+			default : {
+                createPopup($(this).val());
+                break;
+            }
+        }
+    }
+
+    function textboxKeyDown(e) {
+
+        switch (e.keyCode) {
+            case KEY_DOWN : {
+                if (_selected_element.length) {
+                    if (_selected_element.next().length)
+                        _selected_element.next().trigger('FocusOn');
+                }
+                else {
+                    _selected_element = $("li:first", _result_box);
+                    _selected_element.trigger('FocusOn');
+                }
+                break;
+            }
+            case KEY_UP : {
+                if (_selected_element.prev().length)
+                    _selected_element.prev().trigger('FocusOn');
+            }
+            break;
+            case KEY_ENTER:{
+                return false;
+            }
+        }
+    }
+
+    function textboxClick() {
+        _text_box.select();
+        _text_box.focus();
+        createPopup();
+    }
+
+    function textboxOnFocus() {
+
+        if (_settings.hintText != ''
+            && $.trim(this.value) == $.trim(_settings.hintText)) {
+            this.value = '';
+            this.style.color = '#000000';
+        }
+
+    }
+
+    function textboxOnBlur() {
+
+        if (_settings.hintText != '' && $.trim(this.value) == '') {
+            this.value = $.trim(_settings.hintText);
+            this.style.color = '#666666';
+        }
+    }
+
+    function result_mouseEnterEvnt(e) {
+        $(e.target).trigger('FocusOn', true);
+        return;
+    }
+    
+    function result_focusOnEvnt(e, data) {
+
+        var target = e.target;
+        if (target.nodeName.toUpperCase() != "LI")
+            return;
+        _selected_element.removeClass("selected");
+        var popupHeight = _result_box.height();
+        _selected_element = $(target);
+        _selected_element.addClass("selected");
+        if (!data) {
+            _result_box[0].scrollTop = (_selected_element.index() + 1) * 25
+            - popupHeight;
+        }
+        return;
+    }
+    
+    function result_clickOnEvnt(e) {
+
+        var target = e.target;
+        if (target.nodeName.toUpperCase() != "LI")
+            return;
+        var _clicked_li = $(target);
+        var key = _value_list[_clicked_li.attr('key')];
+        if (true) {
+            _selected_pair = {
+                k : _clicked_li.text(),
+                v : key
+            }
+            setTextboxValues();
+            if (_selected_pair.v && _selected_pair.v != "") {
+                self.onChange( _selected_pair);
+            }
+        }
+        _result_box.hide();
+        _text_box.blur();
+        return;
+    }
+    
+    function setTextboxValues(hint) {
+        if (hint && hint != "") {
+            _text_box.val(hint).css("color", "#666666");
+        }
+        else {
+            _text_box.val(_selected_pair.k).attr('key',_selected_pair.v).css("color", "");
+        }
+    }
+
+    function createUi(list, searchString) {
+			
+        if(typeof _settings.resultFunction== "function"){
+				
+            _settings.resultFunction( list, _value_list );
+            return ;
+        }
+        var pos = _text_box.offset();
+        var height = parseInt( _result_box.css('height') );
+        var winHeight = $(window).height();
+        if( height > (winHeight - pos.top) ){
+            pos.top = pos.top - height - _text_box.height();
+        }
+        _result_box.empty().width(_text_box.width()).css({
+            'display': '',
+            top:pos.top + _text_box.height(), 
+            left:pos.left
+            });
+        if (!list.length && isNaN(searchString)) {
+
+            _result_box.html("It is not present in the list");
+            return;
+        }
+
+        var ulList = createResultUI(list);
+        ulList.appendTo(_result_box);
+        (_selected_element = $("li:first", ulList)).trigger("FocusOn");
+    }
+    
+    function createPopup(searchString) {
+
+        if( _settings.ignoreNumberOfCharacters == 0){
+            searchString = searchString?searchString:"";
+        }
+        if (searchString == undefined) {
+            _result_box.hide();
+            return;
+        }
+        if(searchString.length == 0){
+            element.trigger("combo_data_cleared");
+        }
+        if (searchString.length < _settings.ignoreNumberOfCharacters) {
+            if(searchString.length != 0){
+                element.trigger("combo_data_cleared");
+            }
+            _result_box.hide();
+            return;
+        }
+        var resultArray;
+        if( _settings.searchFunction ){
+
+            resultArray  = _settings.searchFunction( searchString, _key_list );
+        }
+        else{
+
+            resultArray = searchResultInIndexedArray( searchString,
+                _indexedList, _settings );
+        }
+
+        if (resultArray.length) {
+            createUi(resultArray);
+        }
+        else if (notFoundCallback) {
+
+        	_btn && _btn.show();
+            notFoundCallback(searchString, function(list) {
+                _result_box.empty();
+                var newList = separateInKeyValueList(list);
+                createUi(newList, searchString);
+                _btn && _btn.hide();
+            });
+        }
+        else{
+            createUi([]);
+            _result_box.hide();
+        }
+    }
+
+    this.updateKey = function(origKey, value) {
+
+        key = origKey.toString().toLowerCase();
+        var temp = _indexedList;
+        for ( var m = 0; m <= _settings.depth; m++) {
+            temp = temp[key.charAt(m)];
+            if (temp == undefined) {
+                break;
+            }
+        }
+        if (temp != undefined) {
+            for ( var obj in temp) {
+
+                if (temp[obj].k && (temp[obj].k.toLowerCase() == key) ) {
+                    _value_list[temp[obj].v] = value;						
+                    break;
+                }
+            }
+        }
+        else {
+
+            this.addNewEntry(key, value);
+        }
+    };
+
+    this.addNewEntry = function( origKey, value ) {
+
+        key = origKey.toString();
+        var k = _value_list.length;
+        _value_list.push(value);
+        var tmpArr = [{
+            v : k,
+            k : origKey
+        }];
+        var temp = _indexedList;
+        var keyString;
+        var indexed = indexSortedArray(tmpArr, _settings.depth, 0	);
+        for ( var m = 0; m <= _settings.depth && m < key.length; m++) {
+
+            keyString = key.charAt(m).toLowerCase();
+            if (temp[keyString] == undefined) {
+                break;
+            }
+            temp = temp[keyString];
+            indexed = indexed[keyString];
+        }
+        if (temp[keyString] == undefined) {
+            temp[keyString] = indexed[keyString];
+				
+        }
+        else {
+            temp.push(indexed);
+        }
+        _key_list.push( tmpArr[0] );
+        _value_list.push( value );
+    };
+
+    function createResultUI(list) {
+
+        var $ul = $('<ul/>', {});
+        var i = 0;
+        $ul.attr("tabindex", 2);
+        var obj = "";
+        var len = list.length;
+        for (; i < len; i++) {
+            obj += "<li style='line-height:25px;display: block; cursor: pointer' key='"
+            + list[i].v + "'>" + list[i].k + "</li>";
+        }
+        ($ul).html(obj);
+        return $ul;
+    }
+    
+    function searchResultInIndexedArray(searchString, indexedArray, _settings) {
+        searchString = searchString.toLowerCase();
+        function searchStr(indexedArray, depth, start) {
+            var ch, resultArray = indexedArray, strlen = searchString.length, len = strlen < depth
+            ? strlen
+            : depth;
+            for ( var i = start; i < len; i++) {
+                ch = searchString.charAt(i);
+                resultArray = resultArray[ch];
+                if (!resultArray)
+                    return [];
+            }
+            if (strlen > len) {
+                var localIndexedArray = indexSortedArray(resultArray,
+                    strlen - 1, len);
+                resultArray = searchStr(localIndexedArray, strlen + 1, len);
+            }
+            return resultArray;
+        }
+        var totalResults = 0;
+        function convertResultIntoArray(searchedList, len, maxListLen) {
+
+            if (!searchedList)
+                return [];
+            var resultArray = [], k;
+            if ( searchedList[0] && typeof searchedList[0].k != "object" && typeof searchedList[0].k != "undefined" ) {
+                for (k in searchedList) {
+                    var val = searchedList[k].k;
+                    if ( val.length >= len && maxListLen > totalResults ){						
+                        totalResults++;
+                        resultArray.push( searchedList[k] );
+                    }else{                    	
+                        break;
+                    }
+                }
+                return resultArray;
+            }
+            for ( var i in searchedList ) {
+                resultArray  = resultArray.concat(convertResultIntoArray(
+                    searchedList[i], len, maxListLen));				 
+                if( totalResults >= maxListLen ){					 
+                    break;
+                }
+            }
+            return resultArray;
+        }
+        var searchedArray = searchStr(indexedArray, _settings.depth + 1,
+            0);
+        return convertResultIntoArray( searchedArray, searchString.length, _settings.maxDisplayResult);
+    }
+	
+    function indexSortedArray( list, maxDepth, currentDepth) {
+
+        var indexed = {};
+        function setString( clone, str ){
+            var ch;
+            for( var m = currentDepth; m< maxDepth; m++ ){
+                ch = str.charAt(m).toLowerCase();
+                clone[ ch ] = clone[ ch ] || { };
+                clone = clone[ ch ];
+            }
+            ch = str.charAt( m ).toLowerCase( );
+            clone[ ch ] = clone[ ch ]||[ ];
+            return clone[ ch ];
+        }
+        function createIndexArray( list ){
+
+            var kTh;
+            for( var k =0, len = list.length; k<len; k++ ){
+                kTh = list[ k ];
+                setString( indexed, kTh.k ).push( kTh );
+
+            }
+            return indexed;
+        }
+        return createIndexArray( list );
+    }
+};
+
+
+/* 
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+fm.Package("com.region");
+fm.Import("jfm.html.Span");
+fm.Import("com.post.Top");
+fm.Import("jfm.html.Combobox");
+fm.Class("Topbar", 'jfm.html.Container');
+com.region.Topbar = function (base, me, Span, Top, Combobox, Container) {
+	this.setMe = function( _me ) {
+		me = _me;
+	};
+	
+	var openedMenu;
+	
+	function loadFacebook( ) {
+		return ;
+		var c = document.createElement("script");
+		c.src = '//connect.facebook.net/en_US/all.js';
+		document.getElementsByTagName('head')[0].appendChild(c);
+	}
+	
+	this.Topbar = function( division ) {
+		
+		base({
+		    height : 100,
+		    css : {
+			    'background-color' : '#FCF0FE'
+		    }
+		});
+		
+		loadFacebook();
+		
+		var self = this;
+		this.add(new Container({
+		    html : "<a href='#'>Kerana</a>",
+		    'class' : "logo"
+		}));
+		var s;
+		this.add(new Button({
+		    html : "Register",
+		    'class' : 'register green-btn',
+		    click:function(){
+		    	if(fm.isExist('shop.Register') ){
+		    		s = new shop.Register(division);
+		    	}
+		    	else{
+		    		fm.Include("shop.Register", division);
+		    	}
+		    }
+		}));
+		
+		$(document).click(function( ) {
+			openedMenu && openedMenu.hide();
+		});
+		
+		Cache.getInstance().getTemplate('home', function( data ) {
+			self.el.append(data);
+			self.el.find(".category").click(division, onCategoryClick);
+		});
+	};
+	
+	function onCategoryClick( e ) {
+		if (e.target.nodeName == "SPAN") {
+			openedMenu && openedMenu.hide();
+			openedMenu = $(e.target).next().show();
+		}
+		else if (e.target.nodeName == "A") {
+			openedMenu.hide();
+			if (fm.isExist("com.home.SubCategory")) {
+				com.home.SubCategory.showSubCategory(e.target.href);
+			}
+			else {
+				fm.Include("com.home.SubCategory", [ e.data, e.target.href ]);
+			}
+		}
+		return false;
+	}
+	
+};
+/* 
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+fm.Package("com.region");
+fm.Import("jfm.html.Span");
+fm.Import("jfm.html.Button");
+fm.Import("com.post.Top");
+fm.Import("jfm.html.Combobox");
+fm.Class("Left", 'jfm.html.Container');
+com.region.Left = function (base, me, Span, Button, Top, Combobox, Container) {
+	this.setMe = function(_me) {
+		me = _me;
+	};
+	//http://searchupc.com/developers/welcome.aspx
+	this.Left = function(division) {
+		base({
+			width : 300,
+			'class' : 'right',
+			css : {
+				'height' : '100%',
+				'background-color' : '#FCF0FE'
+			}
+		});
+		this.add("<div>Create List: </div>");
+		var states = new Combobox([], {
+			hintText : "Type Keywords (CTRL + SHIFT + c)",
+			inputTabIndex : 3,
+			hideButton : true,
+			'class' : "type-combo",
+			ignoreNumberOfCharacters : 1
+		}, function(searchString, cb) {
+			Server.getInstance("search").serviceCall({
+				data : searchString
+			}, "getRelevenceData", function(resp) {
+				resp = JSON.parse(resp);
+				var arr = [], data;
+				for ( var k = 0, len = resp.length; k < len; k++) {
+					data = {
+						k : resp[k].str,
+						v : resp[k].id
+					};
+					arr.push(data);
+				}
+				cb(arr);
+			});
+			cb([ {
+				k : "loading.......",
+				v : ""
+			} ]);
+		});
+		states.el.addClass("searchProduct");
+		this.add(states);
+		var count = 3;
+		var btn = new Button({
+			tabindex : 2,
+			html : "Add",
+			'class' : "add-category green-btn"
+		});
+		var self = this;
+		btn.el.click(function() {
+			self.add(count, new Container({
+				html : '<span>' + states.getSelected().key
+						+ '</span><img style="width:20px; float:right;margin-right: 16px; height:20px" src="/img/wrong_answer.gif" />'
+			}));
+			count++;
+			console.log(states.getSelected());
+			return false;
+		});
+		this.el.click(function(e) {
+			if (e.target.nodeName == "IMG") {
+				jQuery(e.target).parents("div:first").remove();
+				count--;
+			}
+		});
+		this.add(btn);
+	};
+
+};
 /* 
  * To change this template, choose Tools | Templates
  * and open the template in the editor.

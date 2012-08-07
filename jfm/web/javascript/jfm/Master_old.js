@@ -28,7 +28,7 @@ t= new Date().getTime();
         //Storing key:value in separate variable as using original object will create infinit loop. 
         var valueStorage = {};
         // Adding setter and getter 
-        classProto.prototype.$add = function (obj, key, val, isConst, isStatic) {
+        classProto.prototype.$add = function (me) {
             
             // val has a value for it's original object.
             if (val != undefined ) {
