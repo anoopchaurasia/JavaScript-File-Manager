@@ -24,10 +24,10 @@ jfm.hash.HashChange = function (me){this.setMe=function(_me){me=_me;};
 				break;
 			}
 			case ("chat"):{
-				if(fm.isExist("com.home.Chat")){
-					com.home.Chat.onHashChange(division, {});
+				if(fm.isExist("com.chat.Chat")){
+					com.chat.Chat.onHashChange(division, {});
 				}else{
-					fm.Include("com.home.Chat",division, {});
+					fm.Include("com.chat.Chat",division, {});
 				}
 				break;
 			}

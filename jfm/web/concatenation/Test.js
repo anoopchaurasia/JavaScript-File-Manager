@@ -1,13 +1,14 @@
 var fs = require('fs');
+var circulerReferenc = {};
 function Concatenation( ) {
 	function executeFile( data ) {
 		var imports = [ 'me' ], add = true, result;
 		var d = data.replace(/\s/g, ""), reg = /fm.class|fm.AbstractClass/mi;
 		if(d.indexOf("prototype.$add=function(obj,key,val,isConst)") !=-1){
-			return;
+			return "";
 		}
 		if (!d.match(reg)) {
-			return;
+			return "";
 		}
 		if (d.indexOf("this.setMe=function(_me){me=_me;}") != -1) {
 			add = false;
@@ -33,27 +34,30 @@ function Concatenation( ) {
 			return data.replace(reg, "= function (" + imports.join(", ") + "){this.setMe=function(_me){me=_me;};");
 		}
 		reg = /=\s*function\s*\((.*?)\)/mi;
+		console.log("reached");
 		return data.replace(reg, "= function (" + imports.join(", ") + ")");
 	}
 	
 	this.concatenateJSFiles = function( sFiles ) {
+		console.log("test:" + sFiles);
 		var data = executeFile(fs.readFileSync(sFiles).toString('utf-8'));
 		data && fs.writeFile(sFiles, data);
 	};
 }
 
 function runall( ) {
+	console.log("Test:start");
 	var ajt = new Concatenation(),
 	lastRun = Number(fs.readFileSync("lastRun").toString('utf-8'));
 	walk("D:/workspace/jfm/src/node", ajt.concatenateJSFiles, lastRun);
 	walk("D:/workspace/jfm/web/javascript", ajt.concatenateJSFiles, lastRun);
 	fs.writeFile("lastRun", "" + Date.now(), function( ) {});
+	console.log("Test");
 }
 
 var fs = require('fs');
 var walk = function( dir, cb, lastRun ) {
 	var stat, file,
-	
 	list = fs.readdirSync(dir);
 	if (list) {
 		for ( var l = 0; l < list.length; l++) {
