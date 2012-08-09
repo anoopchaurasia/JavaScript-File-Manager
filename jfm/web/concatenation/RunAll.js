@@ -1,5 +1,22 @@
 var fs = require('fs');
 var IncludedInside = [];
+
+function mkdir(path, root) {
+	console.log("path:" + path, root);
+	if(!path){
+		return;
+	}
+    var dirs = path.split('/'), dir = dirs.shift(), root = (root||'')+dir+'/';
+
+    try { fs.mkdirSync(root); }
+    catch (e) {
+        //dir wasn't made, something went wrong
+        if(!fs.statSync(root).isDirectory()) throw new Error(e);
+    }
+
+    return !dirs.length||mkdir(dirs.join('/'), root);
+}
+
 function Concatenation(sourceDir, destinDir) {
 
 	var  isConcatinatedAdded = false, concatenatedString = "", ConcatenatedFiles = {};
@@ -85,28 +102,29 @@ function Concatenation(sourceDir, destinDir) {
 	this.concatenateJSFiles = function(sFiles, concate) {
 		ext = "js";
 		backSlash = "";
-		var len = sFiles.length,
-		dFile = "../contjs/" + sFiles[len - 1].substring( sFiles[len - 1].lastIndexOf("/") + 1);
-		deleteFile(dFile);
+		var len = sFiles.length;
+		var dFile =  sFiles[len - 1];
+		mkdir(dFile.substring(0,  dFile.lastIndexOf("/") ), destinDir);
+		deleteFile(destinDir + dFile);
 		
 		concatenatedString += "";
-		ConcatenatedFiles = concate;
+		ConcatenatedFiles = {};
 		for ( var i = 0; i < sFiles.length; i++) {
 			processFile(sourceDir + sFiles[i]);
 		}
 		concatenatedString += "fm.isConcatinated = false;\n";
-		console.log( dFile);
 		fs.writeFileSync(destinDir + dFile, concatenatedString, 'utf8',  function(e) {
 			console.log(e);
 		});
 		var s, fname;
+		console.log(destinDir + dFile, IncludedInside);
 		while(IncludedInside.length){
 			fname = IncludedInside.pop();
 			if(fname.indexOf('http') != -1){
 				continue;
 			}
-			s = "D:/workspace/jfm/web/javascript/" + fname + ".js";
-			d = "../contjs/"+ fname.substring(fname.lastIndexOf("/") + 1) + ".js";
+			s =  fname + ".js";
+			d =  fname.substring(fname.lastIndexOf("/") + 1) + ".js";
 			 new Concatenation(sourceDir, destinDir).concatenateJSFiles([s], ConcatenatedFiles);
 		}
 	};
@@ -122,3 +140,5 @@ function runall() {
 	ajt.concatenateJSFiles(inputFiles, {});
 }
 runall();
+
+
