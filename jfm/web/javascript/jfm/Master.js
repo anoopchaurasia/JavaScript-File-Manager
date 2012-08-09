@@ -257,18 +257,18 @@
 			data = storePath[temp  + script.Class];
 			storePath[temp  + script.Class] = true;
 		}
-		callAfterDelay(script, data, !!o[script.className]);
+		callAfterDelay(script, data, o[script.className]);
 		currentScript = undefined;
 	};
 	
 	// callAfterDelay:Delay the call for classManager so that file get compiled
 	// completely.
 	// And classManager get all information about the function.
-	function callAfterDelay( script, data,  isClassExist) {
+	function callAfterDelay( script, data,  older) {
 		setTimeout(function( ) {
 			// Calling classmanager after a short delay so that file get
 			// completely ready.
-			classManager(script, data, isClassExist);
+			classManager(script, data, older);
 			// fm.holdReady(false);
 		});
 	}
@@ -890,13 +890,14 @@
 		}
 	}
 	
-	function classManager( script, data, isClassExist ) {
+	function classManager( script, data, older ) {
 		
 		var po = script.Package, fn = script.className;
 		if (!po || !fn) {
 			return;
 		}
-		if(isClassExist){
+		if(older){
+			po[fn] = older;
 			return;
 		}
 		if (!po[fn] && (po[fn] = window[fn])) {
