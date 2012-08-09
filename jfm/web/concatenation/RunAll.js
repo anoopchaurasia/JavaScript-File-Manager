@@ -1,8 +1,8 @@
 var fs = require('fs');
 var IncludedInside = [];
-function Concatenation(dir) {
+function Concatenation(sourceDir, destinDir) {
 
-	var  isConcatinatedAdded = false, concatenatedString = "", ConcatenatedFiles = {}, javascriptSourceFolder = dir;
+	var  isConcatinatedAdded = false, concatenatedString = "", ConcatenatedFiles = {};
 
 	function executeFile(data) {
 
@@ -21,7 +21,7 @@ function Concatenation(dir) {
 			result = result.substring(1, result.length - 1).split(",")[1];
 			if (result) {
 				result = result.substring(1).trim().replace(/\./g, "/") + ".js";
-				processFile(javascriptSourceFolder + result);
+				processFile(sourceDir + result);
 			}
 		}
 
@@ -35,7 +35,7 @@ function Concatenation(dir) {
 				IncludedInside.push(result.split(",")[0].replace(/"/gm,''));
 				continue;
 			}
-			processFile(javascriptSourceFolder + result);
+			processFile(sourceDir + result);
 		}
 
 		reg = /fm.import\((.*?)\)/gi;
@@ -43,7 +43,7 @@ function Concatenation(dir) {
 		while (result = reg.exec(d)) {
 			result = result[1];
 			result = result.substring(1, result.length - 1).replace(/\./g, "/") + ".js";
-			processFile(javascriptSourceFolder + result);
+			processFile(sourceDir + result);
 		}
 
 
@@ -53,7 +53,7 @@ function Concatenation(dir) {
 
 			for ( var k = 0; k < result.length; k++) {
 				;
-				processFile(javascriptSourceFolder + result[k].substring(1, result[k].length - 1).replace(/\./g, "/") + ".js");
+				processFile(sourceDir + result[k].substring(1, result[k].length - 1).replace(/\./g, "/") + ".js");
 			}
 		}
 		if (!isConcatinatedAdded) {
@@ -82,25 +82,24 @@ function Concatenation(dir) {
 		});
 	}
 
-	this.concatenateJSFiles = function(sFiles, dFile) {
+	this.concatenateJSFiles = function(sFiles, concate) {
 		ext = "js";
 		backSlash = "";
-		var len = sFiles.length;
-		dFile = dFile || "../contjs/" + sFiles[len - 1].substring( sFiles[len - 1].lastIndexOf("/") + 1) + ".js"
+		var len = sFiles.length,
+		dFile = "../contjs/" + sFiles[len - 1].substring( sFiles[len - 1].lastIndexOf("/") + 1);
 		deleteFile(dFile);
 		
 		concatenatedString += "";
-		ConcatenatedFiles = {};
+		ConcatenatedFiles = concate;
 		for ( var i = 0; i < sFiles.length; i++) {
-			processFile(sFiles[i]);
+			processFile(sourceDir + sFiles[i]);
 		}
 		concatenatedString += "fm.isConcatinated = false;\n";
 		console.log( dFile);
-		fs.writeFileSync(dir + dFile, concatenatedString, 'utf8',  function(e) {
+		fs.writeFileSync(destinDir + dFile, concatenatedString, 'utf8',  function(e) {
 			console.log(e);
 		});
-		var s,d, fname;
-		console.log(IncludedInside);
+		var s, fname;
 		while(IncludedInside.length){
 			fname = IncludedInside.pop();
 			if(fname.indexOf('http') != -1){
@@ -108,19 +107,18 @@ function Concatenation(dir) {
 			}
 			s = "D:/workspace/jfm/web/javascript/" + fname + ".js";
 			d = "../contjs/"+ fname.substring(fname.lastIndexOf("/") + 1) + ".js";
-			console.log(s, d);
-			 new Concatenation(dir).concatenateJSFiles([s], d);
+			 new Concatenation(sourceDir, destinDir).concatenateJSFiles([s], ConcatenatedFiles);
 		}
 	};
 }
 
 function runall() {
 	require("./Test.js");
-	var baseDir = "D:/workspace/jfm/web/javascript/", outputFile = "../contjs/Master.js";
+	var sourceDir = "D:/workspace/jfm/web/javascript/", destinDir =  "D:/workspace/jfm/web/contjs/";
 	var inputFiles = [];
-	inputFiles.push("D:/workspace/jfm/web/javascript/jfm/Master.js");
-	inputFiles.push("D:/workspace/jfm/web/javascript/App.js");
-	var ajt = new Concatenation(baseDir);
-	ajt.concatenateJSFiles(inputFiles);
+	inputFiles.push("jfm/Master.js");
+	inputFiles.push("App.js");
+	var ajt = new Concatenation(sourceDir, destinDir);
+	ajt.concatenateJSFiles(inputFiles, {});
 }
 runall();
