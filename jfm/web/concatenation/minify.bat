@@ -1,1 +1,0 @@
-java -jar  compiler.jar --js ../contjs/Master_Advanced.js  --js_output_file ../contjs/Master_Advanced.jsmin.js
