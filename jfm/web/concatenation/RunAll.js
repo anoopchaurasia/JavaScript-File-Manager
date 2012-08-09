@@ -145,10 +145,10 @@ function createJFM( ) {
 		var imports = [ 'me' ], add = true, result;
 		var d = data.replace(/\s/g, ""), reg = /fm.class|fm.AbstractClass/mi;
 		if (d.indexOf("prototype.$add=function(obj,key,val,isConst)") != -1) {
-			return "";
+			return;
 		}
 		if (!d.match(reg)) {
-			return "";
+			return;
 		}
 		if (d.indexOf("this.setMe=function(_me){me=_me;}") != -1) {
 			add = false;
@@ -180,7 +180,7 @@ function createJFM( ) {
 	this.create = function( sFiles ) {
 		console.log("test:" + sFiles);
 		var data = executeFile(fs.readFileSync(sFiles).toString('utf-8'));
-		data && fs.writeFile(sFiles, data);
+		data && fs.writeFileSync(sFiles, data, 'utf-8');
 	};
 }
 
