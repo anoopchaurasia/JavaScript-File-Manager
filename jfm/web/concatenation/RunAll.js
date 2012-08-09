@@ -91,7 +91,13 @@ function Concatenation( sourceDir, destinDir ) {
 		// dfdfdf
 		});
 	}
-	
+	function clone(obj){
+		var newobj = {};
+		for(var k in obj){
+			newobj[k]= obj[k];
+		}
+		return newobj;
+	}
 	this.concatenateJSFiles = function( sFiles, concate ) {
 		ext = "js";
 		backSlash = "";
@@ -101,7 +107,7 @@ function Concatenation( sourceDir, destinDir ) {
 		deleteFile(destinDir + dFile);
 		
 		concatenatedString += "";
-		ConcatenatedFiles = {};
+		ConcatenatedFiles = concate;
 		for ( var i = 0; i < sFiles.length; i++) {
 			processFile(sourceDir + sFiles[i]);
 		}
@@ -117,7 +123,7 @@ function Concatenation( sourceDir, destinDir ) {
 				continue;
 			}
 			s = fname + ".js";
-			new Concatenation(sourceDir, destinDir).concatenateJSFiles([ s ], ConcatenatedFiles);
+			new Concatenation(sourceDir, destinDir).concatenateJSFiles([ s ], clone(ConcatenatedFiles) );
 		}
 	};
 }

@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-fm.Include("jquery");
 fm.Include("plugin.Hashchange");
 fm.Import("jfm.division.Division");
 fm.Import("jfm.query.QueryStr");

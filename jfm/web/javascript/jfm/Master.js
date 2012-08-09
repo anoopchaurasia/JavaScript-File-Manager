@@ -136,7 +136,7 @@
 		else {
 			return this;
 		}
-		if (fm.isConcatinated && path.indexOf("http") != 0 && fm.isExist(path)) {
+		if (fm.isConcatinated && path.indexOf("http") != 0) {
 			return this;
 		}
 		path = path.replace(/\s/g, "");
@@ -207,7 +207,6 @@
 		!currentScript && this.Package();
 		currentScript.isInterface = true;
 		this.Class.apply(this, arguments);
-		
 	};
 	
 	fm['abstractClass'] = fm.AbstractClass = function( ) {
@@ -236,7 +235,10 @@
 			}
 			o = o[s[k]];
 		}
-		return true;
+		if(typeof o == 'object' && o.name == '___manager___'){
+			return true;
+		}
+		return false;
 	};
 	
 	// fm.Class creates a jfm class.
@@ -896,7 +898,7 @@
 		if (!po || !fn) {
 			return;
 		}
-		if(older){
+		if(typeof(older) == 'function' && older.name == '___manager___'){
 			po[fn] = older;
 			return;
 		}
@@ -909,7 +911,7 @@
 			}
 		}
 		var Class = po[fn];
-		po[fn] = function manager( ) {
+		po[fn] = function ___manager___( ) {
 			var currentObj = createClassInstance.call(this, po[fn], script, fn, Class);
 			if (!this.__base___) {
 				currentObj.constructor.apply(currentObj, arguments);
