@@ -43,12 +43,8 @@ com.region.Topbar = function (base, me, Span, Top, Combobox, Container) {
 		    html : "Register",
 		    'class' : 'register green-btn',
 		    click:function(){
-		    	if(fm.isExist('shop.Register') ){
-		    		s = new shop.Register(division);
-		    	}
-		    	else{
-		    		fm.Include("shop.Register", division);
-		    	}
+		    	location.hash="register";
+		    	return false;
 		    }
 		}));
 		

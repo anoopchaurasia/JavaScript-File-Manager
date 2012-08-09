@@ -1,11 +1,9 @@
 fm.Package("jfm.hash");
 fm.Class("HashChange");
 jfm.hash.HashChange = function (me){this.setMe=function(_me){me=_me;};
-
 	var division;
-	
-	function onHashChange( hash ) {
-		var hash = location.hash.substring(1) || hash;
+	function onHashChange(  ) {
+		var hash = location.hash.substring(1);
 		switch (hash) {
 			case("registration"):{
 				if(fm.isExist("com.registration.Registration")){
@@ -31,6 +29,15 @@ jfm.hash.HashChange = function (me){this.setMe=function(_me){me=_me;};
 				}
 				break;
 			}
+			case ("register"):{
+				if(fm.isExist('shop.Register') ){
+		    		s = new shop.Register(division);
+		    	}
+		    	else{
+		    		fm.Include("shop.Register", division);
+		    	}
+				break;
+			}
 			default: {
 				if(fm.isExist("com.home.Login")){
 					com.home.Login.onHashChange(division);
@@ -45,7 +52,12 @@ jfm.hash.HashChange = function (me){this.setMe=function(_me){me=_me;};
 		division = d;
 		console.log("a");
 		jQuery(window).hashchange(onHashChange);
-		onHashChange ("home");
+		if(location.hash.length < 2){
+			location.hash="home";
+		}
+		else{
+			onHashChange();
+		}
 	};
 };
 
