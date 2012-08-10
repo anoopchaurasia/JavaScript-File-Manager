@@ -235,7 +235,7 @@
 			}
 			o = o[s[k]];
 		}
-		if(typeof o == 'object' && o.name == '___manager___'){
+		if(typeof o == 'function' && o.name == '___manager___'){
 			return true;
 		}
 		return false;
@@ -931,9 +931,7 @@
 	}
 })(window);
 
-fm.basedir = "/javascript";
-
-fm.isConcatinated = true; 
+fm.basedir = "/javascript";fm.isConcatinated = true; 
 /*!
  * jQuery hashchange event - v1.3 - 7/21/2010
  * http://benalman.com/projects/jquery-hashchange-plugin/
@@ -1672,10 +1670,11 @@ jfm.hash.HashChange = function (me){this.setMe=function(_me){me=_me;};
 			}
 			case ("register"):{
 				if(fm.isExist('shop.Register') ){
-		    		s = new shop.Register(division);
+		    		 shop.Register.hashChange(division);
 		    	}
 		    	else{
 		    		fm.Include("shop.Register", division);
+		    		
 		    	}
 				break;
 			}
@@ -1686,6 +1685,8 @@ jfm.hash.HashChange = function (me){this.setMe=function(_me){me=_me;};
 					fm.Include("com.home.Login", division);
 				}
 			}
+			
+			//location.reload();
 		}
 	}
 	
@@ -2146,9 +2147,9 @@ jfm.server.Server = function (me, Serialize){this.setMe=function(_me){me=_me;};
     var singleton;
     
     this.errorCallback = function(msg) {
-    	location.hash = msg.responseText;
         console.log(msg);
     };
+    
     this.callback = function(msg) {
     	console.log("callback", msg);
     };
@@ -2158,7 +2159,6 @@ jfm.server.Server = function (me, Serialize){this.setMe=function(_me){me=_me;};
     };
     
     this.Static.getInstance = function( url){  
-
     	
         if(!singleton){
             singleton = new jfm.server.Server( url);
@@ -2175,11 +2175,13 @@ jfm.server.Server = function (me, Serialize){this.setMe=function(_me){me=_me;};
     };
     this.serviceCall = function( parameters, method, cb, err, type, async) {
         try {
-            this.parameters = parameters || this.parameters || {};
-            this.parameters.method = method;
+            this.parameters = typeof (parameters ) == 'objet' && parameters != null ? parameters : this.parameters;
+            typeof(parameters) == 'function' && (cb = paramaters);
+            typeof (method) == 'string' && (this.parameters.method = method);
+            typeof(method) == 'function' && (cb = method);
             var param = this.parameters;
             for(var k in this.parameters){
-                param.hasOwnProperty(k) && (typeof param[k] == 'object') && (param[k]=im.Serialize.serialize(param[k] ));
+                param.hasOwnProperty(k) && (typeof param[k] == 'object') && (param[k]=Serialize.serialize(param[k] ));
             }   
             async = async != undefined? async : this.async;
             var aj = $.ajax({
@@ -2419,7 +2421,6 @@ jfm.html.form.Text = function (me, Constants, Popup){this.setMe=function(_me){me
         datatype = this.el.attr("datatype");
         !this.isPlaceHoderSuported && ( placeholder = this.el.attr('placeholder') );
         placeholder && enableHint(this.el);
-        addLogo(this.el);
     };    
     
     Static.convertToJfm = function(inputs){  

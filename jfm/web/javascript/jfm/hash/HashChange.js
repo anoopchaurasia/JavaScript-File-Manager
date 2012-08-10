@@ -35,6 +35,7 @@ jfm.hash.HashChange = function (me){this.setMe=function(_me){me=_me;};
 		    	}
 		    	else{
 		    		fm.Include("shop.Register", division);
+		    		
 		    	}
 				break;
 			}
@@ -45,6 +46,8 @@ jfm.hash.HashChange = function (me){this.setMe=function(_me){me=_me;};
 					fm.Include("com.home.Login", division);
 				}
 			}
+			
+			//location.reload();
 		}
 	}
 	

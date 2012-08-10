@@ -21,9 +21,9 @@ jfm.server.Server = function (me, Serialize){this.setMe=function(_me){me=_me;};
     var singleton;
     
     this.errorCallback = function(msg) {
-    	location.hash = msg.responseText;
         console.log(msg);
     };
+    
     this.callback = function(msg) {
     	console.log("callback", msg);
     };
@@ -33,7 +33,6 @@ jfm.server.Server = function (me, Serialize){this.setMe=function(_me){me=_me;};
     };
     
     this.Static.getInstance = function( url){  
-
     	
         if(!singleton){
             singleton = new jfm.server.Server( url);
@@ -50,11 +49,13 @@ jfm.server.Server = function (me, Serialize){this.setMe=function(_me){me=_me;};
     };
     this.serviceCall = function( parameters, method, cb, err, type, async) {
         try {
-            this.parameters = parameters || this.parameters || {};
-            this.parameters.method = method;
+            this.parameters = typeof (parameters ) == 'object' && parameters != null ? parameters : this.parameters;
+            typeof(parameters) == 'function' && (cb = paramaters);
+            typeof (method) == 'string' && (this.parameters.method = method);
+            typeof(method) == 'function' && (cb = method);
             var param = this.parameters;
             for(var k in this.parameters){
-                param.hasOwnProperty(k) && (typeof param[k] == 'object') && (param[k]=im.Serialize.serialize(param[k] ));
+                param.hasOwnProperty(k) && (typeof param[k] == 'object') && (param[k]=Serialize.serialize(param[k] ));
             }   
             async = async != undefined? async : this.async;
             var aj = $.ajax({

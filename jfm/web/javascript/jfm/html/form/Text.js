@@ -25,7 +25,6 @@ jfm.html.form.Text = function (me, Constants, Popup){this.setMe=function(_me){me
         datatype = this.el.attr("datatype");
         !this.isPlaceHoderSuported && ( placeholder = this.el.attr('placeholder') );
         placeholder && enableHint(this.el);
-        addLogo(this.el);
     };    
     
     Static.convertToJfm = function(inputs){  

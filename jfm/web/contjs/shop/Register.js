@@ -177,8 +177,11 @@ shop.Register = function (me, Map, SearchLocation) {
 		new me(args[0]);
 	};
 	
+	Static.hashChange = function(division){
+		new me(division);
+	};
+	
 	this.Register = function( division ) {
-		
 		var map = new Map(division);
 		division.center.reset().add(map);
 		new SearchLocation(division, map);
