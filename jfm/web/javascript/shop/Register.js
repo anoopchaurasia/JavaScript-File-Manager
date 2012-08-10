@@ -7,13 +7,23 @@ shop.Register = function (me, Map, SearchLocation) {
 		me = _me;
 	};
 	
+	var classObj, map, search;
 	Static.main = function( args ) {
-		new me(args[0]);
+		classObj = new me(args[0]);
+	};
+	
+	Static.hashChange = function(division){
+		classObj.reCreate(division);
+	};
+	
+	this.reCreate = function(division){
+		division.center.reset().add(map);
+		new SearchLocation(division, map);
 	};
 	
 	this.Register = function( division ) {
 		
-		var map = new Map(division);
+		map = new Map(division);
 		division.center.reset().add(map);
 		new SearchLocation(division, map);
 	};

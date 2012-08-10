@@ -31,7 +31,7 @@ jfm.hash.HashChange = function (me){this.setMe=function(_me){me=_me;};
 			}
 			case ("register"):{
 				if(fm.isExist('shop.Register') ){
-		    		s = new shop.Register(division);
+		    		 shop.Register.hashChange(division);
 		    	}
 		    	else{
 		    		fm.Include("shop.Register", division);

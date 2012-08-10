@@ -235,7 +235,7 @@
 			}
 			o = o[s[k]];
 		}
-		if(typeof o == 'object' && o.name == '___manager___'){
+		if(typeof o == 'function' && o.name == '___manager___'){
 			return true;
 		}
 		return false;
