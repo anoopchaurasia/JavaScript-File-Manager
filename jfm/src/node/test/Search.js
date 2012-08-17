@@ -11,6 +11,7 @@ test.Search = function (base, me, Base){this.setMe=function(_me){me=_me;};
 				console.log(err);
 			}
 			b && res.write(JSON.stringify(b.rows));
+			console.log(b);
 			res.end();
 		});
 	};

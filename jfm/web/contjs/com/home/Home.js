@@ -35,7 +35,6 @@ com.region.Left = function (base, me, Span, Button, Top, Combobox, Container) {
 			Server.getInstance("search").serviceCall({
 				data : searchString
 			}, "getRelevenceData", function(resp) {
-				resp = JSON.parse(resp);
 				var arr = [], data;
 				for ( var k = 0, len = resp.length; k < len; k++) {
 					data = {

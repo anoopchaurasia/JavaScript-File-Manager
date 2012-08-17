@@ -13,9 +13,9 @@ jfm.server.Server = function (me, Serialize){this.setMe=function(_me){me=_me;};
 
     var me = this;
     this.url = location.protocol + "//" + location.host + "/" ;
-    this.method = "process";
+    this.method = "method";
     this.shortHand = "Server";
-    this.type = "html";
+    this.type = "json";
     this.async = true;
     this.parameters = {};
     var singleton;
@@ -28,14 +28,14 @@ jfm.server.Server = function (me, Serialize){this.setMe=function(_me){me=_me;};
     	console.log("callback", msg);
     };
     
-    this.Static.makeInstance = function(url){
-    	return new jfm.server.Server(url);
+    this.Static.newInstance = function(url, parameters, method, cb, err, type, async){
+    	return new me(url, parameters, method, cb, err, type, async);
     };
     
-    this.Static.getInstance = function( url){  
-    	
-        if(!singleton){
-            singleton = new jfm.server.Server( url);
+    this.Static.getInstance = function(url){  
+
+		if(!singleton){
+            singleton = new jfm.server.Server(url);
             me = singleton;
         }
         else{
@@ -43,21 +43,72 @@ jfm.server.Server = function (me, Serialize){this.setMe=function(_me){me=_me;};
         }
         return singleton;
     };
-    this.Private.Server = function( url){
+    this.Private.Server = function( url, parameters, method, cb, err, type, async ){
 
         this.url = url || this.url;
+        this.parameters = parameters || this.parameters;
+        this.method = method || this.method;
+        this.callback = cb || this.callback;
+        this.errorCallback = err || this.errorCallback;
+        this.type = type || this.type;
+        this.async = async || this.async;
     };
-    this.serviceCall = function( parameters, method, cb, err, type, async) {
+    
+    this.serviceCall = function( parameters, method, cb, err, type, async ) {
         try {
+        	async = async != undefined? async : this.async;
+        	switch(typeof type){
+        		case 'boolean':
+        			async = type;
+        	}
+        	
+        	switch( typeof err){
+        		case 'boolean' :
+        			async = type;
+        			break;
+        		case 'string':
+        			type = err;
+        	}
+        	
+        	switch( typeof cb ){
+        		case 'boolean' :
+        			async = type;
+        			break;
+        		case 'string':
+        			type = err;
+        	}
+        	
+        	switch(typeof method){
+        		case 'boolean' :
+        			async = type;
+        			break;
+        		case 'function' :
+        			if(typeof cb == 'function'){
+        				err = cb;
+        			}
+        			cb = method;
+        	}
+        	
+        	switch(typeof parameters){
+        		case 'boolean' :
+        			async = type;
+        			break;
+        		case 'string':
+        			type = err;
+        		case 'function' :
+        			if(typeof method == 'function'){
+        				err = method;
+        			}
+        			cb = parameters;
+        	}
+        	
             this.parameters = typeof (parameters ) == 'object' && parameters != null ? parameters : this.parameters;
-            typeof(parameters) == 'function' && (cb = paramaters);
-            typeof (method) == 'string' && (this.parameters.method = method);
-            typeof(method) == 'function' && (cb = method);
+            
             var param = this.parameters;
             for(var k in this.parameters){
                 param.hasOwnProperty(k) && (typeof param[k] == 'object') && (param[k]=Serialize.serialize(param[k] ));
             }   
-            async = async != undefined? async : this.async;
+            param.method = param.method || method || this.method;
             var aj = $.ajax({
                 url : this.url,
                 type : "POST",
@@ -65,7 +116,7 @@ jfm.server.Server = function (me, Serialize){this.setMe=function(_me){me=_me;};
                 success : cb || this.callback,
                 error : err ||  this.errorCallback,
                 dataType : type || this.type,
-                async : async
+                async : async 
             });
             return aj;
         }
