@@ -11,13 +11,3 @@ webPath = {
     "/search" : {'class':"test.Search"},
     "/chat" : {'class':"test.Chat"}
 };
-
-
-
-
-
-
-
-
-
-

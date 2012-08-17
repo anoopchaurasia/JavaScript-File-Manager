@@ -20,9 +20,9 @@ user.User = function (me) {
 		this.password = obj.password;
 	};
 	
-	Static.getUser = function( client, cb ) {
+	Static.getUser = function( client, usr, cb ) {
 		console.log(usr);
-		client.query("select * from user1 where email='" + this.email + "'", function( err, b ) {
+		client.query("select * from user1 where email='"+ usr.email +"' and password = '" + usr.password + "'", function( err, b ) {
 			if (err) {
 				cb && cb(err);
 			}
