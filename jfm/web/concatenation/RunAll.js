@@ -139,10 +139,13 @@ function runall( ) {
 	console.log("RunAll");
 	var sourceDir = "D:/workspace/jfm/web/javascript/", destinDir = "D:/workspace/jfm/web/contjs/";
 	var inputFiles = [];
-	inputFiles.push("jfm/Master.js");
 	inputFiles.push("App.js");
 	var ajt = new Concatenation(sourceDir, destinDir);
 	ajt.concatenateJSFiles(inputFiles, {});
+	
+	var ajt = new Concatenation(sourceDir, destinDir);
+	ajt.concatenateJSFiles(["com/reader/Reader.js"], {});
+
 }
 runall();
 

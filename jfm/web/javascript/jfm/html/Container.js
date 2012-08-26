@@ -12,7 +12,11 @@ jfm.html.Container = function (base, me, Component){this.setMe=function(_me){me=
         if(config){
             delete config.draggable;
         }
-        base( '<div />', jQuery.extend(true, {}, config) );
+        if(config instanceof jQuery ){
+        	base(config);
+        }else{
+        	base( '<div />', jQuery.extend(true, {}, config) );
+        }
         if(draggable){
             this.el.draggable({
                 revert: true

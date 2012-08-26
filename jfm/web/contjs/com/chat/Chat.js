@@ -143,7 +143,7 @@ com.chat.Chat = function (base, me, Cache, Utility, Container, Division){this.se
 		    'class' : "bg"
 		});
 		since = 0;
-		chatSer = Server.makeInstance("chat");
+		chatSer = Server.newInstance("chat");
 		var self = this;
 		this.center.add(new Container({
 		    html : "<form method='post'><input /><button>Join</button></form>",
@@ -166,7 +166,7 @@ com.chat.Chat = function (base, me, Cache, Utility, Container, Division){this.se
 					chatSer.serviceCall({
 						nick : jQuery.trim(val)
 					}, "join", function( resp ) {
-						longPoll(JSON.parse(resp));
+						longPoll(resp);
 						activate(self);
 					});
 					return false;
@@ -186,7 +186,7 @@ com.chat.Chat = function (base, me, Cache, Utility, Container, Division){this.se
 		chatSer.serviceCall({
 			text : val.replace(/\n/ig, "<br/>")
 		}, "send", function( resp ) {
-			$("#rss").html(JSON.parse(resp).rss);
+			$("#rss").html(resp.rss);
 		});
 		textarea.val("");
 	}
@@ -217,7 +217,7 @@ com.chat.Chat = function (base, me, Cache, Utility, Container, Division){this.se
 		self.right.el.find("button.leave").click(function( ) {
 			chatSer.serviceCall({}, "part", function( resp ) {
 				location.reload();
-				$("#rss").html(JSON.parse(resp).rss);
+				$("#rss").html(resp.rss);
 			});
 		});
 		self.bottom.el.find("button").click(function( ) {
@@ -294,7 +294,7 @@ com.chat.Chat = function (base, me, Cache, Utility, Container, Division){this.se
 		chatSer.serviceCall({
 			since : since
 		}, "recieve", function( resp ) {
-			longPoll(JSON.parse(resp));
+			longPoll(resp);
 		});
 	}
 	

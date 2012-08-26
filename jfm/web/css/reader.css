@@ -1,0 +1,321 @@
+body {
+	margin: 0;
+	overflow: hidden;
+	font-family: Arial, Helvetica, sans-serif,
+}
+
+p {
+	margin-bottom: 0px
+}
+
+a{
+	cursor: pointer;
+}
+.s {
+	overflow: hidden;
+	line-height: 1.2em;
+	margin: 5px;
+	height: 200px;
+	width: 290px;
+	text-align: justify;
+	lineHeight: 1.2em;
+}
+
+#main {
+ 	height: 605px;
+ 	overflow: hidden;
+ 	position:relative;
+ 	margin: auto;
+ 	margin-top: 3px;
+ 	border:1px solid; 
+}
+
+.parent {
+	padding: 10px;
+	border-right: 1px dotted #eee;
+	margin-left: 5px;
+	margin-bottom: 5px;
+	float: left;
+}
+
+.text-inside-image {
+	padding: 5px;
+	float: left;
+}
+
+#hidden {
+	display: none;
+}
+
+#container {
+	
+}
+.item-item-cont h2{
+	margin: 5px 2px;
+}
+
+#container {
+	overflow-x: hidden;
+	overflow-y: hidden;
+	width: 100%
+}
+
+.controlers {
+	float: left;
+}
+
+.home {
+	float: left;
+}
+
+#taskbar {
+    background-color: white;
+    border-top: 1px solid black;
+    bottom: 0;
+    color: black;
+    height: 40px;
+    left: 0;
+    position: absolute;
+    width: 100%;
+    z-index: 1001;
+}
+
+#taskbar .left-float {
+	float: left;
+}
+
+#article-container .title {
+	white-space: nowrap;
+}
+
+#article-container .title h2 {
+	margin: 3px;
+}
+
+#article-container {
+	font-size: 18px;
+}
+
+.newsSnippet {
+	border: 1px solid #CCCCCC;
+	float: left;
+	height: 145px;
+	margin-bottom: 5px;
+	margin-left: 5px;
+	width: 300px;
+	overflow:hidden;
+	padding: 5px;
+}
+
+.newsSnippet p,.newsSnippet h2 {
+	margin: 0;
+}
+
+.newsSnippet h2 {
+	font-size: 1.1em;
+}
+
+.brief-body {
+	font-size: 1em;
+}
+
+.newsSnippet .brief-image {
+	float: left;
+	margin-right: 13px;
+}
+
+.item-item-cont {
+	float: left;
+	margin-left: 40px;
+}
+
+#article-list {
+	overflow: hidden;
+	font-size: 14px;
+}
+
+.selected {
+	border: 3px solid #CCCCCC;
+	padding: 3px;
+}
+
+.column-selected {
+	border: 3px SOLID #CCCCCC;
+	padding: 7px;
+	padding-right: 8px;
+}
+
+.image-container {
+	margin: auto;
+	text-align:center;
+	width: 490px;
+}
+
+.imageContainer {
+	float: left;
+}
+
+.settings-content {
+}
+
+.settings-content .close {
+	cursor: pointer;
+    margin-right: -6px;
+    margin-top: -12px;
+    text-align: right;
+}
+
+.vertical-news-container {
+	float: left;
+}
+
+.odd-news-snippet,.middle-news-snippet {
+	clear: left;
+}
+
+#taskbar .navigations {
+	margin: 0 auto;
+	width: 100px;
+}
+
+#taskbar .navigations>div {
+	float: left;
+}
+
+.left-navigation,.right-navigation,.up-navigation,.down-navigation {
+	background-image: url("../img/navigation-icons.jpg");
+    height: 18px;
+    width: 15px;
+}
+
+#taskbar .right-navigation {
+	background-position: -133px -134px;
+	margin-top: 7px;
+}
+
+#taskbar .left-navigation {
+	background-position: -31px -134px;
+	margin-top: 7px;
+}
+
+#taskbar .up-navigation {
+	background-position: -185px -138px;
+}
+
+#taskbar .down-navigation {
+    background-position: -83px -134px;
+    margin-left: -29px;
+    margin-top: 18px;
+}
+
+#taskbar .plus {
+	margin-left: 1px;
+}
+.right-float{
+	float:right;
+}
+
+
+
+.bg_color {
+	z-index: 1000;
+	background-color: #555555;
+	position: absolute;
+	left: 0;
+	top: 0;
+	opacity: 0.2;
+	filter: alpha(opacity = 20);
+	zoom: 1;
+}
+
+.imgClass {	
+    color: black;
+    font-size: 16px;
+    left: 463px;
+    padding: 20px;
+    position: absolute;
+    top: 200px;
+    z-index: 1001;
+    text-align: center;
+}
+
+.popup {
+	-moz-border-radius: 8px 8px 8px 8px;
+	margin: 10px;
+	background-color: #C8C8C8;
+	background: none repeat scroll 0 0 rgba(200, 200, 200, 0.9);
+	font-size: 18px;
+	left: 200px;
+	line-height: 20px;
+	padding: 5px;
+	position: absolute;
+	top: 152px;
+	border: 1px double #FFFFFF;
+	z-index: 1000;
+}
+
+.tabLi {
+	color: black;
+	display: inline-block;
+	font-weight: bold;
+}
+
+.closeButtn {
+	cursor: pointer;
+	position: absolute;
+	right: 8px;
+	top: -2px;
+}
+.popup_body{
+	float:left;
+}
+.popup_body .column-selected{
+	border: 3px solid #fff;
+}
+.popup_head {
+	cursor: move;
+	display: block !important;
+	height: 25px;
+	margin-top: -5px;
+	text-align: left;
+	width: 100%;
+}
+
+#settings{
+	width:700px; 
+	height:500px;
+}
+
+#settings .left-panel{
+	width:150px;
+	background-color:white;
+	height:100%;
+	border:1px solid #ccc;
+	float:left
+}
+
+#settings .right-panel{	
+	width:546px;
+	height:100%;
+	border:1px solid #ccc;
+	float:left;
+}
+
+.blackBG{
+	background-color: #000000;
+	opacity: .99;
+	filter: alpha(opacity = 99);
+}
+
+.whiteBG{
+	background-color: #ffffff;
+}
+
+.show-column{
+	margin-left: 10px;
+    margin-top: 7px;
+}
+.imagetext{
+    font-size: 0.9em;
+    text-align: justify;	
+}

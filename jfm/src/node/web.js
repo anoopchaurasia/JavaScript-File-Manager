@@ -9,5 +9,6 @@ webPath = {
     "/post" : { 'class' : "test.Post", 'auth': true},
     "/subcategory" : { 'class' : "test.SubCategory"},
     "/search" : {'class':"test.Search"},
-    "/chat" : {'class':"test.Chat"}
+    "/chat" : {'class':"test.Chat"},
+    "/reader" : {'class':"test.Reader"}
 };

@@ -23,8 +23,9 @@ jfm.html.form.Text = function (me, Constants, Popup){this.setMe=function(_me){me
         this.el.blur(el_blur).click(el_click).keyup(el_keyup).keydown(el_keydown);
         originalColor = this.el.css('color');
         datatype = this.el.attr("datatype");
-        !this.isPlaceHoderSuported && ( placeholder = this.el.attr('placeholder') );
-        placeholder && enableHint(this.el);
+        //!this.isPlaceHoderSuported && ( placeholder = this.el.attr('placeholder') );
+        placeholder = "testing..";
+        enableHint(this.el);
     };    
     
     Static.convertToJfm = function(inputs){  
@@ -38,25 +39,6 @@ jfm.html.form.Text = function (me, Constants, Popup){this.setMe=function(_me){me
         }
         return arr;
     };
-    
-    function addLogo(el){
-        var icon;
-       switch(datatype){        
-            case 'email':{
-                icon = "<span class='typeIcon' ></span>";
-                break;
-            }
-            case 'number':{
-                icon = "<img class='typeIcon' src='http://www.tutorialsscripts.com/free-icons/alphabet-characters/lower-case-letter/n-icon/red-small-letter-character-n-icon-256-x-256.jpg' />";
-                break;
-            }
-       }
-       if(icon){
-           el.parent().addClass("iconHandler");
-           el.width(el.width() - 33);
-           el.before(icon).after("<span class='validityHinter'></span>");
-       }
-    }
     
     function varifyValue(value){
         switch(datatype){
@@ -128,11 +110,8 @@ jfm.html.form.Text = function (me, Constants, Popup){this.setMe=function(_me){me
         }
     }
     
-    function enableHint (self){        
-        if(!self.val()){            
-            self.css('color','#666');
-            self.val( placeholder );
-        }
+    function enableHint (self){ 
+    	self.before('<label class="placeholder"> ' + placeholder+' </lebel>');
     }
 };
 

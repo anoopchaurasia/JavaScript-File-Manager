@@ -25,13 +25,13 @@ jfm.html.Popup = function (base, me, Character, Img, Span, Container){this.setMe
             }
         };
         base(config);
-        pBody = new im.Container({
+        pBody = new Container({
             'class':"jfm-body"
         });
-        pHead = new im.Container({
+        pHead = new Container({
             'class':"jfm-head unselectable"
         });
-        pClose = new im.Img({
+        pClose = new Img({
             'class':"jfm-close", 
             src:"img/close-button.jpg",
             width:'auto',

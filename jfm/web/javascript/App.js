@@ -23,7 +23,7 @@ App = function (me, Division, QueryStr, HashChange, Topbar){this.setMe=function(
 		});
 	}
 	Static.main = function() {
-
+		
 		updateLayout();
 		var d = new jfm.division.Division({
 			id : "jfm-division",
