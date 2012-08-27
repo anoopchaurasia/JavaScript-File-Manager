@@ -56,6 +56,7 @@ jfm.division.Division = function (base, me, Part, Container){this.setMe=function
 		}, this, function( elem ) {
 			set(elem, me.center, getRemainingWidth(), getRemainingHeight());
 		});
+		me.center.el.css("overflow", 'hidden');
 		this.center.el.show();
 		this.right = new Part({
 			'class' : "jfm-division-right"
@@ -95,14 +96,9 @@ jfm.division.Division = function (base, me, Part, Container){this.setMe=function
 		me.right && me.right.el.height(h);
 		var m = me.center && me.center.el.height(h).width(w)[0].resize;
 		m && m(w, h);
-		me.center.el.css("overflow", 'hidden');
 		if (isAlreadyset) {
 			clearTimeout(isAlreadyset);
 		}
-		isAlreadyset = setTimeout(function( ) {
-			isAlreadyset = 0;
-			me.center.el.css("overflow", '');
-		}, 800);
 	};
 	
 	function set( obj, appender, difW, difH ) {

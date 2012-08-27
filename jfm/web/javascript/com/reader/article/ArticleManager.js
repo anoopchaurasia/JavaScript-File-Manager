@@ -40,14 +40,14 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Container) 
 		}
 		if (!currentSelected.hasClass("column-selected")) {
 			currentSelected.addClass("column-selected");
-			currentSelected.get(0).scrollIntoView(false);
+			scrollIntoView(currentSelected.get(0));
 			return;
 		}
 		
 		if (currentSelected.next().length != 0) {
 			currentSelected.removeClass("column-selected");
 			currentSelected = currentSelected.next().addClass("column-selected");
-			currentSelected.get(0).scrollIntoView(false);
+			scrollIntoView(currentSelected.get(0));
 			changed({
 				type : "next"
 			});
@@ -56,6 +56,17 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Container) 
 			this.el.parent().scrollLeft(this.el.width());
 		}
 	};
+	function scrollIntoView(element) {
+		  var containerLeft = me.el.parent().scrollLeft(); 
+		  var containerRight = containerLeft + me.el.parent().width(); 
+		  var elemLeft = element.offsetLeft;
+		  var elemRight = elemLeft + $(element).width(); 
+		  if (elemLeft < containerLeft) {
+			  me.el.parent().scrollLeft(elemLeft);
+		  } else if (elemRight > containerRight) {
+			  me.el.parent().scrollLeft(elemRight - me.el.parent().width());
+		  }
+		}
 	
 	this.prev = function( ) {
 		if (!active) {
@@ -63,14 +74,13 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Container) 
 		}
 		if (!currentSelected.hasClass("column-selected")) {
 			currentSelected.addClass("column-selected");
-			currentSelected.get(0).scrollIntoView(false);
-			
+			scrollIntoView(currentSelected.get(0));
 			return;
 		}
 		if (currentSelected.prev(".selector").length != 0) {
 			currentSelected.removeClass("column-selected");
 			currentSelected = currentSelected.prev().addClass("column-selected");
-			currentSelected.get(0).scrollIntoView(false);
+			scrollIntoView(currentSelected.get(0));
 			changed({
 				type : "prev"
 			});

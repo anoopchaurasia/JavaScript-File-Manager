@@ -602,14 +602,14 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Container) 
 		}
 		if (!currentSelected.hasClass("column-selected")) {
 			currentSelected.addClass("column-selected");
-			currentSelected.get(0).scrollIntoView(false);
+			scrollIntoView(currentSelected.get(0));
 			return;
 		}
 		
 		if (currentSelected.next().length != 0) {
 			currentSelected.removeClass("column-selected");
 			currentSelected = currentSelected.next().addClass("column-selected");
-			currentSelected.get(0).scrollIntoView(false);
+			scrollIntoView(currentSelected.get(0));
 			changed({
 				type : "next"
 			});
@@ -618,6 +618,17 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Container) 
 			this.el.parent().scrollLeft(this.el.width());
 		}
 	};
+	function scrollIntoView(element) {
+		  var containerLeft = me.el.scrollLeft(); 
+		  var containerRight = containerTop + me.el.width(); 
+		  var elemLeft = element.offsetLeft;
+		  var elemRight = elemLeft + $(element).width(); 
+		  if (elemLeft < containerLeft) {
+		    $(container).scrollLeft(elemLeft);
+		  } else if (elemRight > containerRight) {
+			    me.el.scrollTop(elemRight - me.el.width());
+		  }
+		}
 	
 	this.prev = function( ) {
 		if (!active) {
@@ -625,14 +636,13 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Container) 
 		}
 		if (!currentSelected.hasClass("column-selected")) {
 			currentSelected.addClass("column-selected");
-			currentSelected.get(0).scrollIntoView(false);
-			
+			scrollIntoView(currentSelected.get(0));
 			return;
 		}
 		if (currentSelected.prev(".selector").length != 0) {
 			currentSelected.removeClass("column-selected");
 			currentSelected = currentSelected.prev().addClass("column-selected");
-			currentSelected.get(0).scrollIntoView(false);
+			scrollIntoView(currentSelected.get(0));
 			changed({
 				type : "prev"
 			});
@@ -1138,7 +1148,7 @@ com.reader.Reader = function (me, AllSnippets, ArticleManager, Taskbar, Division
 	};
 	
 	Static.openArticle = function( obj ) {
-		var f_size = parseInt($("#article-container").css("font-size")) - 2;
+		var f_size = parseInt($("#article-container").css("font-size"));
 		$("#hidden").html("<div class='title'>" + obj.title + "</div>" + "<div class='content'>" + obj.content + "</div>");
 		ArticleManager.getInstance().active();
 		AllSnippets.getInstance().deActive();
@@ -1150,6 +1160,7 @@ com.reader.Reader = function (me, AllSnippets, ArticleManager, Taskbar, Division
 		ArticleManager.getInstance().deActive();
 		AllSnippets.getInstance().create(resp, clean);
 	}
+	
 	function updateLayout( ) {
 		$(window).ready(function( ) {
 			var win = jQuery(window);
@@ -1161,6 +1172,7 @@ com.reader.Reader = function (me, AllSnippets, ArticleManager, Taskbar, Division
 			$('body').trigger('resize');
 		});
 	}
+	
 	Static.main = function( ) {
 		updateLayout();
 		division = new Division({
@@ -1169,16 +1181,14 @@ com.reader.Reader = function (me, AllSnippets, ArticleManager, Taskbar, Division
 		division.addTo(jQuery("body"));
 		Taskbar.getInstance(callback);
 		Events.getInstance();
-		$("#article-list").show().empty();
 		$("a").live('click', function( ) {
-			var open_link = window.open('', '_blank');
-			open_link.location = this.href;
+			window.open(this.href, '_blank');
 			return false;
 		});
 		return false;
 	};
 	
-	this.parseRSS = function( url, callback, isGoogle ) {
+	Static.parseRSS = function( url, callback, isGoogle ) {
 		url = isGoogle ? document.location.protocol + '//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=10&callback=?&q=' + encodeURIComponent(url) : url;
 		$.ajax({
 		    url : url,

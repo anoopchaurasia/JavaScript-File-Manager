@@ -1,6 +1,5 @@
 body {
 	margin: 0;
-	overflow: hidden;
 	font-family: Arial, Helvetica, sans-serif,
 }
 
@@ -23,7 +22,6 @@ a{
 
 #main {
  	height: 605px;
- 	overflow: hidden;
  	position:relative;
  	margin: auto;
  	margin-top: 3px;
@@ -55,8 +53,6 @@ a{
 }
 
 #container {
-	overflow-x: hidden;
-	overflow-y: hidden;
 	width: 100%
 }
 
@@ -130,7 +126,6 @@ a{
 }
 
 #article-list {
-	overflow: hidden;
 	font-size: 14px;
 }
 

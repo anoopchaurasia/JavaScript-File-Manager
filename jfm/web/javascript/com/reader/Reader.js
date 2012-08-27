@@ -15,7 +15,7 @@ com.reader.Reader = function (me, AllSnippets, ArticleManager, Taskbar, Division
 	};
 	
 	Static.openArticle = function( obj ) {
-		var f_size = parseInt($("#article-container").css("font-size")) - 2;
+		var f_size = parseInt($("#article-container").css("font-size"));
 		$("#hidden").html("<div class='title'>" + obj.title + "</div>" + "<div class='content'>" + obj.content + "</div>");
 		ArticleManager.getInstance().active();
 		AllSnippets.getInstance().deActive();
@@ -27,6 +27,7 @@ com.reader.Reader = function (me, AllSnippets, ArticleManager, Taskbar, Division
 		ArticleManager.getInstance().deActive();
 		AllSnippets.getInstance().create(resp, clean);
 	}
+	
 	function updateLayout( ) {
 		$(window).ready(function( ) {
 			var win = jQuery(window);
@@ -38,6 +39,7 @@ com.reader.Reader = function (me, AllSnippets, ArticleManager, Taskbar, Division
 			$('body').trigger('resize');
 		});
 	}
+	
 	Static.main = function( ) {
 		updateLayout();
 		division = new Division({
@@ -46,10 +48,8 @@ com.reader.Reader = function (me, AllSnippets, ArticleManager, Taskbar, Division
 		division.addTo(jQuery("body"));
 		Taskbar.getInstance(callback);
 		Events.getInstance();
-		$("#article-list").show().empty();
 		$("a").live('click', function( ) {
-			var open_link = window.open('', '_blank');
-			open_link.location = this.href;
+			window.open(this.href, '_blank');
 			return false;
 		});
 		return false;
