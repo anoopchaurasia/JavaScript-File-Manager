@@ -1,6 +1,14 @@
 fm.Package("com.reader.snippet");
-fm.Class("Snippet");
-com.reader.snippet.Snippet = function (me) {
+fm.Class("Snippet", "jfm.html.Container");
+com.reader.snippet.Snippet = function (base, me, Container) {
+	
+	this.init = function( ) {
+		
+		Static.height = 110;
+		Static.margins = 18;
+		Static.widthAmlifier = 2;
+	};
+	
 	this.setMe = function( _me ) {
 		me = _me;
 	};
@@ -24,27 +32,43 @@ com.reader.snippet.Snippet = function (me) {
 		return html;
 	};
 	
-	this.onClick = function( ) {
-		var self = this;
-		this.html.click(function( ) {
-			com.Reader.openArticle(self);
-		});
+	this.show = function( ) {
+		com.reader.Reader.openArticle(me);
 	};
 	
-	this.getBrief = function( cls, f_size ) {
-		
-		this.html = $("<div/>", {
-		    "class" : 'newsSnippet ' + cls,
+	this.activate = function(){
+		this.el.addClass("selected");
+	};
+	
+	this.deActivate = function(){
+		this.el.removeClass("selected");
+	};
+	
+	this.next = function() {
+		if(!this.el.next().length){
+    		return false;
+    	}
+    	return this.el.next()[0].jfm;
+    };
+    
+    this.prev = function() {
+    	if(!this.el.prev().length){
+    		return false;
+    	}
+    	return this.el.prev()[0].jfm;
+    };
+    
+	this.Snippet = function( nb, f_size, index ) {
+		$.extend(true, this, nb);
+		base({
+		    "class" : 'newsSnippet',
+		    height: this.height,
+		    indx : String(index),
 		    html : this.getTitle() + this.getImage() + this.getBody(),
 		    css : {
-			    width : f_size * f_size
-		    }
+			    width : (f_size) * ( f_size)
+		    },
+			click: me.show
 		});
-		this.onClick();
-		return this.html;
-	};
-	
-	this.Snippet = function( nb ) {
-		$.extend(true, this, nb);
 	};
 };

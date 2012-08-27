@@ -9,7 +9,8 @@ jfm.division.Division = function (base, me, Part, Container){this.setMe=function
 		container = Component.isComponent(container) ? container.el : jQuery(container);
 		me.ownerCt = container;
 		container[0].resize = function( w, h ) {
-			timeoutID && clearTimeout(timeoutID);
+			timeoutID && clearTimeout(timeoutID)
+			;
 			timeoutID = setTimeout(function( ) {
 				width = w;
 				height = h;

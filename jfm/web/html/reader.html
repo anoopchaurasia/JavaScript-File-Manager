@@ -2,25 +2,22 @@
 <!-- saved from url=(0022)http://internet.e-mail -->
 <html>
 <head>
-	<title>Easy Reader</title>
-	<style type="text/css">
-	body,html {
-		overflow: hidden;
-		margin: 0;
-		padding: 0;
-		border: 0;
-	}
-	</style>
-	<link href="//Microsoft.WinJS.1.0/css/ui-dark.css" rel="stylesheet" />
-    <script src="//Microsoft.WinJS.1.0/js/base.js"></script>
-    <script src="//Microsoft.WinJS.1.0/js/ui.js"></script>
-	<link rel="icon" type="image/ico" href="img/e_reader.gif"></link>
-	<link type=text/css rel=stylesheet href='css/reader.css' />
-	<script type="text/javascript" src="javascript/jquery.js"></script>
-	<script type="text/javascript" src="javascript/jfm/Master.js"></script>
-	<script>
+<title>Easy Reader</title>
+<style type="text/css">
+body,html {
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+</style>
+<link rel="icon" type="image/ico" href="img/e_reader.gif"></link>
+<link type=text/css rel=stylesheet href='css/reader.css' />
+<script type="text/javascript" src="javascript/jquery.js"></script>
+<script type="text/javascript" src="javascript/jfm/Master.js"></script>
+<script>
 	fm.basedir = '/javascript';
-	fm.Include("com.reader.Reader");
+    fm.Include("com.reader.Reader");
 </script>
 <script id="setting-temp" type="text/my-type">
     <div id="settings">
@@ -54,35 +51,5 @@
 	</script>
 </head>
 <body>
-	<div id="main">
-		<div id="container">
-		</div>
-		<div id="taskbar">
-			<div class="home left-float">
-				<a><img alt="" height=40 src="img/home.jpg"></a>
-			</div>
-
-			<div class="controlers left-float">
-				<div>
-					<a> <font class="minus" size=4>A</font>
-					</a> <a><font size="6" class="plus">A</font> </a>
-				</div>
-			</div>
-			<div class="show-column left-float">
-				<a>Column View</a>
-			</div>
-			<div class="news-feed-select right-float">
-				<div class="left-float" style="float: left">
-					<a><img height=35 src="img/settings.jpg"></a>
-				</div>
-			</div>
-			<div class="middle-align navigations">
-				<div class="left-navigation"></div>
-				<div class="up-navigation"></div>
-				<div class="right-navigation"></div>
-				<div class="down-navigation"></div>
-			</div>
-		</div>
-		<div id="hidden"></div>
-	</div>
+	<div id="hidden"></div>
 </body>

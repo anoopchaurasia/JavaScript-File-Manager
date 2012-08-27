@@ -1,7 +1,7 @@
 fm.Package("com.reader.article");
 fm.Import("com.reader.filler.FillContent");
 fm.Class("ArticleManager", "jfm.html.Container");
-com.reader.article.ArticleManager = function( base, me, FillContent, Container ) {
+com.reader.article.ArticleManager = function (base, me, FillContent, Container) {
 	this.setMe = function( _me ) {
 		me = _me;
 	};
@@ -25,7 +25,7 @@ com.reader.article.ArticleManager = function( base, me, FillContent, Container )
 		base({
 			id : "article-container"
 		});
-		$("#container").prepend(this.el);
+		com.reader.Reader.getDivision().center.add(this);
 		this.bodyHeight = $("#main").height();
 		setTimeOut = -9;
 		multi = 18;

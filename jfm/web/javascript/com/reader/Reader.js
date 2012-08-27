@@ -1,20 +1,20 @@
-fm.Package("com");
+fm.Package("com.reader");
 fm.Import("com.reader.snippet.AllSnippets");
 fm.Import("com.reader.article.ArticleManager");
 fm.Import("com.reader.taskbar.Taskbar");
+fm.Import("jfm.division.Division");
 fm.Import('com.reader.events.Events');
 fm.Class("Reader");
-com.Reader = function (me, AllSnippets, ArticleManager, Taskbar, Events) {
-	
+com.reader.Reader = function (me, AllSnippets, ArticleManager, Taskbar, Division, Events) {
+	var division;
 	this.setMe = function( _me ) {
 		me = _me;
 	};
-	
-	this.init = function( ) {
-		Taskbar.getInstance(callback);
-	};
-	
-	Static.openArticle = function( obj ) {
+	Static.getDivision = function() {
+		return division;
+    };
+
+    Static.openArticle = function( obj ) {
 		var f_size = parseInt($("#article-container").css("font-size")) - 2;
 		$("#hidden").html("<div class='title'>" + obj.title + "</div>" + "<div class='content'>" + obj.content + "</div>");
 		ArticleManager.getInstance().active();
@@ -27,12 +27,24 @@ com.Reader = function (me, AllSnippets, ArticleManager, Taskbar, Events) {
 		ArticleManager.getInstance().deActive();
 		AllSnippets.getInstance().create(resp, clean);
 	}
-	
-	Static.main = function( ) {
-		$("#main").height(580).width($(window).width() - 20);
-		$(document).scroll(function( ) {
-			return false;
+	function updateLayout() {
+		$(window).ready(function() {
+			var win = jQuery(window);
+			win.resize(function() {
+				var w = win.width(), h = win.height();
+				var m = $('body').width(w).height(h)[0].resize;
+				m && m(w, h);
+			});
+			$('body').trigger('resize');
 		});
+	}
+	Static.main = function( ) {
+		updateLayout();
+		division = new Division({
+			id: "main"
+		});
+		division.addTo(jQuery("body"));
+		Taskbar.getInstance(callback);
 		Events.getInstance().keydownEvents();
 		Events.getInstance().keyupEvents();
 		$("#article-list").show().empty();

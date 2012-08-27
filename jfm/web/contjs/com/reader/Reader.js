@@ -138,8 +138,16 @@ jfm.html.Container = function (base, me, Component){this.setMe=function(_me){me=
 
 
 fm.Package("com.reader.snippet");
-fm.Class("Snippet");
-com.reader.snippet.Snippet = function (me) {
+fm.Class("Snippet", "jfm.html.Container");
+com.reader.snippet.Snippet = function (base, me, Container) {
+	
+	this.init = function( ) {
+		
+		Static.height = 110;
+		Static.margins = 18;
+		Static.widthAmlifier = 2;
+	};
+	
 	this.setMe = function( _me ) {
 		me = _me;
 	};
@@ -164,252 +172,244 @@ com.reader.snippet.Snippet = function (me) {
 	};
 	
 	this.onClick = function( ) {
-		var self = this;
-		this.html.click(function( ) {
-			com.Reader.openArticle(self);
+		this.el.click(function( ) {
+			com.reader.Reader.openArticle(me);
 		});
 	};
 	
-	this.getBrief = function( cls, f_size ) {
-		
-		this.html = $("<div/>", {
-		    "class" : 'newsSnippet ' + cls,
+	this.Snippet = function( nb, f_size, index ) {
+		$.extend(true, this, nb);
+		base({
+		    "class" : 'newsSnippet',
+		    height: this.height,
+		    index : index,
 		    html : this.getTitle() + this.getImage() + this.getBody(),
 		    css : {
-			    width : f_size * f_size
+			    width : (f_size) * ( f_size)
 		    }
 		});
 		this.onClick();
-		return this.html;
-	};
-	
-	this.Snippet = function( nb ) {
-		$.extend(true, this, nb);
 	};
 };
 fm.Package("com.reader.snippet");
 fm.Import("com.reader.snippet.Snippet");
-fm.Class("AllSnippets", "jfm.html.Container");
-com.reader.snippet.AllSnippets = function (base, me, Snippet, Container){this.setMe=function(_me){me=_me;};
-	var firstSnipptes,
-	active;
-	var currentSelectedSnippet,
-	len;
-	var totalLength;
-	var totalWidth = 0;
-	var self, singleton;
-	this.multi;
-	this.margins;
+fm.Class("SnippetGroup", "jfm.html.Container");
+
+com.reader.snippet.SnippetGroup = function (base, me, Snippet, Container) {
 	
-Static.getInstance = function() {
-		if(!singleton){
+	var entries, f_size, counterPerColumn, currentSnippet;
+	
+	this.setMe = function( _me ) {
+		me = _me;
+	};
+	
+	this.SnippetGroup = function( resp, height, f_s) {
+		entries = resp.entries, f_size = (Snippet.widthAmlifier + f_s);
+		var len = resp.entries.length - 5;
+		counterPerColumn = Math.floor( height/Snippet.height) - 1;
+		var columns = Math.ceil(len / counterPerColumn);
+		base({
+		    'class' : 'item-item-cont',
+		    html : "<h2>" + resp.title + "</h2>",
+		    css : {
+		        width : (f_size * f_size + Snippet.margins) * columns,
+		        height : "100%"
+		    }
+		});
+	};
+	
+	this.addSnippets = function(  ) {
+		
+		var k = -1,len = entries.length - 5, firstSnipptes;
+		var h = Math.ceil(len / counterPerColumn);
+		function recursive( ) {
+			if (k == len - 1) {
+				return;
+			}
+			k++;
+			var bf = new Snippet(entries[k], f_size, k % h);
+			if (!firstSnipptes) {
+				firstSnipptes = bf;
+			}
+			if (k % h == 0) {
+				$("<div class='vertical-news-container'></div>").appendTo(me.el).append(bf.el);
+			}
+			else {
+				me.el.find(".vertical-news-container:last").append(bf.el);
+			}
+			setTimeout(recursive, 10);
+			return bf;
+		}
+		recursive();
+		currentSnippet = this.el.find(".newsSnippet:first");
+    };
+    
+    this.next = function(){
+
+    	currentSnippet.removeClass("selected");
+    	if(!currentSnippet.next()){
+    		return false;
+    	}
+    	currentSnippet = currentSnippet.next();
+    	currentSnippet.addClass("selected");
+    	return true;
+    };
+    
+    this.prev = function(){
+
+    	currentSnippet.removeClass("selected");
+    	if(!currentSnippet.prev()){
+    		return false;
+    	}
+    	currentSnippet = currentSnippet.prev();
+    	currentSnippet.addClass("selected");
+    	return true;
+    };
+    
+    this.up = function(){
+    	
+    	currentSnippet.removeClass("selected");
+    	if(!currentSnippet.parent().prev()){
+    		return false;
+    	}
+    	currentSnippet = currentSnippet.parent().prev().find("[index='"+currentSnippet.attr('index')+"']");
+    	currentSnippet.addClass("selected");
+    	return true;
+    };
+    
+    this.up = function(){
+    	
+    	currentSnippet.removeClass("selected");
+    	if(!currentSnippet.parent().next()){
+    		return false;
+    	}
+    	currentSnippet = currentSnippet.parent().next().find("[index='"+currentSnippet.attr('index')+"']");
+    	currentSnippet.addClass("selected");
+    	return true;
+    };
+};
+fm.Package("com.reader.snippet");
+fm.Import("com.reader.snippet.SnippetGroup");
+fm.Class("AllSnippets", "jfm.html.Container");
+com.reader.snippet.AllSnippets = function (base, me, SnippetGroup, Container) {
+	this.setMe = function( _me ) {
+		me = _me;
+	};
+	var firstSnipptes, active;
+	var currentSelectedSnippet;
+	var totalWidth = 0;
+	var singleton, currentGroup;
+	
+	Static.getInstance = function( ) {
+		if (!singleton) {
 			singleton = new me();
 		}
 		return singleton;
-    };
+	};
 	
 	Private.AllSnippets = function( ) {
 		base({
-			id:"article-list"
+			id : "article-list",
+			height : com.reader.Reader.getDivision().center.el.height()
 		});
-		$("#container").append(this.el);
+		com.reader.Reader.getDivision().center.add(this);
 		firstSnipptes = null;
-		totalLength = 0;
-		this.multi = 20;
-		this.margins = 18;
-		self = this;
 		active = false;
 	};
 	
-	this.clearStoredData = function() {
+	this.clearStoredData = function( ) {
 		this.el.empty();
-   		totalWidth = 0;
-   		firstSnipptes=null;
-   		totalLength = 0;
-   		currentSelectedSnippet = null;
+		totalWidth = 0;
+		firstSnipptes = null;
+		currentSelectedSnippet = null;
 	};
 	
-	this.active = function() {
+	this.active = function( ) {
 		this.el.show().siblings().hide();
 		active = true;
-		if(currentSelectedSnippet){
+		if (currentSelectedSnippet) {
 			currentSelectedSnippet[0].scrollIntoView(false);
 		}
 	};
 	
-	this.isActive = function() {
+	this.isActive = function( ) {
 		return active;
 	};
 	
-	this.deActive = function() {
+	this.deActive = function( ) {
 		active = false;
 		this.el.hide();
 	};
 	
-	function prepareContent( title, columns, f_size ) {
-                 
-		 var container = $("<div/>",{
-		    	'class':'item-item-cont',
-		    	html : "<h2>"+ title + "</h2>",
-		    	css:{
-		    			width:	( f_size * f_size + self.margins)* columns ,
-		    			height : "100%"
-				   	}
-			    })
-			    .appendTo(self.el);
-		 return container;
-	}
 	this.create = function( resp, clean ) {
 		
-		len = resp.entries.length - 1;
-		var k = -1;
-		if(clean){
+		if (clean) {
 			this.clearStoredData();
 		}
-		var columns = Math.ceil(len/3);
-		var f_size = parseInt( this.el.css("font-size"));
-		totalLength += len;
-		var container = prepareContent( resp.title, columns, f_size);
-	    totalWidth += (f_size * f_size + self.margins) * columns +  40;
-	    this.el.width(totalWidth);
-	    function recursive() {
-	    	if( k == len - 1){
-	    		return;
-	    	}
-	    	k++;
-	    	var bf = new Snippet( resp.entries[k] );
-	    	if(!firstSnipptes){
-	    		firstSnipptes = bf;
-	    	}
-	    	if( k % 3 == 0 ){
-	    		$("<div class='vertical-news-container'></div>" ).appendTo( container ).append( bf.getBrief( 'even-news-snippet', f_size ) );
-	    	}
-	    	else if( k % 3 == 1 ){
-	    		container.find(".vertical-news-container:last").append(bf.getBrief('middle-news-snippet', f_size));
-	    	}
-	    	else{
-	    		container.find(".vertical-news-container:last").append(bf.getBrief('odd-news-snippet', f_size));
-	    	}
-	    	setTimeout ( recursive, 10 );
-	    	return bf;
-	    }
-	    recursive();
+		var f_size = parseInt(this.el.css("font-size"));
+		var snippetGroup = new SnippetGroup(resp, this.el.height(), f_size);
+		if(!currentGroup){
+			currentGroup = snippetGroup;
+		}
+		this.add(snippetGroup);
+		snippetGroup.addSnippets(resp.entries);
+		totalWidth += snippetGroup.el.width() + 40;
+		this.el.width(totalWidth);
 	};
-	this.next = function() {
-		if(!active){
+	this.next = function( ) {
+		if (!active) {
 			return;
 		}
-		if( !currentSelectedSnippet  ){
-			currentSelectedSnippet = firstSnipptes.html;
-			currentSelectedSnippet.addClass("selected");
-			return;
-		}
-		var nextParent = currentSelectedSnippet.parent().next(".vertical-news-container");
-                var cls = $.trim(currentSelectedSnippet.attr("class")).split(" ")[1];
-		if( nextParent.length != 0 && nextParent.find("." + cls).length != 0 ){
-			currentSelectedSnippet.removeClass("selected");			
-			currentSelectedSnippet = nextParent.find("." + cls);
-			currentSelectedSnippet.addClass("selected")[0].scrollIntoView(false);
-			return;
-		}
-		var nextParent = currentSelectedSnippet.parent().parent().next(".item-item-cont");
-		if( nextParent.length != 0 ){
-			currentSelectedSnippet.removeClass("selected");
-			var cls = $.trim(currentSelectedSnippet.attr("class")).split(" ")[1];
-			currentSelectedSnippet = nextParent.find(".vertical-news-container:first").find("." + cls);
-			currentSelectedSnippet.addClass("selected")[0].scrollIntoView(false);
-
-		}else{
-                        this.el.parent().scrollLeft(this.el.width());
-                }
-		  
+		currentGroup.next();		
 	};
 	
-	this.prev = function() {
-		if(!active){
+	this.prev = function( ) {
+		if (!active) {
 			return;
 		}
-		if( !currentSelectedSnippet  ){
-			currentSelectedSnippet = firstSnipptes.html;
-			currentSelectedSnippet.addClass("selected");
-			return;
-		}
-		var prevParent =  currentSelectedSnippet.parent().prev(".vertical-news-container");
-                var cls = $.trim(currentSelectedSnippet.attr("class")).split(" ")[1];
-		if( prevParent.length > 0 && prevParent.find("." + cls)){
-			currentSelectedSnippet.removeClass("selected");			
-			currentSelectedSnippet = prevParent.find("." + cls);
-			currentSelectedSnippet.addClass("selected")[0].scrollIntoView(false);
-			return;
-		}
-		var nextParent = currentSelectedSnippet.parent().parent().prev(".item-item-cont");
-		if( nextParent.length != 0 && nextParent.find(".vertical-news-container:last").find("." + cls).length != 0  ){
-			currentSelectedSnippet.removeClass("selected");
-			var cls = $.trim(currentSelectedSnippet.attr("class")).split(" ")[1];
-			currentSelectedSnippet = nextParent.find(".vertical-news-container:last").find("." + cls);
-			currentSelectedSnippet.addClass("selected")[0].scrollIntoView(false);
-		}else{
-                        this.el.parent().scrollLeft( 0 );
-                }
+		currentGroup.prev();	
 	};
 	
-	this.up = function() {
-		if(!active){
+	this.up = function( ) {
+		if (!active) {
 			return;
 		}
-		if( !currentSelectedSnippet  ){
-			currentSelectedSnippet = firstSnipptes.html;
-			currentSelectedSnippet.addClass("selected");
-			return;
-		}
-		if( currentSelectedSnippet.prev().length != 0  ){
-			currentSelectedSnippet.removeClass("selected");
-			currentSelectedSnippet = currentSelectedSnippet.prev();
-			currentSelectedSnippet.addClass("selected")[0].scrollIntoView(false);
-		}
+		currentGroup.up();
 	};
 	
-	this.down = function() {
-		if(!active){
+	this.down = function( ) {
+		if (!active) {
 			return;
 		}
-		if( !currentSelectedSnippet  ){
-			currentSelectedSnippet = firstSnipptes.html;
-			currentSelectedSnippet.addClass("selected");
-			return;
-		}
-		if( currentSelectedSnippet.next().length != 0 ){
-			currentSelectedSnippet.removeClass("selected");
-			currentSelectedSnippet = currentSelectedSnippet.next();
-			currentSelectedSnippet.addClass("selected")[0].scrollIntoView(false);
-		}
+		currentGroup.down();
 	};
 	
-	this.removeHighLight = function() {
-		if(!active){
+	this.removeHighLight = function( ) {
+		if (!active) {
 			return;
 		}
-		if( currentSelectedSnippet ){
+		if (currentSelectedSnippet) {
 			currentSelectedSnippet.removeClass("selected");
 		}
 	};
-	this.showArticle = function() {
-		if( active ){
+	this.showArticle = function( ) {
+		if (active) {
 			currentSelectedSnippet.trigger("click");
 		}
 	};
-	this.resize = function(  f_size ) {
+	this.resize = function( f_size ) {
 		var totalWidth = 0;
-		$(".item-item-cont", this.el).each(function() {
+		$(".item-item-cont", this.el).each(function( ) {
 			var allsnips = $(".newsSnippet", this);
-			allsnips.width( f_size * f_size );
-			var cols = Math.ceil(allsnips.length /3 );
-			$(this).width( ( allsnips.width() + 17) * cols + 20 );
+			allsnips.width(f_size * f_size);
+			var cols = Math.ceil(allsnips.length / 3);
+			$(this).width((allsnips.width() + 17) * cols + 20);
 			totalWidth += (allsnips.width() + 17) * cols + 20 + 40;
 		});
-		this.el.width( totalWidth );
+		this.el.width(totalWidth);
 	};
-};fm.Package("com.reader.filler");
+};
+fm.Package("com.reader.filler");
 fm.Class("FillContent");
 com.reader.filler.FillContent = function (me){this.setMe=function(_me){me=_me;};
     $.fn.SkipRoot = function () {
@@ -534,11 +534,11 @@ com.reader.filler.FillContent = function (me){this.setMe=function(_me){me=_me;};
 };fm.Package("com.reader.article");
 fm.Import("com.reader.filler.FillContent");
 fm.Class("ArticleManager", "jfm.html.Container");
-com.reader.article.ArticleManager = function (base, me, FillContent, Container){this.setMe=function(_me){me=_me;};
-	var setTimeOut,
-	multi,
-	currentSelected,
-	active, singleton;
+com.reader.article.ArticleManager = function (base, me, FillContent, Container) {
+	this.setMe = function( _me ) {
+		me = _me;
+	};
+	var setTimeOut, multi, currentSelected, active, singleton;
 	this.bodyHeight;
 	var margins;
 	this.articalWidth;
@@ -547,18 +547,18 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Container){
 	this.content;
 	this.imageHeight;
 	this.imageContainerWidth;
-	Static.getInstance = function() {
+	Static.getInstance = function( ) {
 		
-		if(!singleton){
+		if (!singleton) {
 			singleton = new me();
 		}
 		return singleton;
-    };
-	Private.ArticleManager = function() {
+	};
+	Private.ArticleManager = function( ) {
 		base({
-			id:"article-container"
+			id : "article-container"
 		});
-		$("#container").prepend(this.el);
+		com.reader.Reader.getDivision().center.add(this);
 		this.bodyHeight = $("#main").height();
 		setTimeOut = -9;
 		multi = 18;
@@ -567,205 +567,198 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Container){
 		this.imageHeight = 400;
 		this.imageContainerWidth = 500;
 	};
-	this.next = function() {
-		if(!active){
+	this.next = function( ) {
+		if (!active) {
 			return;
 		}
-		if(!currentSelected.hasClass("column-selected")){
+		if (!currentSelected.hasClass("column-selected")) {
 			currentSelected.addClass("column-selected");
 			currentSelected.get(0).scrollIntoView(false);
 			return;
 		}
 		
-		if(currentSelected.next().length != 0){
+		if (currentSelected.next().length != 0) {
 			currentSelected.removeClass("column-selected");
 			currentSelected = currentSelected.next().addClass("column-selected");
 			currentSelected.get(0).scrollIntoView(false);
-			changed({type:"next"});
+			changed({
+				type : "next"
+			});
 		}
-        else {
+		else {
 			this.el.parent().scrollLeft(this.el.width());
 		}
 	};
 	
-	this.prev = function() {
-		if(!active){
+	this.prev = function( ) {
+		if (!active) {
 			return;
 		}
-		if(!currentSelected.hasClass("column-selected")){
+		if (!currentSelected.hasClass("column-selected")) {
 			currentSelected.addClass("column-selected");
 			currentSelected.get(0).scrollIntoView(false);
 			
 			return;
 		}
-		if(currentSelected.prev(".selector").length != 0 ){
+		if (currentSelected.prev(".selector").length != 0) {
 			currentSelected.removeClass("column-selected");
 			currentSelected = currentSelected.prev().addClass("column-selected");
 			currentSelected.get(0).scrollIntoView(false);
-			changed({type:"prev"});
+			changed({
+				type : "prev"
+			});
 		}
-        else {
+		else {
 			this.el.parent().scrollLeft(0);
-        }
+		}
 	};
 	
-	function changed(obj){
-		for(var i=0;i<changeCbArray.length;i++){
+	function changed( obj ) {
+		for ( var i = 0; i < changeCbArray.length; i++) {
 			changeCbArray[i](obj);
 		}
-	};
+	}
+	;
 	
 	var changeCbArray = [];
-	this.registerChange = function(cb){
+	this.registerChange = function( cb ) {
 		changeCbArray.push(cb);
 	};
-	this.removeHighLight = function() {
-		if(!active){
+	this.removeHighLight = function( ) {
+		if (!active) {
 			return;
 		}
 		currentSelected.removeClass("column-selected");
 	};
 	
 	function createHeader( title ) {
-		var div = $("<div />",{
-			'class':'title',
-			html:"<h2>" + title + "</h2>"
-		}).appendTo( self.el );
-		return {height:div.height(),width:div.width()};
+		var div = $("<div />", {
+		    'class' : 'title',
+		    html : "<h2>" + title + "</h2>"
+		}).appendTo(self.el);
+		return {
+		    height : div.height(),
+		    width : div.width()
+		};
 	}
 	
-	function getImageContainer() {
-		return $("<div />",{
-			width: "90%",
-			"class":"image-container",
-			html:"<img height='"+self.imgInfo[0].height+"' src='"+self.imgInfo[0].href+"'/><div class='imagetext'>" + self.imgInfo[0].text+"</div>"
+	function getImageContainer( ) {
+		return $("<div />", {
+		    width : "90%",
+		    "class" : "image-container",
+		    html : "<img  src='" + self.imgInfo[0].href + "'/><div class='imagetext'>" + self.imgInfo[0].text + "</div>"
 		});
 	}
 	function createImageGallary( f_size, height ) {
-		 if( self.imgInfo.length == 0 || $.trim(self.imgInfo[0].text) == "" ) {
-			 return 0;
-		 }
-		var columnWidth =  f_size * multi + margins;
+		if (self.imgInfo.length == 0 || $.trim(self.imgInfo[0].text) == "") {
+			return 0;
+		}
+		var columnWidth = f_size * multi + margins;
 		var columns = self.imageContainerWidth / columnWidth;
-		if( columns - 1 > .7 ){
+		if (columns - 1 > .7) {
 			columns = 2;
 		}
-		else
-		{
+		else {
 			columns = 1;
 		}
-		self.columnInsideImageWidth = Math.floor(self.imageContainerWidth / columns - margins/2 - 2);
+		self.columnInsideImageWidth = Math.floor(self.imageContainerWidth / columns - margins / 2 - 2);
 		self.numberofEffectedImage = columns;
-		self.imageContainer = $("<div />",{
-			width:self.imageContainerWidth,
-			height:height,
-			'class':"imageContainer selector parent"
-		})
-		.appendTo( self.el );
-		self.imageContainer.append( getImageContainer() );
+		self.imageContainer = $("<div />", {
+		    width : self.imageContainerWidth,
+		    height : height,
+		    'class' : "imageContainer selector parent"
+		}).appendTo(self.el);
+		self.imageContainer.append(getImageContainer());
 		return columns;
 	}
 	
-	this.active = function() {
+	this.active = function( ) {
 		active = true;
 		this.el.show();
 	};
 	
-	this.deActive = function() {
+	this.deActive = function( ) {
 		active = false;
 		this.el.hide();
 	};
 	
-	this.isActive = function() {
+	this.isActive = function( ) {
 		return active;
 	};
 	
-	function prepareHtml () {
-		if( !self.imgInfo ){
+	function prepareHtml( ) {
+		if (!self.imgInfo) {
 			self.imgInfo = [];
 			var imgsInfo = $("#hidden >.content").find("img").parents("div:first").not(".content").clone();
 			var imgi = {};
-			for( var i = 0; i < imgsInfo.length ; i++){
+			for ( var i = 0; i < imgsInfo.length; i++) {
 				imgi = {};
-				imgi.href = $("img",imgsInfo[i]).attr("src");
-				imgi.height = $("img",imgsInfo[i]).height();
+				imgi.href = $("img", imgsInfo[i]).attr("src");
+				imgi.height = $("img", imgsInfo[i]).height();
 				imgi.text = $(imgsInfo[i]).text();
 				self.imgInfo.push(imgi);
 			}
 		}
-	$("#hidden").find("*").filter(function(){
-	    		return this.tagName.toLowerCase() != 'br' && this.tagName.toLowerCase() != 'img' && $.trim($(this).text()) == '';
-	    }).remove();
+		$("#hidden").find("*").filter(function( ) {
+			return this.tagName.toLowerCase() != 'br' && this.tagName.toLowerCase() != 'img' && $.trim($(this).text()) == '';
+		}).remove();
 		self.imgages = $("#hidden >.content").find("*").width('').height('').find("img");
-		self.content = $.trim($("#hidden >.content")
-												.html()
-												.replace(/[\s\s]+/, " ")
-												.replace(/\n+/, " ")
-												.replace(/>\s+/, ">"))
-												.replace(/\r\n/gim, "")
-												.replace(/^\s/gim, "");
+		self.content = $.trim($("#hidden >.content").html().replace(/[\s\s]+/, " ").replace(/\n+/, " ").replace(/>\s+/, ">")).replace(/\r\n/gim, "").replace(/^\s/gim, "");
 		self.htmlLength = self.content.length;
 		$("#hidden >.content").find("img").parent().not(".content").remove();
 		$("#hidden >.content").find(">br, script").remove();
-		self.title = $("#hidden >.title").text(); 
-	};
+		self.title = $("#hidden >.title").text();
+	}
+	;
 	
 	this.create = function( f_size, isTaskbar ) {
-		if(!isTaskbar){
+		if (!isTaskbar) {
 			self.imgInfo = undefined;
 		}
 		this.articalWidth = f_size * multi;
-        var articleContainer = this.el.empty();
-		var trancatedLength = [0,1];
+		var articleContainer = this.el.empty();
+		var trancatedLength = [ 0, 1 ];
 		var htm = "<div class='parent selector'><div class='s'></div></div>";
 		if (setTimeOut) {
-		    clearTimeout( setTimeOut );
+			clearTimeout(setTimeOut);
 		}
 		prepareHtml();
-		var content = new FillContent( this.content );
-		var header = createHeader( this.title );
-		var numbers = createImageGallary( f_size,  self.bodyHeight - 90 - header.height );
+		var content = new FillContent(this.content);
+		var header = createHeader(this.title);
+		var numbers = createImageGallary(f_size, self.bodyHeight - 90 - header.height);
 		var i = 0;
-		function recursive() {
+		function recursive( ) {
 			var removeHeight = 90 + header.height;
-		    if ( trancatedLength[ 1 ] <= 0 ) {
-		    	return;
-		    }
-		    i++;
-		    var elem;
-		    articleContainer.width( i * ( self.articalWidth + margins )  + self.imageContainerWidth + margins);
-		    if( i <= numbers){
-		    	removeHeight += self.imageContainer.find(".image-container").height();
-		    	elem =  $(htm)
-			                .appendTo(self.imageContainer)
-			                .removeClass("parent")
-			                .addClass("text-inside-image");
-				elem.find("div.s")
-		                    .height( self.bodyHeight - removeHeight )
-		                    .width( self.columnInsideImageWidth );
-		    }
-		    else{
-		    	elem =  $(htm)
-                .appendTo( articleContainer );
-		    	elem.find("div.s")
-		                    .height( self.bodyHeight - removeHeight )
-		                    .width( self.articalWidth );
-		    }
-	        trancatedLength = content
-	        						.truncateWithHeight(elem.find("div.s"), trancatedLength[0], self.content);
-	        setTimeOut = setTimeout(recursive, 10);
+			if (trancatedLength[1] <= 0) {
+				return;
+			}
+			i++;
+			var elem;
+			articleContainer.width(i * (self.articalWidth + margins) + self.imageContainerWidth + margins);
+			if (i <= numbers) {
+				removeHeight += self.imageContainer.find(".image-container").height();
+				elem = $(htm).appendTo(self.imageContainer).removeClass("parent").addClass("text-inside-image");
+				elem.find("div.s").height(self.bodyHeight - removeHeight).width(self.columnInsideImageWidth);
+			}
+			else {
+				elem = $(htm).appendTo(articleContainer);
+				elem.find("div.s").height(self.bodyHeight - removeHeight).width(self.articalWidth);
+			}
+			trancatedLength = content.truncateWithHeight(elem.find("div.s"), trancatedLength[0], self.content);
+			setTimeOut = setTimeout(recursive, 10);
 		}
 		recursive();
 		currentSelected = $("#article-container").find("div.selector:first");
 		changed();
 	};
-	this.getSelectedColumn = function(){
-		return currentSelected.clone( true );
+	this.getSelectedColumn = function( ) {
+		return currentSelected.clone(true);
 	};
-	this.getSelectedFontSize = function() {
-		return currentSelected.css( 'font-size' );
+	this.getSelectedFontSize = function( ) {
+		return currentSelected.css('font-size');
 	};
-};/**
+};
+/**
  * Created with JetBrains WebStorm.
  * User: anoop
  * Date: 5/12/12
@@ -1237,7 +1230,163 @@ com.reader.taskbar.Taskbar = function (base, me, Popup, AllSnippets, ArticleMana
     	}
     	
 	};
-};fm.Package("com.reader.events");
+}; 
+fm.Package("jfm.division");
+fm.Class("Part","jfm.component.Component");
+jfm.division.Part = function (base, me, Component){this.setMe=function(_me){me=_me;};
+
+    var set, division;    
+    this.Part = function(config, divsn, s){
+        set = s;
+        division = divsn;
+        config.css = config.css || {};
+        config.css.display = 'none';
+        base('<div />',config);
+    };
+    
+    this.add = function(elem){        
+        set(elem);
+        elem;
+    };
+    
+    this.reset = function(){
+        this.el.empty();
+        this.el.css({ 'display':'none',height:0, width:0 });
+        division.updateLayout();
+        return this;
+    };
+};
+
+fm.Package("jfm.division");
+fm.Import("jfm.division.Part");
+fm.Class("Division", "jfm.html.Container");
+jfm.division.Division = function (base, me, Part, Container){this.setMe=function(_me){me=_me;};
+
+	var width, height, me;
+	this.addTo = function( container ) {
+		var timeoutID;
+		container = Component.isComponent(container) ? container.el : jQuery(container);
+		me.ownerCt = container;
+		container[0].resize = function( w, h ) {
+			timeoutID && clearTimeout(timeoutID)
+			;
+			timeoutID = setTimeout(function( ) {
+				width = w;
+				height = h;
+				me.updateLayout();
+				timeoutID = 0;
+			}, 300);
+		};
+		this.el.appendTo(container);
+		width = container.width();
+		height = container.height();
+		this.updateLayout();
+	};
+	
+	this.init = function( ) {
+		Static.config = {
+		    width : "100%",
+		    height : "100%",
+		    'class' : 'jfm-division'
+		};
+	};
+	
+	this.Division = function( config ) {
+		me = this;
+		var container = config && config.addTo;
+		if (config) {
+			delete config.addTo;
+		}
+		config = jQuery.extend({}, this.config, config);
+		height = width = 0;
+		base(config);
+		this.top = new Part({
+			'class' : "jfm-division-top"
+		}, this, function( elem ) {
+			set(elem, me.top, 0, 0);
+		});
+		this.left = new Part({
+			'class' : "jfm-division-left"
+		}, this, function( elem ) {
+			set(elem, me.left, 0, getRemainingHeight());
+		});
+		this.center = new Part({
+			'class' : "jfm-division-center"
+		}, this, function( elem ) {
+			set(elem, me.center, getRemainingWidth(), getRemainingHeight());
+		});
+		this.center.el.show();
+		this.right = new Part({
+			'class' : "jfm-division-right"
+		}, this, function( elem ) {
+			set(elem, me.right, 0, getRemainingHeight());
+		});
+		this.bottom = new Part({
+			'class' : "jfm-division-bottom"
+		}, this, function( elem ) {
+			set(elem, me.bottom, 0, 0);
+		});
+		this.add([ this.top, this.left, this.center, this.right, this.bottom ]);
+		if (container) {
+			this.addTo(container);
+		}
+	};
+	
+	function getRemainingWidth( ) {
+		var w = (me.left && me.left.el[0].offsetWidth) || 0;
+		w += (me.right && me.right.el[0].offsetWidth) || 0;
+		return width - w;
+	}
+	
+	function getRemainingHeight( ) {
+		var h = (me.bottom && me.bottom.el.height()) || 0;
+		h += (me.top && me.top.el.height()) || 0;
+		return height - h;
+	}
+	
+	var isAlreadyset;
+	this.updateLayout = function( ) {
+		var h = getRemainingHeight();
+		var w = getRemainingWidth();
+		me.top && me.top.el.width(width);
+		me.bottom && me.bottom.el.width(width);
+		me.left && me.left.el.height(h);
+		me.right && me.right.el.height(h);
+		var m = me.center && me.center.el.height(h).width(w)[0].resize;
+		m && m(w, h);
+		me.center.el.css("overflow", 'hidden');
+		if (isAlreadyset) {
+			clearTimeout(isAlreadyset);
+		}
+		isAlreadyset = setTimeout(function( ) {
+			isAlreadyset = 0;
+			me.center.el.css("overflow", '');
+		}, 800);
+	};
+	
+	function set( obj, appender, difW, difH ) {
+		if (obj && obj.instanceOf && obj.el instanceof jQuery) {
+			// TODO
+		}
+		else {
+			obj = new Container(obj);
+		}
+		difH && appender.el.height(difH);
+		appender.el.show()
+		if (difH > appender.el.height()) {
+			difW = difW - 20;
+		}
+		difW && appender.el.width(difW);
+		obj.el.appendTo(appender.el);
+		!difW && appender.el.width(obj.el.width());
+		!difH && appender.el.height(obj.el.height());
+		me.updateLayout();
+		return obj;
+	}
+};
+
+
+fm.Package("com.reader.events");
 fm.Import("com.reader.snippet.AllSnippets");
 fm.Import("com.reader.article.ArticleManager");
 fm.Import("com.reader.taskbar.Taskbar");
@@ -1332,23 +1481,23 @@ com.reader.events.Events = function (me, AllSnippets, ArticleManager, Taskbar){t
 	};
 	
 };
-fm.Package("com");
+fm.Package("com.reader");
 fm.Import("com.reader.snippet.AllSnippets");
 fm.Import("com.reader.article.ArticleManager");
 fm.Import("com.reader.taskbar.Taskbar");
+fm.Import("jfm.division.Division");
 fm.Import('com.reader.events.Events');
 fm.Class("Reader");
-com.Reader = function (me, AllSnippets, ArticleManager, Taskbar, Events) {
-	
+com.reader.Reader = function (me, AllSnippets, ArticleManager, Taskbar, Division, Events) {
+	var division;
 	this.setMe = function( _me ) {
 		me = _me;
 	};
-	
-	this.init = function( ) {
-		Taskbar.getInstance(callback);
-	};
-	
-	Static.openArticle = function( obj ) {
+	Static.getDivision = function() {
+		return division;
+    };
+
+    Static.openArticle = function( obj ) {
 		var f_size = parseInt($("#article-container").css("font-size")) - 2;
 		$("#hidden").html("<div class='title'>" + obj.title + "</div>" + "<div class='content'>" + obj.content + "</div>");
 		ArticleManager.getInstance().active();
@@ -1361,12 +1510,24 @@ com.Reader = function (me, AllSnippets, ArticleManager, Taskbar, Events) {
 		ArticleManager.getInstance().deActive();
 		AllSnippets.getInstance().create(resp, clean);
 	}
-	
-	Static.main = function( ) {
-		$("#main").height(580).width($(window).width() - 20);
-		$(document).scroll(function( ) {
-			return false;
+	function updateLayout() {
+		$(window).ready(function() {
+			var win = jQuery(window);
+			win.resize(function() {
+				var w = win.width(), h = win.height();
+				var m = $('body').width(w).height(h)[0].resize;
+				m && m(w, h);
+			});
+			$('body').trigger('resize');
 		});
+	}
+	Static.main = function( ) {
+		updateLayout();
+		division = new Division({
+			id: "main"
+		});
+		division.addTo(jQuery("body"));
+		Taskbar.getInstance(callback);
 		Events.getInstance().keydownEvents();
 		Events.getInstance().keyupEvents();
 		$("#article-list").show().empty();
