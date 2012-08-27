@@ -6,7 +6,7 @@ com.reader.snippet.Snippet = function (base, me, Container) {
 		
 		Static.height = 110;
 		Static.margins = 18;
-		Static.widthAmlifier = 2;
+		Static.widthAmlifier = 3;
 	};
 	
 	this.setMe = function( _me ) {

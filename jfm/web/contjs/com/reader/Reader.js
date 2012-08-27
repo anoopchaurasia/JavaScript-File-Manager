@@ -317,9 +317,10 @@ com.reader.snippet.SnippetGroup = function (base, me, Snippet, Container) {
     };
 };
 fm.Package("com.reader.snippet");
+fm.Import("com.reader.snippet.Snippet");
 fm.Import("com.reader.snippet.SnippetGroup");
 fm.Class("AllSnippets", "jfm.html.Container");
-com.reader.snippet.AllSnippets = function (base, me, SnippetGroup, Container) {
+com.reader.snippet.AllSnippets = function (base, me, Snippet, SnippetGroup, Container) {
 	this.setMe = function( _me ) {
 		me = _me;
 	};
@@ -416,17 +417,17 @@ com.reader.snippet.AllSnippets = function (base, me, SnippetGroup, Container) {
 			currentGroup.showArticle();
 		}
 	};
-	this.resize = function( f_size ) {
+	function resize ( f_size ) {
 		var totalWidth = 0;
-		$(".item-item-cont", this.el).each(function( ) {
+		$(".item-item-cont", me.el).each(function( ) {
 			var allsnips = $(".newsSnippet", this);
-			allsnips.width(f_size * f_size);
+			allsnips.width((com.reader.snippet.Snippet.widthAmlifierf_size * f_size);
 			var cols = Math.ceil(allsnips.length / 3);
 			$(this).width((allsnips.width() + 17) * cols + 20);
 			totalWidth += (allsnips.width() + 17) * cols + 20 + 40;
 		});
-		this.el.width(totalWidth);
-	};
+		me.el.width(totalWidth);
+	}
 	
 	this.changeFont = function(change) {
 		if(!active){
@@ -434,7 +435,7 @@ com.reader.snippet.AllSnippets = function (base, me, SnippetGroup, Container) {
 		}
 		var f_size = parseInt(this.el.css("font-size")) + change;
 		me.el.css("font-size", f_size);
-		this.resize(f_size);
+		resize(f_size);
     };
 };
 fm.Package("com.reader.filler");
@@ -1024,17 +1025,19 @@ fm.Import("com.reader.snippet.AllSnippets");
 fm.Import("com.reader.article.ArticleManager");
 fm.Import("com.reader.taskbar.Taskbar");
 fm.Class("Events");
-com.reader.events.Events = function (me, AllSnippets, ArticleManager, Taskbar){this.setMe=function(_me){me=_me;};
+com.reader.events.Events = function (me, AllSnippets, ArticleManager, Taskbar) {
+	this.setMe = function( _me ) {
+		me = _me;
+	};
 	var singleton;
 	
-	
-	Static.getInstance = function(){
-		if(!singleton){
+	Static.getInstance = function( ) {
+		if (!singleton) {
 			singleton = new me();
 		}
 		return singleton;
 	};
-
+	
 	Private.Events = function( ) {};
 	
 	this.keyupEvents = function( ) {
@@ -1042,21 +1045,20 @@ com.reader.events.Events = function (me, AllSnippets, ArticleManager, Taskbar){t
 			switch (e.keyCode) {
 				case 13: {
 					AllSnippets.getInstance().showArticle();
-					break;
+					return false;
 				}
 				case 36: {
-					Taskbar.getInstance().clickHome();
-					break;
+					Taskbar.getInstance().clickHome(e);
+					return false;
 				}
 				case 8: {
 					if (!AllSnippets.getInstance().isActive()) {
 						Taskbar.getInstance().clickHome();
 						return false;
 					}
-					break;
+					return false;
 				}
 			}
-			return false;
 		});
 	};
 	
@@ -1065,16 +1067,20 @@ com.reader.events.Events = function (me, AllSnippets, ArticleManager, Taskbar){t
 		$(".left-navigation", Taskbar.getInstance().el).mousedown(function( ) {
 			AllSnippets.getInstance().prev();
 			ArticleManager.getInstance().prev();
+			return false;
 		});
 		$(".up-navigation", Taskbar.getInstance().el).mousedown(function( ) {
 			AllSnippets.getInstance().up();
+			return false;
 		});
 		$(".right-navigation", Taskbar.getInstance().el).mousedown(function( ) {
 			AllSnippets.getInstance().next();
 			ArticleManager.getInstance().next();
+			return false;
 		});
 		$(".down-navigation", Taskbar.getInstance().el).mousedown(function( ) {
 			AllSnippets.getInstance().down();
+			return false;
 		});
 		$(document).keydown(function( e ) {
 			switch (e.keyCode) {
@@ -1106,13 +1112,11 @@ com.reader.events.Events = function (me, AllSnippets, ArticleManager, Taskbar){t
 				default: {
 					AllSnippets.getInstance().removeHighLight();
 					ArticleManager.getInstance().removeHighLight();
-					return false;
 				}
 					
 			}
 		});
 	};
-	
 };
 fm.Package("com.reader");
 fm.Import("com.reader.snippet.AllSnippets");

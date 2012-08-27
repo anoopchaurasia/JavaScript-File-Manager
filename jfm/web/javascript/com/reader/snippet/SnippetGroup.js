@@ -11,7 +11,7 @@ com.reader.snippet.SnippetGroup = function (base, me, Snippet, Container) {
 	};
 	
 	this.SnippetGroup = function( resp, height, f_s) {
-		entries = resp.entries, f_size = (Snippet.widthAmlifier + f_s);
+		entries = resp.entries, f_size = f_s;
 		var len = resp.entries.length - 5;
 		counterPerColumn = Math.floor( (height)/(Snippet.height + Snippet.margins)) - 1;
 		var columns = Math.ceil(len / counterPerColumn);

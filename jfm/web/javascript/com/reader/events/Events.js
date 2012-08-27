@@ -3,17 +3,19 @@ fm.Import("com.reader.snippet.AllSnippets");
 fm.Import("com.reader.article.ArticleManager");
 fm.Import("com.reader.taskbar.Taskbar");
 fm.Class("Events");
-com.reader.events.Events = function (me, AllSnippets, ArticleManager, Taskbar){this.setMe=function(_me){me=_me;};
+com.reader.events.Events = function (me, AllSnippets, ArticleManager, Taskbar) {
+	this.setMe = function( _me ) {
+		me = _me;
+	};
 	var singleton;
 	
-	
-	Static.getInstance = function(){
-		if(!singleton){
+	Static.getInstance = function( ) {
+		if (!singleton) {
 			singleton = new me();
 		}
 		return singleton;
 	};
-
+	
 	Private.Events = function( ) {};
 	
 	this.keyupEvents = function( ) {
@@ -21,21 +23,20 @@ com.reader.events.Events = function (me, AllSnippets, ArticleManager, Taskbar){t
 			switch (e.keyCode) {
 				case 13: {
 					AllSnippets.getInstance().showArticle();
-					break;
+					return false;
 				}
 				case 36: {
-					Taskbar.getInstance().clickHome();
-					break;
+					Taskbar.getInstance().clickHome(e);
+					return false;
 				}
 				case 8: {
 					if (!AllSnippets.getInstance().isActive()) {
-						Taskbar.getInstance().clickHome();
+						Taskbar.getInstance().clickHome(e);
 						return false;
 					}
-					break;
+					return false;
 				}
 			}
-			return false;
 		});
 	};
 	
@@ -44,16 +45,20 @@ com.reader.events.Events = function (me, AllSnippets, ArticleManager, Taskbar){t
 		$(".left-navigation", Taskbar.getInstance().el).mousedown(function( ) {
 			AllSnippets.getInstance().prev();
 			ArticleManager.getInstance().prev();
+			return false;
 		});
 		$(".up-navigation", Taskbar.getInstance().el).mousedown(function( ) {
 			AllSnippets.getInstance().up();
+			return false;
 		});
 		$(".right-navigation", Taskbar.getInstance().el).mousedown(function( ) {
 			AllSnippets.getInstance().next();
 			ArticleManager.getInstance().next();
+			return false;
 		});
 		$(".down-navigation", Taskbar.getInstance().el).mousedown(function( ) {
 			AllSnippets.getInstance().down();
+			return false;
 		});
 		$(document).keydown(function( e ) {
 			switch (e.keyCode) {
@@ -85,11 +90,9 @@ com.reader.events.Events = function (me, AllSnippets, ArticleManager, Taskbar){t
 				default: {
 					AllSnippets.getInstance().removeHighLight();
 					ArticleManager.getInstance().removeHighLight();
-					return false;
 				}
 					
 			}
 		});
 	};
-	
 };

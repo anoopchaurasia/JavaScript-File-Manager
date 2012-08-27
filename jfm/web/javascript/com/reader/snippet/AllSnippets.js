@@ -1,7 +1,8 @@
 fm.Package("com.reader.snippet");
+fm.Import("com.reader.snippet.Snippet");
 fm.Import("com.reader.snippet.SnippetGroup");
 fm.Class("AllSnippets", "jfm.html.Container");
-com.reader.snippet.AllSnippets = function (base, me, SnippetGroup, Container) {
+com.reader.snippet.AllSnippets = function (base, me, Snippet, SnippetGroup, Container) {
 	this.setMe = function( _me ) {
 		me = _me;
 	};
@@ -50,7 +51,7 @@ com.reader.snippet.AllSnippets = function (base, me, SnippetGroup, Container) {
 			this.clearStoredData();
 		}
 		var f_size = parseInt(this.el.css("font-size"));
-		var snippetGroup = new SnippetGroup(resp, this.el.height(), f_size);
+		var snippetGroup = new SnippetGroup(resp, this.el.height(), f_size + Snippet.widthAmlifier);
 		if(!currentGroup){
 			currentGroup = snippetGroup;
 		}
@@ -116,6 +117,6 @@ com.reader.snippet.AllSnippets = function (base, me, SnippetGroup, Container) {
 		}
 		var f_size = parseInt(this.el.css("font-size")) + change;
 		me.el.css("font-size", f_size);
-		resize(f_size);
+		resize(f_size + Snippet.widthAmlifier);
     };
 };
