@@ -53,7 +53,7 @@ com.reader.taskbar.Taskbar = function (base, me, AllSnippets, ArticleManager, Co
 		var arr = $(form).serializeArray();
 		AllSnippets.getInstance().clearStoredData();
 		for ( var k in arr) {
-			parseRSS(arr[k].value, callback, true);
+			com.reader.Reader.parseRSS(arr[k].value, callback, true);
 		}
 	}
 	

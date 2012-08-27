@@ -16,7 +16,10 @@ com.reader.events.Events = function (me, AllSnippets, ArticleManager, Taskbar) {
 		return singleton;
 	};
 	
-	Private.Events = function( ) {};
+	Private.Events = function( ) {
+		this.keyupEvents();
+		this.keydownEvents();
+	};
 	
 	this.keyupEvents = function( ) {
 		$(document).keyup(function( e ) {

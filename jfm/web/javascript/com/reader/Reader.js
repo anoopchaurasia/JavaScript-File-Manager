@@ -10,11 +10,11 @@ com.reader.Reader = function (me, AllSnippets, ArticleManager, Taskbar, Division
 	this.setMe = function( _me ) {
 		me = _me;
 	};
-	Static.getDivision = function() {
+	Static.getDivision = function( ) {
 		return division;
-    };
-
-    Static.openArticle = function( obj ) {
+	};
+	
+	Static.openArticle = function( obj ) {
 		var f_size = parseInt($("#article-container").css("font-size")) - 2;
 		$("#hidden").html("<div class='title'>" + obj.title + "</div>" + "<div class='content'>" + obj.content + "</div>");
 		ArticleManager.getInstance().active();
@@ -27,10 +27,10 @@ com.reader.Reader = function (me, AllSnippets, ArticleManager, Taskbar, Division
 		ArticleManager.getInstance().deActive();
 		AllSnippets.getInstance().create(resp, clean);
 	}
-	function updateLayout() {
-		$(window).ready(function() {
+	function updateLayout( ) {
+		$(window).ready(function( ) {
 			var win = jQuery(window);
-			win.resize(function() {
+			win.resize(function( ) {
 				var w = win.width(), h = win.height();
 				var m = $('body').width(w).height(h)[0].resize;
 				m && m(w, h);
@@ -41,12 +41,11 @@ com.reader.Reader = function (me, AllSnippets, ArticleManager, Taskbar, Division
 	Static.main = function( ) {
 		updateLayout();
 		division = new Division({
-			id: "main"
+			id : "main"
 		});
 		division.addTo(jQuery("body"));
 		Taskbar.getInstance(callback);
-		Events.getInstance().keydownEvents();
-		Events.getInstance().keyupEvents();
+		Events.getInstance();
 		$("#article-list").show().empty();
 		$("a").live('click', function( ) {
 			var open_link = window.open('', '_blank');
@@ -55,15 +54,15 @@ com.reader.Reader = function (me, AllSnippets, ArticleManager, Taskbar, Division
 		});
 		return false;
 	};
+	
+	Static.parseRSS = function( url, callback, isGoogle ) {
+		url = isGoogle ? document.location.protocol + '//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=10&callback=?&q=' + encodeURIComponent(url) : url;
+		$.ajax({
+		    url : url,
+		    dataType : 'json',
+		    success : function( data ) {
+			    callback(data.responseData.feed);
+		    }
+		});
+	};
 };
-
-function parseRSS( url, callback, isGoogle ) {
-	url = isGoogle ? document.location.protocol + '//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=10&callback=?&q=' + encodeURIComponent(url) : url;
-	$.ajax({
-	    url : url,
-	    dataType : 'json',
-	    success : function( data ) {
-		    callback(data.responseData.feed);
-	    }
-	});
-}

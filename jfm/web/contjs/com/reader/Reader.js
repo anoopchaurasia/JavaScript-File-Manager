@@ -145,7 +145,7 @@ com.reader.snippet.Snippet = function (base, me, Container) {
 		
 		Static.height = 110;
 		Static.margins = 18;
-		Static.widthAmlifier = 2;
+		Static.widthAmlifier = 3;
 	};
 	
 	this.setMe = function( _me ) {
@@ -224,7 +224,7 @@ com.reader.snippet.SnippetGroup = function (base, me, Snippet, Container) {
 	};
 	
 	this.SnippetGroup = function( resp, height, f_s) {
-		entries = resp.entries, f_size = (Snippet.widthAmlifier + f_s);
+		entries = resp.entries, f_size = f_s;
 		var len = resp.entries.length - 5;
 		counterPerColumn = Math.floor( (height)/(Snippet.height + Snippet.margins)) - 1;
 		var columns = Math.ceil(len / counterPerColumn);
@@ -369,7 +369,7 @@ com.reader.snippet.AllSnippets = function (base, me, Snippet, SnippetGroup, Cont
 			this.clearStoredData();
 		}
 		var f_size = parseInt(this.el.css("font-size"));
-		var snippetGroup = new SnippetGroup(resp, this.el.height(), f_size);
+		var snippetGroup = new SnippetGroup(resp, this.el.height(), f_size + Snippet.widthAmlifier);
 		if(!currentGroup){
 			currentGroup = snippetGroup;
 		}
@@ -421,7 +421,7 @@ com.reader.snippet.AllSnippets = function (base, me, Snippet, SnippetGroup, Cont
 		var totalWidth = 0;
 		$(".item-item-cont", me.el).each(function( ) {
 			var allsnips = $(".newsSnippet", this);
-			allsnips.width((com.reader.snippet.Snippet.widthAmlifierf_size * f_size);
+			allsnips.width(f_size * f_size);
 			var cols = Math.ceil(allsnips.length / 3);
 			$(this).width((allsnips.width() + 17) * cols + 20);
 			totalWidth += (allsnips.width() + 17) * cols + 20 + 40;
@@ -435,7 +435,7 @@ com.reader.snippet.AllSnippets = function (base, me, Snippet, SnippetGroup, Cont
 		}
 		var f_size = parseInt(this.el.css("font-size")) + change;
 		me.el.css("font-size", f_size);
-		resize(f_size);
+		resize(f_size + Snippet.widthAmlifier);
     };
 };
 fm.Package("com.reader.filler");
@@ -851,7 +851,7 @@ com.reader.taskbar.Taskbar = function (base, me, AllSnippets, ArticleManager, Co
 		var arr = $(form).serializeArray();
 		AllSnippets.getInstance().clearStoredData();
 		for ( var k in arr) {
-			parseRSS(arr[k].value, callback, true);
+			com.reader.Reader.parseRSS(arr[k].value, callback, true);
 		}
 	}
 	
@@ -1038,7 +1038,10 @@ com.reader.events.Events = function (me, AllSnippets, ArticleManager, Taskbar) {
 		return singleton;
 	};
 	
-	Private.Events = function( ) {};
+	Private.Events = function( ) {
+		this.keyupEvents();
+		this.keydownEvents();
+	};
 	
 	this.keyupEvents = function( ) {
 		$(document).keyup(function( e ) {
@@ -1053,7 +1056,7 @@ com.reader.events.Events = function (me, AllSnippets, ArticleManager, Taskbar) {
 				}
 				case 8: {
 					if (!AllSnippets.getInstance().isActive()) {
-						Taskbar.getInstance().clickHome();
+						Taskbar.getInstance().clickHome(e);
 						return false;
 					}
 					return false;
@@ -1130,11 +1133,11 @@ com.reader.Reader = function (me, AllSnippets, ArticleManager, Taskbar, Division
 	this.setMe = function( _me ) {
 		me = _me;
 	};
-	Static.getDivision = function() {
+	Static.getDivision = function( ) {
 		return division;
-    };
-
-    Static.openArticle = function( obj ) {
+	};
+	
+	Static.openArticle = function( obj ) {
 		var f_size = parseInt($("#article-container").css("font-size")) - 2;
 		$("#hidden").html("<div class='title'>" + obj.title + "</div>" + "<div class='content'>" + obj.content + "</div>");
 		ArticleManager.getInstance().active();
@@ -1147,10 +1150,10 @@ com.reader.Reader = function (me, AllSnippets, ArticleManager, Taskbar, Division
 		ArticleManager.getInstance().deActive();
 		AllSnippets.getInstance().create(resp, clean);
 	}
-	function updateLayout() {
-		$(window).ready(function() {
+	function updateLayout( ) {
+		$(window).ready(function( ) {
 			var win = jQuery(window);
-			win.resize(function() {
+			win.resize(function( ) {
 				var w = win.width(), h = win.height();
 				var m = $('body').width(w).height(h)[0].resize;
 				m && m(w, h);
@@ -1161,12 +1164,11 @@ com.reader.Reader = function (me, AllSnippets, ArticleManager, Taskbar, Division
 	Static.main = function( ) {
 		updateLayout();
 		division = new Division({
-			id: "main"
+			id : "main"
 		});
 		division.addTo(jQuery("body"));
 		Taskbar.getInstance(callback);
-		Events.getInstance().keydownEvents();
-		Events.getInstance().keyupEvents();
+		Events.getInstance();
 		$("#article-list").show().empty();
 		$("a").live('click', function( ) {
 			var open_link = window.open('', '_blank');
@@ -1175,16 +1177,16 @@ com.reader.Reader = function (me, AllSnippets, ArticleManager, Taskbar, Division
 		});
 		return false;
 	};
+	
+	this.parseRSS = function( url, callback, isGoogle ) {
+		url = isGoogle ? document.location.protocol + '//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=10&callback=?&q=' + encodeURIComponent(url) : url;
+		$.ajax({
+		    url : url,
+		    dataType : 'json',
+		    success : function( data ) {
+			    callback(data.responseData.feed);
+		    }
+		});
+	};
 };
-
-function parseRSS( url, callback, isGoogle ) {
-	url = isGoogle ? document.location.protocol + '//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=10&callback=?&q=' + encodeURIComponent(url) : url;
-	$.ajax({
-	    url : url,
-	    dataType : 'json',
-	    success : function( data ) {
-		    callback(data.responseData.feed);
-	    }
-	});
-}
 fm.isConcatinated = false;
