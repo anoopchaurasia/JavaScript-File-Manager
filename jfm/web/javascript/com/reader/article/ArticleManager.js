@@ -102,7 +102,7 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Container) 
 		var div = $("<div />", {
 		    'class' : 'title',
 		    html : "<h2>" + title + "</h2>"
-		}).appendTo(self.el);
+		}).appendTo(me.el);
 		return {
 		    height : div.height(),
 		    width : div.width()
@@ -224,4 +224,13 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Container) 
 	this.getSelectedFontSize = function( ) {
 		return currentSelected.css('font-size');
 	};
+	
+	this.changeFont = function(change) {
+		if(!active){
+			return;
+		}
+		var f_size = parseInt(this.el.css("font-size")) + change;
+		me.el.empty().css("font-size", f_size);
+		this.create(f_size, true);
+    };
 };

@@ -98,15 +98,24 @@ com.reader.snippet.AllSnippets = function (base, me, SnippetGroup, Container) {
 			currentGroup.showArticle();
 		}
 	};
-	this.resize = function( f_size ) {
+	function resize ( f_size ) {
 		var totalWidth = 0;
-		$(".item-item-cont", this.el).each(function( ) {
+		$(".item-item-cont", me.el).each(function( ) {
 			var allsnips = $(".newsSnippet", this);
 			allsnips.width(f_size * f_size);
 			var cols = Math.ceil(allsnips.length / 3);
 			$(this).width((allsnips.width() + 17) * cols + 20);
 			totalWidth += (allsnips.width() + 17) * cols + 20 + 40;
 		});
-		this.el.width(totalWidth);
-	};
+		me.el.width(totalWidth);
+	}
+	
+	this.changeFont = function(change) {
+		if(!active){
+			return;
+		}
+		var f_size = parseInt(this.el.css("font-size")) + change;
+		me.el.css("font-size", f_size);
+		resize(f_size);
+    };
 };
