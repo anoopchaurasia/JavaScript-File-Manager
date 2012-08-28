@@ -1,8 +1,9 @@
 fm.Package("com.reader.snippet");
 fm.Import("com.reader.snippet.Snippet");
+fm.Import("jfm.cookie.Cookie");
 fm.Import("com.reader.snippet.SnippetGroup");
 fm.Class("AllSnippets", "jfm.html.Container");
-com.reader.snippet.AllSnippets = function (base, me, Snippet, SnippetGroup, Container) {
+com.reader.snippet.AllSnippets = function (base, me, Snippet, Cookie, SnippetGroup, Container) {
 	this.setMe = function( _me ) {
 		me = _me;
 	};
@@ -23,6 +24,7 @@ com.reader.snippet.AllSnippets = function (base, me, Snippet, SnippetGroup, Cont
 			height : com.reader.Reader.getDivision().center.el.height()
 		});
 		com.reader.Reader.getDivision().center.add(this);
+		Cookie.get("Sfontsize") && this.el.css('font-size', Cookie.get("Sfontsize")+"px");
 		active = false;
 	};
 	
@@ -122,6 +124,7 @@ com.reader.snippet.AllSnippets = function (base, me, Snippet, SnippetGroup, Cont
 			return;
 		}
 		var f_size = parseInt(this.el.css("font-size")) + change;
+		Cookie.set('Sfontsize', f_size);
 		me.el.css("font-size", f_size);
 		resize(f_size + Snippet.widthAmlifier);
     };

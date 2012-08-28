@@ -1,8 +1,9 @@
 fm.Package("com.reader.article");
 fm.Import("com.reader.filler.FillContent");
+fm.Import("jfm.cookie.Cookie");
 fm.Import("com.reader.article.ImageContainer");
 fm.Class("ArticleManager", "jfm.html.Container");
-com.reader.article.ArticleManager = function(base, me, FillContent, ImageContainer, Container) {
+com.reader.article.ArticleManager = function (base, me, FillContent, Cookie, ImageContainer, Container) {
 	this.setMe = function(_me) {
 		me = _me;
 	};
@@ -27,6 +28,7 @@ com.reader.article.ArticleManager = function(base, me, FillContent, ImageContain
 			id : "article-container"
 		});
 		com.reader.Reader.getDivision().center.add(this);
+		Cookie.get("Afontsize") && this.el.css('font-size', Cookie.get("Afontsize")+"px");
 		this.bodyHeight = $("#main").height();
 		setTimeOut = -9;
 		multi = 18;
@@ -214,6 +216,7 @@ com.reader.article.ArticleManager = function(base, me, FillContent, ImageContain
 			return;
 		}
 		var f_size = parseInt(this.el.css("font-size")) + change;
+		Cookie.set('Afontsize', f_size);
 		me.el.empty().css("font-size", f_size);
 		this.create(f_size, true);
 	};

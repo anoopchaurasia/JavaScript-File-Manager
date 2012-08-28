@@ -197,6 +197,10 @@ com.reader.snippet.Snippet = function (base, me, Container) {
     	return this.el.prev()[0].jfm;
     };
     
+    this.isSelected = function() {
+		return this.el.hasClass('selected');
+	};
+    
 	this.Snippet = function( nb, f_size, index ) {
 		$.extend(true, this, nb);
 		base({
@@ -211,38 +215,68 @@ com.reader.snippet.Snippet = function (base, me, Container) {
 		});
 	};
 };
-fm.Package("com.reader.snippet");
+fm.Package("jfm.cookie");
+fm.Class("Cookie");
+jfm.cookie.Cookie = function (me){this.setMe=function(_me){me=_me;};
+
+	Static.set = function(name, value, days) {
+		var expires = "";
+		if (days) {
+			var date = new Date();
+			date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+			expires = "; expires=" + date.toGMTString();
+		}
+		document.cookie = name + "=" + value + expires + "; path=/";
+	};
+
+	Static.get = function(name) {
+		var nameEQ = name + "=";
+		var ca = document.cookie.split(';');
+		for ( var i = 0; i < ca.length; i++) {
+			var c = ca[i];
+			while (c.charAt(0) == ' ')
+				c = c.substring(1, c.length);
+			if (c.indexOf(nameEQ) == 0)
+				return c.substring(nameEQ.length, c.length);
+		}
+		return null;
+	};
+
+	Static.erase = function(name) {
+		this.setCookie(name, "", -1);
+	};
+};fm.Package("com.reader.snippet");
 fm.Import("com.reader.snippet.Snippet");
 fm.Class("SnippetGroup", "jfm.html.Container");
 
 com.reader.snippet.SnippetGroup = function (base, me, Snippet, Container) {
-	
+
 	var entries, f_size, counterPerColumn, currentSnippet;
-	
-	this.setMe = function( _me ) {
+
+	this.setMe = function(_me) {
 		me = _me;
 	};
-	
-	this.SnippetGroup = function( resp, height, f_s) {
+
+	this.SnippetGroup = function(resp, height, f_s) {
 		entries = resp.entries, f_size = f_s;
 		var len = resp.entries.length - 5;
-		counterPerColumn = Math.floor( (height)/(Snippet.height + Snippet.margins)) - 1;
+		counterPerColumn = Math.floor((height) / (Snippet.height + Snippet.margins)) - 1;
 		var columns = Math.ceil(len / counterPerColumn);
 		base({
-		    'class' : 'item-item-cont',
-		    html : "<h2>" + resp.title + "</h2>",
-		    css : {
-		        width : (f_size * f_size + Snippet.margins) * columns,
-		        height : "100%"
-		    }
+			'class' : 'item-item-cont',
+			html : "<h2>" + resp.title + "</h2>",
+			css : {
+				width : (f_size * f_size + Snippet.margins) * columns,
+				height : "100%"
+			}
 		});
 	};
-	
-	this.addSnippets = function(  ) {
-		
-		var k = -1,len = entries.length - 5, firstSnipptes;
+
+	this.addSnippets = function() {
+
+		var k = -1, len = entries.length - 5, firstSnipptes;
 		var h = Math.ceil(len / counterPerColumn);
-		function recursive( ) {
+		function recursive() {
 			if (k == len - 1) {
 				return;
 			}
@@ -262,65 +296,87 @@ com.reader.snippet.SnippetGroup = function (base, me, Snippet, Container) {
 		}
 		recursive();
 		currentSnippet = this.el.find(".newsSnippet:first")[0].jfm;
-    };
-    
-    this.next = function(){
+	};
 
-    	currentSnippet.deActivate();
-    	if(!currentSnippet.next()){
-    		return false;
-    	}
-    	currentSnippet = currentSnippet.next();
-    	currentSnippet.activate();
-    	return true;
-    };
-    
-    this.prev = function(){
+	this.next = function() {
 
-    	currentSnippet.deActivate();
-    	if(!currentSnippet.prev()){
-    		return false;
-    	}
-    	currentSnippet = currentSnippet.prev();
-    	currentSnippet.activate();
-    	return true;
-    };
-    
-    this.up = function(){
-    	
-    	currentSnippet.deActivate();
-    	if(!currentSnippet.el.parent().prev().length){
-    		return false;
-    	}
-    	currentSnippet = currentSnippet.el.parent().prev().find("[indx='"+currentSnippet.el.attr('indx')+"']")[0].jfm;
-    	currentSnippet.activate();
-    	return true;
-    };
-    
-    this.down = function(){
-    	
-    	currentSnippet.deActivate();
-    	if(!currentSnippet.el.parent().next().length){
-    		return false;
-    	}
-    	currentSnippet = currentSnippet.el.parent().next().find("[indx='"+currentSnippet.el.attr('indx')+"']")[0].jfm;
-    	currentSnippet.activate();
-    	return true;
-    };
-    
-    this.removeHighLight = function() {
-    	currentSnippet.deActivate();
-    };
-    
-    this.showArticle = function() {
-    	currentSnippet.show();
-    };
+		if (!currentSnippet.isSelected()) {
+			currentSnippet.activate();
+			return true;
+		}
+		currentSnippet.deActivate();
+		if (!currentSnippet.next()) {
+			return false;
+		}
+		currentSnippet = currentSnippet.next();
+		currentSnippet.activate();
+		return true;
+	};
+
+	this.prev = function() {
+		if (!currentSnippet.isSelected()) {
+			currentSnippet.activate();
+			return true;
+		}
+		currentSnippet.deActivate();
+		if (!currentSnippet.prev()) {
+			return false;
+		}
+		currentSnippet = currentSnippet.prev();
+		currentSnippet.activate();
+		return true;
+	};
+
+	this.up = function() {
+		if (!currentSnippet.isSelected()) {
+			currentSnippet.activate();
+			return true;
+		}
+		currentSnippet.deActivate();
+		if (!currentSnippet.el.parent().prev().length) {
+			return false;
+		}
+		var dom =  currentSnippet.el.parent().prev().find("[indx='" + currentSnippet.el.attr('indx') + "']")[0];
+		if(!dom){
+			return false;
+		}
+		currentSnippet = dom && dom.jfm;
+		currentSnippet.activate();
+		return true;
+	};
+
+	this.down = function() {
+		if (!currentSnippet.isSelected()) {
+			currentSnippet.activate();
+			return true;
+		}
+		currentSnippet.deActivate();
+		if (!currentSnippet.el.parent().next().length) {
+			return false;
+		}
+		var dom =  currentSnippet.el.parent().next().find("[indx='" + currentSnippet.el.attr('indx') + "']")[0];
+		if(!dom){
+			return false;
+		}
+		currentSnippet = dom && dom.jfm;
+		currentSnippet.activate();
+		return true;
+	};
+
+	this.removeHighLight = function() {
+		currentSnippet.deActivate();
+	};
+
+	this.showArticle = function() {
+		currentSnippet.show();
+	};
 };
 fm.Package("com.reader.snippet");
 fm.Import("com.reader.snippet.Snippet");
+fm.Import("jfm.cookie.Cookie");
 fm.Import("com.reader.snippet.SnippetGroup");
 fm.Class("AllSnippets", "jfm.html.Container");
-com.reader.snippet.AllSnippets = function (base, me, Snippet, SnippetGroup, Container) {
+com.reader.snippet.AllSnippets = function (base, me, Snippet, Cookie, SnippetGroup, Container) {
 	this.setMe = function( _me ) {
 		me = _me;
 	};
@@ -341,6 +397,7 @@ com.reader.snippet.AllSnippets = function (base, me, Snippet, SnippetGroup, Cont
 			height : com.reader.Reader.getDivision().center.el.height()
 		});
 		com.reader.Reader.getDivision().center.add(this);
+		Cookie.get("Sfontsize") && this.el.css('font-size', Cookie.get("Sfontsize")+"px");
 		active = false;
 	};
 	
@@ -382,14 +439,20 @@ com.reader.snippet.AllSnippets = function (base, me, Snippet, SnippetGroup, Cont
 		if (!active) {
 			return;
 		}
-		currentGroup.next();		
+		if(!currentGroup.next() && currentGroup.el.next().length){
+			currentGroup = currentGroup.el.next()[0].jfm;
+			currentGroup.next();
+		}
 	};
 	
 	this.prev = function( ) {
 		if (!active) {
 			return;
 		}
-		currentGroup.prev();	
+		if(!currentGroup.prev() && currentGroup.el.prev().length){
+			currentGroup = currentGroup.el.prev()[0].jfm;
+			currentGroup.prev();
+		}	
 	};
 	
 	this.up = function( ) {
@@ -434,6 +497,7 @@ com.reader.snippet.AllSnippets = function (base, me, Snippet, SnippetGroup, Cont
 			return;
 		}
 		var f_size = parseInt(this.el.css("font-size")) + change;
+		Cookie.set('Sfontsize', f_size);
 		me.el.css("font-size", f_size);
 		resize(f_size + Snippet.widthAmlifier);
     };
@@ -563,32 +627,32 @@ com.reader.filler.FillContent = function (me){this.setMe=function(_me){me=_me;};
 };fm.Package("com.reader.article");
 fm.Class("ImageContainer", "jfm.html.Container");
 com.reader.article.ImageContainer = function (base, me, Container){this.setMe=function(_me){me=_me;};
-	var f_size, contentColumns, columnInsideImageWidth;
+	var f_size, contentColumns, columnInsideImageWidth, imageContainerWidth;
 	this.ImageContainer = function(images, f_s, multi, margins, height){
-		this.imageContainerWidth = 500;
+		imageContainerWidth = 500;
 		f_size = f_s;
 		if (images.length == 0 || $.trim(images[0].text) == "") {
 			return 0;
 		}
 		var columnWidth = f_size * multi + margins;
-		var contentColumns = this.imageContainerWidth / columnWidth;
+		contentColumns = imageContainerWidth / columnWidth;
 		if (contentColumns - 1 > .7) {
 			contentColumns = 2;
 		}
 		else {
 			contentColumns = 1;
 		}
-		columnInsideImageWidth = Math.floor(self.imageContainerWidth / contentColumns - margins / 2 - 2);
+		columnInsideImageWidth = Math.floor(imageContainerWidth / contentColumns - margins / 2 - 2);
 		base({
-		    width : self.imageContainerWidth,
+		    width : imageContainerWidth,
 		    height : height,
 		    'class' : "imageContainer selector parent"
 		});		
-		addImage(images[0]);
+		this.add(addImage(images[0]) );
 	};
 	
 	function addImage(img) {
-		base({
+		return new Container({
 			  width : "90%",
 			    height:255,
 			    "class" : "image-container",
@@ -605,10 +669,11 @@ com.reader.article.ImageContainer = function (base, me, Container){this.setMe=fu
 	};
 };fm.Package("com.reader.article");
 fm.Import("com.reader.filler.FillContent");
+fm.Import("jfm.cookie.Cookie");
 fm.Import("com.reader.article.ImageContainer");
 fm.Class("ArticleManager", "jfm.html.Container");
-com.reader.article.ArticleManager = function (base, me, FillContent, ImageContainer, Container) {
-	this.setMe = function( _me ) {
+com.reader.article.ArticleManager = function (base, me, FillContent, Cookie, ImageContainer, Container) {
+	this.setMe = function(_me) {
 		me = _me;
 	};
 	var setTimeOut, multi, currentSelected, active, singleton;
@@ -620,27 +685,28 @@ com.reader.article.ArticleManager = function (base, me, FillContent, ImageContai
 	this.content;
 	this.imageHeight;
 	this.imageContainerWidth;
-	Static.getInstance = function( ) {
-		
+	Static.getInstance = function() {
+
 		if (!singleton) {
 			singleton = new me();
 		}
 		return singleton;
 	};
-	Private.ArticleManager = function( ) {
+	Private.ArticleManager = function() {
 		base({
 			id : "article-container"
 		});
 		com.reader.Reader.getDivision().center.add(this);
+		Cookie.get("Afontsize") && this.el.css('font-size', Cookie.get("Afontsize")+"px");
 		this.bodyHeight = $("#main").height();
 		setTimeOut = -9;
 		multi = 18;
 		active = false;
 		margins = 36;
 		this.imageHeight = 400;
-		
+
 	};
-	this.next = function( ) {
+	this.next = function() {
 		if (!active) {
 			return;
 		}
@@ -649,7 +715,7 @@ com.reader.article.ArticleManager = function (base, me, FillContent, ImageContai
 			scrollIntoView(currentSelected.get(0));
 			return;
 		}
-		
+
 		if (currentSelected.next().length != 0) {
 			currentSelected.removeClass("column-selected");
 			currentSelected = currentSelected.next().addClass("column-selected");
@@ -663,18 +729,19 @@ com.reader.article.ArticleManager = function (base, me, FillContent, ImageContai
 		}
 	};
 	function scrollIntoView(element) {
-		  var containerLeft = me.el.parent().scrollLeft(); 
-		  var containerRight = containerLeft + me.el.parent().width(); 
-		  var elemLeft = element.offsetLeft;
-		  var elemRight = elemLeft + $(element).width(); 
-		  if (elemLeft < containerLeft) {
-			  me.el.parent().scrollLeft(elemLeft);
-		  } else if (elemRight > containerRight) {
-			  me.el.parent().scrollLeft(elemRight - me.el.parent().width() + 40);
-		  }
+		var containerLeft = me.el.parent().scrollLeft();
+		var containerRight = containerLeft + me.el.parent().width();
+		var elemLeft = element.offsetLeft;
+		var elemRight = elemLeft + $(element).width();
+		if (elemLeft < containerLeft) {
+			me.el.parent().scrollLeft(elemLeft);
 		}
-	
-	this.prev = function( ) {
+		else if (elemRight > containerRight) {
+			me.el.parent().scrollLeft(elemRight - me.el.parent().width() + margins);
+		}
+	}
+
+	this.prev = function() {
 		if (!active) {
 			return;
 		}
@@ -695,75 +762,51 @@ com.reader.article.ArticleManager = function (base, me, FillContent, ImageContai
 			this.el.parent().scrollLeft(0);
 		}
 	};
-	
-	function changed( obj ) {
+
+	function changed(obj) {
 		for ( var i = 0; i < changeCbArray.length; i++) {
 			changeCbArray[i](obj);
 		}
 	}
 	;
-	
+
 	var changeCbArray = [];
-	this.registerChange = function( cb ) {
+	this.registerChange = function(cb) {
 		changeCbArray.push(cb);
 	};
-	this.removeHighLight = function( ) {
+	this.removeHighLight = function() {
 		if (!active) {
 			return;
 		}
 		currentSelected.removeClass("column-selected");
 	};
-	
-	function createHeader( title ) {
+
+	function createHeader(title) {
 		var div = $("<div />", {
-		    'class' : 'title',
-		    html : "<h2>" + title + "</h2>"
+			'class' : 'title',
+			html : "<h2>" + title + "</h2>"
 		}).appendTo(me.el);
 		return {
-		    height : div.height(),
-		    width : div.width()
+			height : div.height(),
+			width : div.width()
 		};
 	}
-	
-	function createImageGallary( f_size, height ) {
-		if (self.imgInfo.length == 0 || $.trim(self.imgInfo[0].text) == "") {
-			return 0;
-		}
-		var columnWidth = f_size * multi + margins;
-		var columns = self.imageContainerWidth / columnWidth;
-		if (columns - 1 > .7) {
-			columns = 2;
-		}
-		else {
-			columns = 1;
-		}
-		self.columnInsideImageWidth = Math.floor(self.imageContainerWidth / columns - margins / 2 - 2);
-		self.numberofEffectedImage = columns;
-		self.imageContainer =new Container({
-		    width : self.imageContainerWidth,
-		    height : height,
-		    'class' : "imageContainer selector parent"
-		});
-		me.add(me.imageContainer);
-		self.imageContainer.add(new ImageContainer(self.imgInfo[0]).el);
-		return columns;
-	}
-	
-	this.active = function( ) {
+
+	this.active = function() {
 		active = true;
 		this.el.show();
 	};
-	
-	this.deActive = function( ) {
+
+	this.deActive = function() {
 		active = false;
 		this.el.hide();
 	};
-	
-	this.isActive = function( ) {
+
+	this.isActive = function() {
 		return active;
 	};
-	
-	function prepareHtml( ) {
+
+	function prepareHtml() {
 		if (!self.imgInfo) {
 			self.imgInfo = [];
 			var imgsInfo = $("#hidden >.content").find("img").parents("div:first").not(".content").clone();
@@ -776,19 +819,19 @@ com.reader.article.ArticleManager = function (base, me, FillContent, ImageContai
 				self.imgInfo.push(imgi);
 			}
 		}
-		$("#hidden").find("*").filter(function( ) {
+		$("#hidden").find("*").filter(function() {
 			return this.tagName.toLowerCase() != 'br' && this.tagName.toLowerCase() != 'img' && $.trim($(this).text()) == '';
 		}).remove();
 		self.imgages = $("#hidden >.content").find("*").width('').height('').find("img");
-		self.content = $.trim($("#hidden >.content").html().replace(/[\s\s]+/, " ").replace(/\n+/, " ").replace(/>\s+/, ">")).replace(/\r\n/gim, "").replace(/^\s/gim, "");
+		self.content = $.trim($("#hidden >.content").html().replace(/[\s\s]+/, " ").replace(/\n+/, " ").replace(/>\s+/, ">")).replace(/\r\n/gim, "").replace(
+				/^\s/gim, "");
 		self.htmlLength = self.content.length;
 		$("#hidden >.content").find("img").parent().not(".content").remove();
 		$("#hidden >.content").find(">br, script").remove();
 		self.title = $("#hidden >.title").text();
 	}
-	;
-	
-	this.create = function( f_size, isTaskbar ) {
+
+	this.create = function(f_size, isTaskbar) {
 		if (!isTaskbar) {
 			self.imgInfo = undefined;
 		}
@@ -803,16 +846,18 @@ com.reader.article.ArticleManager = function (base, me, FillContent, ImageContai
 		var content = new FillContent(this.content);
 		var header = createHeader(this.title);
 		var imageContainer = new ImageContainer(self.imgInfo, f_size, multi, margins, self.bodyHeight - 90 - header.height);
+		var columns = imageContainer.getColumns() || 0;
+		columns && this.add(imageContainer);
 		var i = 0;
-		function recursive( ) {
+		function recursive() {
 			var removeHeight = 90 + header.height;
 			if (trancatedLength[1] <= 0) {
 				return;
 			}
 			i++;
 			var elem;
-			articleContainer.width(i * (self.articalWidth + margins) + self.imageContainerWidth + margins);
-			if (i <= imageContainer.getColumns()) {
+			articleContainer.width((i - columns) * (self.articalWidth + margins) + imageContainer.el.width() + margins);
+			if (i <= columns) {
 				removeHeight += imageContainer.el.find(".image-container").height();
 				elem = $(htm).appendTo(imageContainer.el).removeClass("parent").addClass("text-inside-image");
 				elem.find("div.s").height(self.bodyHeight - removeHeight).width(imageContainer.getSingleColumnWidth());
@@ -828,21 +873,22 @@ com.reader.article.ArticleManager = function (base, me, FillContent, ImageContai
 		currentSelected = $("#article-container").find("div.selector:first");
 		changed();
 	};
-	this.getSelectedColumn = function( ) {
+	this.getSelectedColumn = function() {
 		return currentSelected.clone(true);
 	};
-	this.getSelectedFontSize = function( ) {
+	this.getSelectedFontSize = function() {
 		return currentSelected.css('font-size');
 	};
-	
+
 	this.changeFont = function(change) {
-		if(!active){
+		if (!active) {
 			return;
 		}
 		var f_size = parseInt(this.el.css("font-size")) + change;
+		Cookie.set('Afontsize', f_size);
 		me.el.empty().css("font-size", f_size);
 		this.create(f_size, true);
-    };
+	};
 };
 fm.Package("com.reader.taskbar");
 fm.Import("com.reader.snippet.AllSnippets");
@@ -891,6 +937,19 @@ com.reader.taskbar.Taskbar = function (base, me, AllSnippets, ArticleManager, Co
 	}
 	
 	function changeSettings( e ) {
+		
+		ArticleManager.getInstance().deActive();
+		AllSnippets.getInstance().deActive();
+		var settingContainer = new Container({
+			html:jQuery("#setting-temp").html()
+		});
+		settingContainer.el.find('form').submit(function(e){
+			e.preventDefault();
+			getData(this);
+			settingContainer.el.remove();
+			AllSnippets.getInstance().active();
+		});
+		com.reader.Reader.getDivision().center.add(settingContainer);
 		e.preventDefault();
 		return false;
 	}

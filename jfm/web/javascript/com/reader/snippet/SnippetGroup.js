@@ -2,7 +2,7 @@ fm.Package("com.reader.snippet");
 fm.Import("com.reader.snippet.Snippet");
 fm.Class("SnippetGroup", "jfm.html.Container");
 
-com.reader.snippet.SnippetGroup = function(base, me, Snippet, Container) {
+com.reader.snippet.SnippetGroup = function (base, me, Snippet, Container) {
 
 	var entries, f_size, counterPerColumn, currentSnippet;
 
