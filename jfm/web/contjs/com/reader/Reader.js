@@ -561,9 +561,53 @@ com.reader.filler.FillContent = function (me){this.setMe=function(_me){me=_me;};
 		
 	};
 };fm.Package("com.reader.article");
+fm.Class("ImageContainer", "jfm.html.Container");
+com.reader.article.ImageContainer = function (base, me, Container){this.setMe=function(_me){me=_me;};
+	var f_size, contentColumns, columnInsideImageWidth;
+	this.ImageContainer = function(images, f_s, multi, margins, height){
+		this.imageContainerWidth = 500;
+		f_size = f_s;
+		if (images.length == 0 || $.trim(images[0].text) == "") {
+			return 0;
+		}
+		var columnWidth = f_size * multi + margins;
+		var contentColumns = this.imageContainerWidth / columnWidth;
+		if (contentColumns - 1 > .7) {
+			contentColumns = 2;
+		}
+		else {
+			contentColumns = 1;
+		}
+		columnInsideImageWidth = Math.floor(self.imageContainerWidth / contentColumns - margins / 2 - 2);
+		base({
+		    width : self.imageContainerWidth,
+		    height : height,
+		    'class' : "imageContainer selector parent"
+		});		
+		addImage(images[0]);
+	};
+	
+	function addImage(img) {
+		base({
+			  width : "90%",
+			    height:255,
+			    "class" : "image-container",
+			    html : "<img  src='" + img.href + "'/><div class='imagetext'>" + img.text + "</div>"
+		});
+	}
+	
+	this.getColumns = function() {
+		return contentColumns;
+	}
+	
+	this.getSingleColumnWidth = function() {
+		return columnInsideImageWidth;
+	};
+};fm.Package("com.reader.article");
 fm.Import("com.reader.filler.FillContent");
+fm.Import("com.reader.article.ImageContainer");
 fm.Class("ArticleManager", "jfm.html.Container");
-com.reader.article.ArticleManager = function (base, me, FillContent, Container) {
+com.reader.article.ArticleManager = function (base, me, FillContent, ImageContainer, Container) {
 	this.setMe = function( _me ) {
 		me = _me;
 	};
@@ -594,7 +638,7 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Container) 
 		active = false;
 		margins = 36;
 		this.imageHeight = 400;
-		this.imageContainerWidth = 500;
+		
 	};
 	this.next = function( ) {
 		if (!active) {
@@ -619,14 +663,14 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Container) 
 		}
 	};
 	function scrollIntoView(element) {
-		  var containerLeft = me.el.scrollLeft(); 
-		  var containerRight = containerTop + me.el.width(); 
+		  var containerLeft = me.el.parent().scrollLeft(); 
+		  var containerRight = containerLeft + me.el.parent().width(); 
 		  var elemLeft = element.offsetLeft;
 		  var elemRight = elemLeft + $(element).width(); 
 		  if (elemLeft < containerLeft) {
-		    $(container).scrollLeft(elemLeft);
+			  me.el.parent().scrollLeft(elemLeft);
 		  } else if (elemRight > containerRight) {
-			    me.el.scrollTop(elemRight - me.el.width());
+			  me.el.parent().scrollLeft(elemRight - me.el.parent().width() + 40);
 		  }
 		}
 	
@@ -681,13 +725,6 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Container) 
 		};
 	}
 	
-	function getImageContainer( ) {
-		return $("<div />", {
-		    width : "90%",
-		    "class" : "image-container",
-		    html : "<img  src='" + self.imgInfo[0].href + "'/><div class='imagetext'>" + self.imgInfo[0].text + "</div>"
-		});
-	}
 	function createImageGallary( f_size, height ) {
 		if (self.imgInfo.length == 0 || $.trim(self.imgInfo[0].text) == "") {
 			return 0;
@@ -702,12 +739,13 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Container) 
 		}
 		self.columnInsideImageWidth = Math.floor(self.imageContainerWidth / columns - margins / 2 - 2);
 		self.numberofEffectedImage = columns;
-		self.imageContainer = $("<div />", {
+		self.imageContainer =new Container({
 		    width : self.imageContainerWidth,
 		    height : height,
 		    'class' : "imageContainer selector parent"
-		}).appendTo(self.el);
-		self.imageContainer.append(getImageContainer());
+		});
+		me.add(me.imageContainer);
+		self.imageContainer.add(new ImageContainer(self.imgInfo[0]).el);
 		return columns;
 	}
 	
@@ -764,7 +802,7 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Container) 
 		prepareHtml();
 		var content = new FillContent(this.content);
 		var header = createHeader(this.title);
-		var numbers = createImageGallary(f_size, self.bodyHeight - 90 - header.height);
+		var imageContainer = new ImageContainer(self.imgInfo, f_size, multi, margins, self.bodyHeight - 90 - header.height);
 		var i = 0;
 		function recursive( ) {
 			var removeHeight = 90 + header.height;
@@ -774,10 +812,10 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Container) 
 			i++;
 			var elem;
 			articleContainer.width(i * (self.articalWidth + margins) + self.imageContainerWidth + margins);
-			if (i <= numbers) {
-				removeHeight += self.imageContainer.find(".image-container").height();
-				elem = $(htm).appendTo(self.imageContainer).removeClass("parent").addClass("text-inside-image");
-				elem.find("div.s").height(self.bodyHeight - removeHeight).width(self.columnInsideImageWidth);
+			if (i <= imageContainer.getColumns()) {
+				removeHeight += imageContainer.el.find(".image-container").height();
+				elem = $(htm).appendTo(imageContainer.el).removeClass("parent").addClass("text-inside-image");
+				elem.find("div.s").height(self.bodyHeight - removeHeight).width(imageContainer.getSingleColumnWidth());
 			}
 			else {
 				elem = $(htm).appendTo(articleContainer);
@@ -959,6 +997,7 @@ jfm.division.Division = function (base, me, Part, Container){this.setMe=function
 		}, this, function( elem ) {
 			set(elem, me.center, getRemainingWidth(), getRemainingHeight());
 		});
+		me.center.el.css("overflow", 'hidden');
 		this.center.el.show();
 		this.right = new Part({
 			'class' : "jfm-division-right"
@@ -998,14 +1037,9 @@ jfm.division.Division = function (base, me, Part, Container){this.setMe=function
 		me.right && me.right.el.height(h);
 		var m = me.center && me.center.el.height(h).width(w)[0].resize;
 		m && m(w, h);
-		me.center.el.css("overflow", 'hidden');
 		if (isAlreadyset) {
 			clearTimeout(isAlreadyset);
 		}
-		isAlreadyset = setTimeout(function( ) {
-			isAlreadyset = 0;
-			me.center.el.css("overflow", '');
-		}, 800);
 	};
 	
 	function set( obj, appender, difW, difH ) {

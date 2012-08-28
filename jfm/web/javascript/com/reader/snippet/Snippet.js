@@ -58,6 +58,10 @@ com.reader.snippet.Snippet = function (base, me, Container) {
     	return this.el.prev()[0].jfm;
     };
     
+    this.isSelected = function() {
+		return this.el.hasClass('selected');
+	};
+    
 	this.Snippet = function( nb, f_size, index ) {
 		$.extend(true, this, nb);
 		base({

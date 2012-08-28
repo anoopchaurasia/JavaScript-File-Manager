@@ -1,8 +1,9 @@
 fm.Package("com.reader.article");
 fm.Import("com.reader.filler.FillContent");
+fm.Import("com.reader.article.ImageContainer");
 fm.Class("ArticleManager", "jfm.html.Container");
-com.reader.article.ArticleManager = function (base, me, FillContent, Container) {
-	this.setMe = function( _me ) {
+com.reader.article.ArticleManager = function(base, me, FillContent, ImageContainer, Container) {
+	this.setMe = function(_me) {
 		me = _me;
 	};
 	var setTimeOut, multi, currentSelected, active, singleton;
@@ -14,14 +15,14 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Container) 
 	this.content;
 	this.imageHeight;
 	this.imageContainerWidth;
-	Static.getInstance = function( ) {
-		
+	Static.getInstance = function() {
+
 		if (!singleton) {
 			singleton = new me();
 		}
 		return singleton;
 	};
-	Private.ArticleManager = function( ) {
+	Private.ArticleManager = function() {
 		base({
 			id : "article-container"
 		});
@@ -32,9 +33,9 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Container) 
 		active = false;
 		margins = 36;
 		this.imageHeight = 400;
-		this.imageContainerWidth = 500;
+
 	};
-	this.next = function( ) {
+	this.next = function() {
 		if (!active) {
 			return;
 		}
@@ -43,7 +44,7 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Container) 
 			scrollIntoView(currentSelected.get(0));
 			return;
 		}
-		
+
 		if (currentSelected.next().length != 0) {
 			currentSelected.removeClass("column-selected");
 			currentSelected = currentSelected.next().addClass("column-selected");
@@ -57,18 +58,19 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Container) 
 		}
 	};
 	function scrollIntoView(element) {
-		  var containerLeft = me.el.parent().scrollLeft(); 
-		  var containerRight = containerLeft + me.el.parent().width(); 
-		  var elemLeft = element.offsetLeft;
-		  var elemRight = elemLeft + $(element).width(); 
-		  if (elemLeft < containerLeft) {
-			  me.el.parent().scrollLeft(elemLeft);
-		  } else if (elemRight > containerRight) {
-			  me.el.parent().scrollLeft(elemRight - me.el.parent().width());
-		  }
+		var containerLeft = me.el.parent().scrollLeft();
+		var containerRight = containerLeft + me.el.parent().width();
+		var elemLeft = element.offsetLeft;
+		var elemRight = elemLeft + $(element).width();
+		if (elemLeft < containerLeft) {
+			me.el.parent().scrollLeft(elemLeft);
 		}
-	
-	this.prev = function( ) {
+		else if (elemRight > containerRight) {
+			me.el.parent().scrollLeft(elemRight - me.el.parent().width() + margins);
+		}
+	}
+
+	this.prev = function() {
 		if (!active) {
 			return;
 		}
@@ -89,81 +91,51 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Container) 
 			this.el.parent().scrollLeft(0);
 		}
 	};
-	
-	function changed( obj ) {
+
+	function changed(obj) {
 		for ( var i = 0; i < changeCbArray.length; i++) {
 			changeCbArray[i](obj);
 		}
 	}
 	;
-	
+
 	var changeCbArray = [];
-	this.registerChange = function( cb ) {
+	this.registerChange = function(cb) {
 		changeCbArray.push(cb);
 	};
-	this.removeHighLight = function( ) {
+	this.removeHighLight = function() {
 		if (!active) {
 			return;
 		}
 		currentSelected.removeClass("column-selected");
 	};
-	
-	function createHeader( title ) {
+
+	function createHeader(title) {
 		var div = $("<div />", {
-		    'class' : 'title',
-		    html : "<h2>" + title + "</h2>"
+			'class' : 'title',
+			html : "<h2>" + title + "</h2>"
 		}).appendTo(me.el);
 		return {
-		    height : div.height(),
-		    width : div.width()
+			height : div.height(),
+			width : div.width()
 		};
 	}
-	
-	function getImageContainer( ) {
-		return $("<div />", {
-		    width : "90%",
-		    "class" : "image-container",
-		    html : "<img  src='" + self.imgInfo[0].href + "'/><div class='imagetext'>" + self.imgInfo[0].text + "</div>"
-		});
-	}
-	function createImageGallary( f_size, height ) {
-		if (self.imgInfo.length == 0 || $.trim(self.imgInfo[0].text) == "") {
-			return 0;
-		}
-		var columnWidth = f_size * multi + margins;
-		var columns = self.imageContainerWidth / columnWidth;
-		if (columns - 1 > .7) {
-			columns = 2;
-		}
-		else {
-			columns = 1;
-		}
-		self.columnInsideImageWidth = Math.floor(self.imageContainerWidth / columns - margins / 2 - 2);
-		self.numberofEffectedImage = columns;
-		self.imageContainer = $("<div />", {
-		    width : self.imageContainerWidth,
-		    height : height,
-		    'class' : "imageContainer selector parent"
-		}).appendTo(self.el);
-		self.imageContainer.append(getImageContainer());
-		return columns;
-	}
-	
-	this.active = function( ) {
+
+	this.active = function() {
 		active = true;
 		this.el.show();
 	};
-	
-	this.deActive = function( ) {
+
+	this.deActive = function() {
 		active = false;
 		this.el.hide();
 	};
-	
-	this.isActive = function( ) {
+
+	this.isActive = function() {
 		return active;
 	};
-	
-	function prepareHtml( ) {
+
+	function prepareHtml() {
 		if (!self.imgInfo) {
 			self.imgInfo = [];
 			var imgsInfo = $("#hidden >.content").find("img").parents("div:first").not(".content").clone();
@@ -176,19 +148,19 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Container) 
 				self.imgInfo.push(imgi);
 			}
 		}
-		$("#hidden").find("*").filter(function( ) {
+		$("#hidden").find("*").filter(function() {
 			return this.tagName.toLowerCase() != 'br' && this.tagName.toLowerCase() != 'img' && $.trim($(this).text()) == '';
 		}).remove();
 		self.imgages = $("#hidden >.content").find("*").width('').height('').find("img");
-		self.content = $.trim($("#hidden >.content").html().replace(/[\s\s]+/, " ").replace(/\n+/, " ").replace(/>\s+/, ">")).replace(/\r\n/gim, "").replace(/^\s/gim, "");
+		self.content = $.trim($("#hidden >.content").html().replace(/[\s\s]+/, " ").replace(/\n+/, " ").replace(/>\s+/, ">")).replace(/\r\n/gim, "").replace(
+				/^\s/gim, "");
 		self.htmlLength = self.content.length;
 		$("#hidden >.content").find("img").parent().not(".content").remove();
 		$("#hidden >.content").find(">br, script").remove();
 		self.title = $("#hidden >.title").text();
 	}
-	;
-	
-	this.create = function( f_size, isTaskbar ) {
+
+	this.create = function(f_size, isTaskbar) {
 		if (!isTaskbar) {
 			self.imgInfo = undefined;
 		}
@@ -202,20 +174,22 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Container) 
 		prepareHtml();
 		var content = new FillContent(this.content);
 		var header = createHeader(this.title);
-		var numbers = createImageGallary(f_size, self.bodyHeight - 90 - header.height);
+		var imageContainer = new ImageContainer(self.imgInfo, f_size, multi, margins, self.bodyHeight - 90 - header.height);
+		var columns = imageContainer.getColumns() || 0;
+		columns && this.add(imageContainer);
 		var i = 0;
-		function recursive( ) {
+		function recursive() {
 			var removeHeight = 90 + header.height;
 			if (trancatedLength[1] <= 0) {
 				return;
 			}
 			i++;
 			var elem;
-			articleContainer.width(i * (self.articalWidth + margins) + self.imageContainerWidth + margins);
-			if (i <= numbers) {
-				removeHeight += self.imageContainer.find(".image-container").height();
-				elem = $(htm).appendTo(self.imageContainer).removeClass("parent").addClass("text-inside-image");
-				elem.find("div.s").height(self.bodyHeight - removeHeight).width(self.columnInsideImageWidth);
+			articleContainer.width((i - columns) * (self.articalWidth + margins) + imageContainer.el.width() + margins);
+			if (i <= columns) {
+				removeHeight += imageContainer.el.find(".image-container").height();
+				elem = $(htm).appendTo(imageContainer.el).removeClass("parent").addClass("text-inside-image");
+				elem.find("div.s").height(self.bodyHeight - removeHeight).width(imageContainer.getSingleColumnWidth());
 			}
 			else {
 				elem = $(htm).appendTo(articleContainer);
@@ -228,19 +202,19 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Container) 
 		currentSelected = $("#article-container").find("div.selector:first");
 		changed();
 	};
-	this.getSelectedColumn = function( ) {
+	this.getSelectedColumn = function() {
 		return currentSelected.clone(true);
 	};
-	this.getSelectedFontSize = function( ) {
+	this.getSelectedFontSize = function() {
 		return currentSelected.css('font-size');
 	};
-	
+
 	this.changeFont = function(change) {
-		if(!active){
+		if (!active) {
 			return;
 		}
 		var f_size = parseInt(this.el.css("font-size")) + change;
 		me.el.empty().css("font-size", f_size);
 		this.create(f_size, true);
-    };
+	};
 };

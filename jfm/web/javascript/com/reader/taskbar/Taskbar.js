@@ -45,6 +45,19 @@ com.reader.taskbar.Taskbar = function (base, me, AllSnippets, ArticleManager, Co
 	}
 	
 	function changeSettings( e ) {
+		
+		ArticleManager.getInstance().deActive();
+		AllSnippets.getInstance().deActive();
+		var settingContainer = new Container({
+			html:jQuery("#setting-temp").html()
+		});
+		settingContainer.el.find('form').submit(function(e){
+			e.preventDefault();
+			getData(this);
+			settingContainer.el.remove();
+			AllSnippets.getInstance().active();
+		});
+		com.reader.Reader.getDivision().center.add(settingContainer);
 		e.preventDefault();
 		return false;
 	}

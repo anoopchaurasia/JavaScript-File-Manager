@@ -64,14 +64,20 @@ com.reader.snippet.AllSnippets = function (base, me, Snippet, SnippetGroup, Cont
 		if (!active) {
 			return;
 		}
-		currentGroup.next();		
+		if(!currentGroup.next() && currentGroup.el.next().length){
+			currentGroup = currentGroup.el.next()[0].jfm;
+			currentGroup.next();
+		}
 	};
 	
 	this.prev = function( ) {
 		if (!active) {
 			return;
 		}
-		currentGroup.prev();	
+		if(!currentGroup.prev() && currentGroup.el.prev().length){
+			currentGroup = currentGroup.el.prev()[0].jfm;
+			currentGroup.prev();
+		}	
 	};
 	
 	this.up = function( ) {
