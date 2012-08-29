@@ -8,7 +8,7 @@ com.reader.filler.FillContent = function (me){this.setMe=function(_me){me=_me;};
     };
     $.fn.htmlTruncate = function (strt, max, settings) {
         settings = jQuery.extend({
-            chars: /\s/
+            chars: /\s|\./
         }, settings);
         var myRegEx = /<\/?[^<>]*\/?>/gim;
         var $this = this;
