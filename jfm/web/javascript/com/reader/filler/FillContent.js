@@ -91,7 +91,7 @@ com.reader.filler.FillContent = function (me){this.setMe=function(_me){me=_me;};
         var decrease = 0;
         
         decrease = brs.length;
-        decrease += ps.length;    
+        decrease += ps.length;
         
         var totalLen = lastCharOffset[1];
        decrease = Math.floor( decrease * cpl / 1.7 );
@@ -104,9 +104,11 @@ com.reader.filler.FillContent = function (me){this.setMe=function(_me){me=_me;};
             	break;
             }
             count++;
-            
             diff = dom.get(0).scrollHeight - ownHeight;
-            decrease = diff;
+            decrease = Math.floor((diff/lineHeight - 1)* cpl / 1.7);
+            if(decrease <=0 ){
+            	decrease = step;
+            }
         }
         console.log(count);
         dom.html(dom.html().replace(/<\/a>/mgi, "</a> "));
