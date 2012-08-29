@@ -32,13 +32,15 @@ com.reader.taskbar.Taskbar = function (base, me, AllSnippets, ArticleManager, Se
 		$(">.news-feed-select a", this.el).click(changeSettings);
 		getData(Settings.getInstance().getSelectedUrl());
 	};
-	function increaseFontSize( ) {
+	function increaseFontSize(e ) {
+		e.preventDefault();
 		ArticleManager.getInstance().changeFont(+2);
 		AllSnippets.getInstance().changeFont(+2);
 		return false;
 	}
-	function decreaseFontSize( ) {
-		
+	function decreaseFontSize( e) {
+		//alert("a");
+		e.preventDefault();
 		ArticleManager.getInstance().changeFont(-2);
 		AllSnippets.getInstance().changeFont(-2);
 		return false;

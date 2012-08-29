@@ -208,8 +208,10 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Cookie, Ima
 				elem = $(htm).appendTo(articleContainer);
 				elem.find("div.s").height(bodyHeight - removeHeight -10).width(articalWidth);
 			}
+			
 			trancatedLength = content.truncateWithHeight(elem.find("div.s"), trancatedLength[0], self.content);
 			setTimeOut = setTimeout(recursive, 10);
+			//alert( i + "");
 		}
 		recursive();
 		currentSelected = $("#article-container").find("div.selector:first");
