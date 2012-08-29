@@ -33,7 +33,7 @@ com.reader.filler.FillContent = function (me){this.setMe=function(_me){me=_me;};
             while (max > 0) {
                 c = myStr.charAt(max);
                 if (c.match(settings.chars)) {
-                    myStr = myStr.substring(0, max);
+                    myStr = myStr.substring(0, max + 1);
                     break;
                 }
                 max--;
@@ -90,30 +90,25 @@ com.reader.filler.FillContent = function (me){this.setMe=function(_me){me=_me;};
         $(ps[0]).css("margin-top","0px");
         var decrease = 0;
         
-        var relativeHeight = dom.get(0).offsetTop +  ownHeight;
-        for(var i = 0; i < brs.length; i++){
-            if (relativeHeight > brs[i].offsetTop ) {
-                decrease++;
-            }
-        }
-        for(var i = 0; i < ps.length - 1; i++){
-            if (relativeHeight > ps[i].offsetTop ) {
-                decrease++;
-            }
-        }
+        decrease = brs.length;
+        decrease += ps.length;    
+        
         var totalLen = lastCharOffset[1];
-        console.log(decrease);
        decrease = Math.floor( decrease * cpl / 1.7 );
        var count = 0;
-        while (ownHeight < dom.get(0).scrollHeight) {
-            lastCharOffset = dom.htmlTruncate(0, lastCharOffset[0]- step - decrease );
-            count++;
-            decrease = 0;
+       var diff = dom.get(0).scrollHeight - ownHeight;
+        while (diff >= lineHeight/5) {
+            lastCharOffset = dom.htmlTruncate(0, lastCharOffset[0] - decrease );
             if(lastCharOffset[0] <=0){
             	lastCharOffset[0] = 0;
             	break;
             }
+            count++;
+            
+            diff = dom.get(0).scrollHeight - ownHeight;
+            decrease = diff;
         }
+        console.log(count);
         dom.html(dom.html().replace(/<\/a>/mgi, "</a> "));
         return [from + lastCharOffset[0], totalLen - from - lastCharOffset[0] ];
     };
