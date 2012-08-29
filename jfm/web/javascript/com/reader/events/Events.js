@@ -70,25 +70,28 @@ com.reader.events.Events = function (me, AllSnippets, ArticleManager, Taskbar) {
 					AllSnippets.getInstance().next();
 					ArticleManager.getInstance().next();
 					return false;
-					break;
 				}
 				case 37: {
 					AllSnippets.getInstance().prev();
 					ArticleManager.getInstance().prev();
 					return false;
-					break;
 				}
 				case 38: {
 					AllSnippets.getInstance().up();
 					ArticleManager.getInstance().removeHighLight();
 					return false;
-					break;
 				}
 				case 40: {
 					AllSnippets.getInstance().down();
 					ArticleManager.getInstance().removeHighLight();
 					return false;
-					break;
+				}
+				case 8: {
+					if (!AllSnippets.getInstance().isActive()) {
+						Taskbar.getInstance().clickHome(e);
+						return false;
+					}
+					return false;
 				}
 				default: {
 					AllSnippets.getInstance().removeHighLight();

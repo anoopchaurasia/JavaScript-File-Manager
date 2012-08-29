@@ -38,11 +38,26 @@ com.reader.snippet.Snippet = function (base, me, Container) {
 	
 	this.activate = function(){
 		this.el.addClass("selected");
+		scrollIntoView(this.el.get(0));
 	};
 	
 	this.deActivate = function(){
 		this.el.removeClass("selected");
 	};
+	
+	function scrollIntoView(element) {
+		var parent = jQuery("#article-list");
+		var containerLeft = parent.parent().scrollLeft();
+		var containerRight = containerLeft + parent.parent().width();
+		var elemLeft = element.offsetLeft;
+		var elemRight = elemLeft + $(element).width();
+		if (elemLeft < containerLeft) {
+			parent.parent().scrollLeft(elemLeft);
+		}
+		else if (elemRight > containerRight) {
+			parent.parent().scrollLeft(elemRight - parent.parent().width() + me.margins);
+		}
+	}
 	
 	this.next = function() {
 		if(!this.el.next().length){
@@ -62,7 +77,7 @@ com.reader.snippet.Snippet = function (base, me, Container) {
 		return this.el.hasClass('selected');
 	};
     
-	this.Snippet = function( nb, f_size, index ) {
+	this.Snippet = function( nb, width, index ) {
 		$.extend(true, this, nb);
 		base({
 		    "class" : 'newsSnippet',
@@ -70,7 +85,7 @@ com.reader.snippet.Snippet = function (base, me, Container) {
 		    indx : String(index),
 		    html : this.getTitle() + this.getImage() + this.getBody(),
 		    css : {
-			    width : (f_size) * ( f_size)
+			    width : width
 		    },
 			click: me.show
 		});

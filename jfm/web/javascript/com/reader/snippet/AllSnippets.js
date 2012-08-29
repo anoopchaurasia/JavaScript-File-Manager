@@ -7,6 +7,7 @@ com.reader.snippet.AllSnippets = function (base, me, Snippet, Cookie, SnippetGro
 	this.setMe = function( _me ) {
 		me = _me;
 	};
+	var resources;
 	var active;
 	var totalWidth = 0;
 	var singleton, currentGroup;
@@ -18,19 +19,36 @@ com.reader.snippet.AllSnippets = function (base, me, Snippet, Cookie, SnippetGro
 		return singleton;
 	};
 	
-	Private.AllSnippets = function( ) {
-		base({
-			id : "article-list",
-			height : com.reader.Reader.getDivision().center.el.height()
-		});
-		com.reader.Reader.getDivision().center.add(this);
-		Cookie.get("Sfontsize") && this.el.css('font-size', Cookie.get("Sfontsize")+"px");
-		active = false;
+	this.resize = function(w, h){
+		if(!active){
+			return;
+		}
+		var clean = true;
+		var len =resources.length;
+		for(var k =0; k < len; k++){
+			this.create(resources[k], clean, true);
+			clean = false;
+		}
 	};
 	
-	this.clearStoredData = function( ) {
+	Private.AllSnippets = function( ) {
+		var c = com.reader.Reader.getDivision().center;
+		base({
+			id : "article-list",
+			height : "100%"
+		});
+		resources = [];
+		c.add(this);
+		Cookie.get("Sfontsize") && this.el.css('font-size', Cookie.get("Sfontsize")+"px");
+		active = false;
+		c.resize(this.resize);
+	};
+	
+	this.clearStoredData = function( fontChange) {
 		this.el.empty();
+		currentGroup = null;
 		totalWidth = 0;
+		!fontChange && (resources = []);
 	};
 	
 	this.active = function( ) {
@@ -47,11 +65,12 @@ com.reader.snippet.AllSnippets = function (base, me, Snippet, Cookie, SnippetGro
 		this.el.hide();
 	};
 	
-	this.create = function( resp, clean ) {
+	this.create = function( resp, clean, fontChange ) {
 		
 		if (clean) {
-			this.clearStoredData();
+			this.clearStoredData(fontChange);
 		}
+		!fontChange && resources.push(resp);
 		var f_size = parseInt(this.el.css("font-size"));
 		var snippetGroup = new SnippetGroup(resp, this.el.height(), f_size + Snippet.widthAmlifier);
 		if(!currentGroup){
@@ -107,17 +126,6 @@ com.reader.snippet.AllSnippets = function (base, me, Snippet, Cookie, SnippetGro
 			currentGroup.showArticle();
 		}
 	};
-	function resize ( f_size ) {
-		var totalWidth = 0;
-		$(".item-item-cont", me.el).each(function( ) {
-			var allsnips = $(".newsSnippet", this);
-			allsnips.width(f_size * f_size);
-			var cols = Math.ceil(allsnips.length / 3);
-			$(this).width((allsnips.width() + 17) * cols + 20);
-			totalWidth += (allsnips.width() + 17) * cols + 20 + 40;
-		});
-		me.el.width(totalWidth);
-	}
 	
 	this.changeFont = function(change) {
 		if(!active){
@@ -126,6 +134,11 @@ com.reader.snippet.AllSnippets = function (base, me, Snippet, Cookie, SnippetGro
 		var f_size = parseInt(this.el.css("font-size")) + change;
 		Cookie.set('Sfontsize', f_size);
 		me.el.css("font-size", f_size);
-		resize(f_size + Snippet.widthAmlifier);
+		var clean = true;
+		var len =resources.length;
+		for(var k =0; k < len; k++){
+			this.create(resources[k], clean, true);
+			clean = false;
+		}
     };
 };

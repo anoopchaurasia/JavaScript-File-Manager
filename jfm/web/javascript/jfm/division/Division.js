@@ -86,7 +86,6 @@ jfm.division.Division = function (base, me, Part, Container){this.setMe=function
 		return height - h;
 	}
 	
-	var isAlreadyset;
 	this.updateLayout = function( ) {
 		var h = getRemainingHeight();
 		var w = getRemainingWidth();
@@ -94,11 +93,8 @@ jfm.division.Division = function (base, me, Part, Container){this.setMe=function
 		me.bottom && me.bottom.el.width(width);
 		me.left && me.left.el.height(h);
 		me.right && me.right.el.height(h);
-		var m = me.center && me.center.el.height(h).width(w)[0].resize;
+		var m = me.center && me.center.el.height(h).width(w) && me.center.resize;
 		m && m(w, h);
-		if (isAlreadyset) {
-			clearTimeout(isAlreadyset);
-		}
 	};
 	
 	function set( obj, appender, difW, difH ) {
@@ -109,7 +105,7 @@ jfm.division.Division = function (base, me, Part, Container){this.setMe=function
 			obj = new Container(obj);
 		}
 		difH && appender.el.height(difH);
-		appender.el.show()
+		appender.el.show();
 		if (difH > appender.el.height()) {
 			difW = difW - 20;
 		}

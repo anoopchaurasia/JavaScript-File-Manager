@@ -1,12 +1,12 @@
 fm.Package("com.reader.taskbar");
 fm.Import("com.reader.snippet.AllSnippets");
 fm.Import("com.reader.article.ArticleManager");
+fm.Import("com.reader.settings.Settings");
 fm.Class("Taskbar", "jfm.html.Container");
-com.reader.taskbar.Taskbar = function (base, me, AllSnippets, ArticleManager, Container) {
+com.reader.taskbar.Taskbar = function (base, me, AllSnippets, ArticleManager, Settings, Container) {
 	this.setMe = function( _me ) {
 		me = _me;
 	};
-	var self;
 	var callback, singleton;
 	
 	Static.getInstance = function( cb ) {
@@ -18,19 +18,19 @@ com.reader.taskbar.Taskbar = function (base, me, AllSnippets, ArticleManager, Co
 	
 	Private.Taskbar = function( cb ) {
 		callback = cb;
-		self = this;
 		base({
 		    id : "taskbar",
 		    height : 50,
 		    html : jQuery("#taskbar-template").html()
 		});
+		com.reader.Reader.getDivision().center.add(Settings.getInstance());
+		Settings.getInstance().disable();
 		com.reader.Reader.getDivision().bottom.add(this);
 		$(".controlers .plus", this.el).click(increaseFontSize);
 		$(".controlers .minus", this.el).click(decreaseFontSize);
 		$(".home a", this.el).click(me.clickHome);
 		$(">.news-feed-select a", this.el).click(changeSettings);
-		var cont = jQuery("#hidden").html($("#setting-temp").html());
-		getData(cont.find("form.news"));
+		getData(Settings.getInstance().getSelectedUrl());
 	};
 	function increaseFontSize( ) {
 		ArticleManager.getInstance().changeFont(+2);
@@ -48,26 +48,18 @@ com.reader.taskbar.Taskbar = function (base, me, AllSnippets, ArticleManager, Co
 		
 		ArticleManager.getInstance().deActive();
 		AllSnippets.getInstance().deActive();
-		var settingContainer = new Container({
-			html:jQuery("#setting-temp").html()
-		});
-		settingContainer.el.find('form').submit(function(e){
-			e.preventDefault();
-			getData(this);
-			settingContainer.el.remove();
+		Settings.getInstance().enable();
+		Settings.getInstance().changeSettings(function(url) {
+			getData(url);
+			Settings.getInstance().disable();
 			AllSnippets.getInstance().active();
-		});
-		com.reader.Reader.getDivision().center.add(settingContainer);
-		e.preventDefault();
+        });
 		return false;
 	}
 	
-	function getData( form ) {
-		var arr = $(form).serializeArray();
+	function getData(url) {
 		AllSnippets.getInstance().clearStoredData();
-		for ( var k in arr) {
-			com.reader.Reader.parseRSS(arr[k].value, callback, true);
-		}
+		com.reader.Reader.parseRSS(url, callback, true);
 	}
 	
 	this.clickHome = function( e ) {

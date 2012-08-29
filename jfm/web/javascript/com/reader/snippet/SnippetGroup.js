@@ -9,17 +9,23 @@ com.reader.snippet.SnippetGroup = function (base, me, Snippet, Container) {
 	this.setMe = function(_me) {
 		me = _me;
 	};
-
+	function getWidth(fs){
+		var w = jQuery(window).width() - Snippet.margins, cw = fs*fs;
+		if( w < cw ){
+			return w;
+		}
+		return cw;
+	}
 	this.SnippetGroup = function(resp, height, f_s) {
 		entries = resp.entries, f_size = f_s;
-		var len = resp.entries.length - 5;
-		counterPerColumn = Math.floor((height) / (Snippet.height + Snippet.margins)) - 1;
+		var len = resp.entries.length ;
+		counterPerColumn = Math.floor((height) / (Snippet.height + Snippet.margins)) ;
 		var columns = Math.ceil(len / counterPerColumn);
 		base({
 			'class' : 'item-item-cont',
 			html : "<h2>" + resp.title + "</h2>",
 			css : {
-				width : (f_size * f_size + Snippet.margins) * columns,
+				width : ( getWidth(f_size) +  + Snippet.margins) * columns,
 				height : "100%"
 			}
 		});
@@ -27,14 +33,14 @@ com.reader.snippet.SnippetGroup = function (base, me, Snippet, Container) {
 
 	this.addSnippets = function() {
 
-		var k = -1, len = entries.length - 5, firstSnipptes;
+		var k = -1, len = entries.length , firstSnipptes;
 		var h = Math.ceil(len / counterPerColumn);
 		function recursive() {
 			if (k == len - 1) {
 				return;
 			}
 			k++;
-			var bf = new Snippet(entries[k], f_size, k % h);
+			var bf = new Snippet(entries[k], getWidth(f_size), k % h);
 			if (!firstSnipptes) {
 				firstSnipptes = bf;
 			}

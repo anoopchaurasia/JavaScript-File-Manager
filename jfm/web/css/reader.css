@@ -144,6 +144,7 @@ a{
 	margin: auto;
 	text-align:center;
 	width: 490px;
+	overflow: hidden;
 }
 
 .imageContainer {
@@ -278,24 +279,20 @@ a{
 
 #settings{
 	width:700px; 
-	height:500px;
+	margin: 0 auto;
 }
-
-#settings .left-panel{
-	width:150px;
-	background-color:white;
-	height:100%;
-	border:1px solid #ccc;
-	float:left
+#settings .items {
+ 	padding-top: 12px;
 }
-
-#settings .right-panel{	
-	width:546px;
-	height:100%;
-	border:1px solid #ccc;
-	float:left;
+#settings .items input{
+	
 }
-
+#settings .items label{
+	
+}
+#settings input[type='submit']{
+	padding: 10px 20px;
+}
 .blackBG{
 	background-color: #000000;
 	opacity: .99;

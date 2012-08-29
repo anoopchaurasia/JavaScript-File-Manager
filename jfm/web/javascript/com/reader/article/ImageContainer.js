@@ -2,12 +2,13 @@ fm.Package("com.reader.article");
 fm.Class("ImageContainer", "jfm.html.Container");
 com.reader.article.ImageContainer = function (base, me, Container){this.setMe=function(_me){me=_me;};
 	var f_size, contentColumns, columnInsideImageWidth, imageContainerWidth;
-	this.ImageContainer = function(images, f_s, multi, margins, height){
-		imageContainerWidth = 500;
-		f_size = f_s;
+	this.ImageContainer = function(images, f_s, multi, margins, height, width){
 		if (images.length == 0 || $.trim(images[0].text) == "") {
+			imageContainerWidth = 0;
 			return 0;
 		}
+		imageContainerWidth = width > 500 ? 500 : width;
+		f_size = f_s;
 		var columnWidth = f_size * multi + margins;
 		contentColumns = imageContainerWidth / columnWidth;
 		if (contentColumns - 1 > .7) {
@@ -34,9 +35,13 @@ com.reader.article.ImageContainer = function (base, me, Container){this.setMe=fu
 		});
 	}
 	
+	this.getWidth = function() {
+		return imageContainerWidth? imageContainerWidth + 27 : 0;
+    };
+	
 	this.getColumns = function() {
 		return contentColumns;
-	}
+	};
 	
 	this.getSingleColumnWidth = function() {
 		return columnInsideImageWidth;
