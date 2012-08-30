@@ -103,6 +103,10 @@ jfm.component.Component = function (me){this.setMe=function(_me){me=_me;};
     Static.getCSSClass = function(c, cls){
         return (c? c : "" ) + " "+ cls;
     };
+    
+    this.toString = function() {
+        return this.el;
+    };
 };
 
 

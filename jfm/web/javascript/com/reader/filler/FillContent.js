@@ -99,7 +99,7 @@ com.reader.filler.FillContent = function (me) {
 			if (relativeHeight < all[i].offsetTop) {
 				jQuery(all[i]).remove();
 			}
-			else if(all[i].nodeName == "P" && firstP){
+			else if(firstP && all[i].nodeName == "P" ){
 				$(all[i]).css("margin-top","0px");
 				firstP = false;
 			}
@@ -109,15 +109,15 @@ com.reader.filler.FillContent = function (me) {
 		var diff = dom.get(0).scrollHeight - ownHeight;
 		decrease = Math.floor((diff / lineHeight) * cpl / 1.7);
 		if (decrease <= 0) {
-			decrease = step;
+			decrease = 0;
 		}
-		while (diff >= lineHeight / 5) {
+		while (diff >= lineHeight / 5 || count == 0) {
 			lastCharOffset = dom.htmlTruncate(0, lastCharOffset[0] - decrease);
 			if (lastCharOffset[0] <= 0) {
 				lastCharOffset[0] = 0;
 				break;
 			}
-			if (count > 30) {
+			if (count > 20) {
 				break;
 			}
 			count++;
@@ -129,7 +129,8 @@ com.reader.filler.FillContent = function (me) {
 		}
 		dom.html(dom.html().replace(/<\/a>/mgi, "</a> "));
 		t += Date.now() - t2;
-		console.log(count, t);
+//		alert(count);
+//		console.log(count, t);
 		return [ from + lastCharOffset[0], totalLen - from - lastCharOffset[0] ];
 	};
 	this.FillContent = function( ) {
