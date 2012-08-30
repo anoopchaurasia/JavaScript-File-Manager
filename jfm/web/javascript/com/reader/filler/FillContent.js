@@ -103,17 +103,17 @@ com.reader.filler.FillContent = function (me){this.setMe=function(_me){me=_me;};
             	lastCharOffset[0] = 0;
             	break;
             }
-            if(count > 30){
+            if(count > 100){
             	break;
             }
             count++;
             diff = dom.get(0).scrollHeight - ownHeight;
             decrease = Math.floor((diff/lineHeight - 1)* cpl / 1.7);
-            if(decrease <=0 ){
+            if(decrease <= step ){
             	decrease = step;
             }
         }
-       // alert(count);
+       console.log(count);
         dom.html(dom.html().replace(/<\/a>/mgi, "</a> "));
         return [from + lastCharOffset[0], totalLen - from - lastCharOffset[0] ];
     };
