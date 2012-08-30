@@ -205,6 +205,7 @@ a{
 }
 
 #taskbar .plus {
+	
 	margin-left: 1px;
 }
 .right-float{
@@ -310,4 +311,26 @@ a{
 .imagetext{
     font-size: 0.9em;
     text-align: justify;	
+}
+/*
+.jfm-division-center{
+	overflow-x:scroll!important;
+	overflow-y:hidden; 
+}
+*/
+#prev, #next{
+	position:absolute;
+	top:50%;
+	opacity: .1;
+	z-index: 90;
+}
+
+#prev:hover, #next:hover{
+	opacity: 1;
+}
+#prev{
+	left:2px;
+}
+#next{
+	right:2px;
 }

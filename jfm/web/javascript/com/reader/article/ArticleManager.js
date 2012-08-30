@@ -198,6 +198,7 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Cookie, Ima
 			}
 			i++;
 			var elem;
+			//alert("a");
 			articleContainer.width((i - columns) * (articalWidth + margins) + imageContainer.getWidth());
 			if (i <= columns) {
 				removeHeight += imageContainer.el.find(".image-container").height();
@@ -214,6 +215,8 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Cookie, Ima
 			//alert( i + "");
 		}
 		recursive();
+		//alert("a");
+
 		currentSelected = $("#article-container").find("div.selector:first");
 		changed();
 	};

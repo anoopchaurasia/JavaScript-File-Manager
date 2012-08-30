@@ -45,24 +45,48 @@ com.reader.events.Events = function (me, AllSnippets, ArticleManager, Taskbar) {
 	
 	this.keydownEvents = function( ) {
 		
-		$(".left-navigation", Taskbar.getInstance().el).mousedown(function( ) {
-			AllSnippets.getInstance().prev();
-			ArticleManager.getInstance().prev();
-			return false;
-		});
-		$(".up-navigation", Taskbar.getInstance().el).mousedown(function( ) {
-			AllSnippets.getInstance().up();
-			return false;
-		});
-		$(".right-navigation", Taskbar.getInstance().el).mousedown(function( ) {
+		function preventScroll(){
+			setTimeout(function() {
+				scrolling = false;
+            }, 100);
+		}
+		var t= [], scrolling = false, scrollv = 0;
+		jQuery("#next").click(function( ) {
 			AllSnippets.getInstance().next();
 			ArticleManager.getInstance().next();
 			return false;
 		});
-		$(".down-navigation", Taskbar.getInstance().el).mousedown(function( ) {
-			AllSnippets.getInstance().down();
+		jQuery("#prev").click(function( ) {
+			AllSnippets.getInstance().prev();
+			ArticleManager.getInstance().prev();
 			return false;
 		});
+		
+//		com.reader.Reader.getDivision().center.el.scroll(function(e){
+//			e.preventDefault();
+//			if(scrolling){
+//				return false;
+//			}
+//			scrolling = true;
+//			t.push(setTimeout(function() {
+//				if(t.length >1){
+//					t.pop();
+//					return;
+//				}
+//				t = [];
+//				if(e.target.scrollLeft - scrollv > 0){
+//					AllSnippets.getInstance().next();
+//					ArticleManager.getInstance().next();
+//				}
+//				else{
+//					AllSnippets.getInstance().prev();
+//					ArticleManager.getInstance().prev();
+//				}
+//				scrollv = e.target.scrollLeft;
+//				preventScroll();
+//            }, 100));
+//			return false;
+//		});
 		$(document).keydown(function( e ) {
 			switch (e.keyCode) {
 				
