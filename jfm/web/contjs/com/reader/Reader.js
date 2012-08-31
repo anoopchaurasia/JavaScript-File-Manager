@@ -104,6 +104,10 @@ jfm.component.Component = function (me){this.setMe=function(_me){me=_me;};
     Static.getCSSClass = function(c, cls){
         return (c? c : "" ) + " "+ cls;
     };
+    
+    this.toString = function() {
+        return this.el;
+    };
 };
 
 
@@ -840,6 +844,10 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Cookie, Ima
 	};
 	
 	function createHeader( title ) {
+		return {
+			height:0,
+			width:0
+		};
 		var div = $("<div />", {
 		    'class' : 'title',
 		    html : "<h2>" + title + "</h2>"
@@ -962,78 +970,83 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Cookie, Ima
 fm.Package("com.reader.settings");
 fm.Class("Settings", "jfm.html.Container");
 com.reader.settings.Settings = function (base, me, Container) {
-	this.setMe = function( _me ) {
+	this.setMe = function(_me) {
 		me = _me;
 	};
 	var data, singleton, callback;
-	
-	Static.getInstance = function( cb ) {
+
+	Static.getInstance = function(cb) {
 		if (!singleton) {
 			singleton = new me(cb);
 		}
 		return singleton;
 	};
-	
-	function submit( ) {
+
+	function submit() {
 		var arr = $(this).serializeArray();
 		for ( var k in arr) {
 			callback(arr[k].value);
 		}
 		return false;
 	}
-	
-	this.disable = function( ) {
-		
+
+	this.disable = function() {
+
 		this.el.hide();
 	};
-	this.enable = function( ) {
-		
+	this.enable = function() {
+
 		this.el.show();
 	};
-	this.Settings = function( ) {
+	this.Settings = function() {
 		base({
-		    id : 'settings',
-		    html : "<div><form method='POST' id='settingsForm'> </form></div>"
+			id : 'settings',
+			html : "<div><form method='POST' id='settingsForm'> </form></div>"
 		});
 		this.el.find("form").submit(submit);
 		data = [ {
-		    url : "http://www.thehindu.com/?service=rss",
-		    name : "The Hindu"
+			url : "http://www.thehindu.com/?service=rss",
+			name : "The Hindu"
 		}, {
-		    url : "http://feeds.mashable.com/Mashable",
-		    name : "Mashable"
+			url : "http://feeds.mashable.com/Mashable",
+			name : "Mashable"
 		}, {
-		    url : "http://timesofindia.feedsportal.com/c/33039/f/533965/index.rss",
-		    name : "Times Of India"
+			url : "http://timesofindia.feedsportal.com/c/33039/f/533965/index.rss",
+			name : "Times Of India"
 		}, {
-		    url : "http://feeds.hindustantimes.com/HT-NewsSectionPage-Topstories",
-		    name : "Hindustan Times Top Stories"
+			url : "http://feeds.hindustantimes.com/HT-NewsSectionPage-Topstories",
+			name : "Hindustan Times Top Stories"
 		}, {
-		    url : "http://feeds.reuters.com/reuters/INtopNews",
-		    name : "Business Standard"
+			url : "http://feeds.reuters.com/reuters/INtopNews",
+			name : "Business Standard"
 		}, {
-		    url : "http://www.espncricinfo.com/rss/content/feeds/news/0.xml",
-		    name : "Cricinfo"
+			url : "http://www.espncricinfo.com/rss/content/feeds/news/0.xml",
+			name : "Cricinfo"
 		}, {
-		    url : "http://feeds.feedburner.com/fakingnews",
-		    name : "Faking News",
-		    selected : true
+			url : "http://feeds.feedburner.com/fakingnews",
+			name : "Faking News",
+			selected : true
+		}, {
+			url : "http://blogs.forbes.com/ewanspence/feed/",
+			name : "Ewan Spence",
+			selected : true
 		} ];
 	};
-	this.changeSettings = function( cb ) {
+	this.changeSettings = function(cb) {
 		callback = cb;
 		var html = "";
 		for ( var k = 0; k < data.length; k++) {
-			html += "<div class='items'><label><input name='" + data[k].name + "' value=' " + data[k].url + "' type='checkbox'/>&nbsp;&nbsp;&nbsp;&nbsp;" + data[k].name + "</label></div>";
+			html += "<div class='items'><label><input name='" + data[k].name + "' value=' " + data[k].url + "' type='checkbox'/>&nbsp;&nbsp;&nbsp;&nbsp;"
+					+ data[k].name + "</label></div>";
 		}
 		html += "<div class='items'><input type='submit' value='Save' /> </div>";
 		this.el.find("form").html(html);
 	};
-	
-	this.getSelectedUrl = function( ) {
+
+	this.getSelectedUrl = function(cb) {
 		for ( var k = 0; k < data.length; k++) {
 			if (data[k].selected) {
-				return data[k].url;
+				cb( data[k].url);
 			}
 		}
 		return "";
@@ -1045,24 +1058,24 @@ fm.Import("com.reader.article.ArticleManager");
 fm.Import("com.reader.settings.Settings");
 fm.Class("Taskbar", "jfm.html.Container");
 com.reader.taskbar.Taskbar = function (base, me, AllSnippets, ArticleManager, Settings, Container) {
-	this.setMe = function( _me ) {
+	this.setMe = function(_me) {
 		me = _me;
 	};
 	var callback, singleton;
-	
-	Static.getInstance = function( cb ) {
+
+	Static.getInstance = function(cb) {
 		if (!singleton) {
 			singleton = new me(cb);
 		}
 		return singleton;
 	};
-	
-	Private.Taskbar = function( cb ) {
+
+	Private.Taskbar = function(cb) {
 		callback = cb;
 		base({
-		    id : "taskbar",
-		    height : 50,
-		    html : jQuery("#taskbar-template").html()
+			id : "taskbar",
+			height : 40,
+			html : jQuery("#taskbar-template").html()
 		});
 		com.reader.Reader.getDivision().center.add(Settings.getInstance());
 		Settings.getInstance().disable();
@@ -1071,24 +1084,26 @@ com.reader.taskbar.Taskbar = function (base, me, AllSnippets, ArticleManager, Se
 		$(".controlers .minus", this.el).click(decreaseFontSize);
 		$(".home a", this.el).click(me.clickHome);
 		$(">.news-feed-select a", this.el).click(changeSettings);
-		getData(Settings.getInstance().getSelectedUrl());
+		Settings.getInstance().getSelectedUrl(function(url) {
+			getData(url);
+		});
 	};
-	function increaseFontSize(e ) {
+	function increaseFontSize(e) {
 		e.preventDefault();
 		ArticleManager.getInstance().changeFont(+2);
 		AllSnippets.getInstance().changeFont(+2);
 		return false;
 	}
-	function decreaseFontSize( e) {
-		//alert("a");
+	function decreaseFontSize(e) {
+		// alert("a");
 		e.preventDefault();
 		ArticleManager.getInstance().changeFont(-2);
 		AllSnippets.getInstance().changeFont(-2);
 		return false;
 	}
-	
-	function changeSettings( e ) {
-		
+
+	function changeSettings(e) {
+
 		ArticleManager.getInstance().deActive();
 		AllSnippets.getInstance().deActive();
 		Settings.getInstance().enable();
@@ -1096,16 +1111,16 @@ com.reader.taskbar.Taskbar = function (base, me, AllSnippets, ArticleManager, Se
 			getData(url);
 			Settings.getInstance().disable();
 			AllSnippets.getInstance().active();
-        });
+		});
 		return false;
 	}
-	
+
 	function getData(url) {
 		AllSnippets.getInstance().clearStoredData();
 		com.reader.Reader.parseRSS(url, callback, true);
 	}
-	
-	this.clickHome = function( e ) {
+
+	this.clickHome = function(e) {
 		e.preventDefault();
 		if (!AllSnippets.getInstance().isActive()) {
 			AllSnippets.getInstance().active();
@@ -1321,29 +1336,48 @@ com.reader.events.Events = function (me, AllSnippets, ArticleManager, Taskbar) {
 	
 	this.keydownEvents = function( ) {
 		
-		$(".left-navigation", Taskbar.getInstance().el).mousedown(function( ) {
+		function preventScroll(){
+			setTimeout(function() {
+				scrolling = false;
+            }, 100);
+		}
+		var t= [], scrolling = false, scrollv = 0;
+		jQuery("#next").click(function( ) {
+			AllSnippets.getInstance().next();
+			ArticleManager.getInstance().next();
+			return false;
+		});
+		jQuery("#prev").click(function( ) {
 			AllSnippets.getInstance().prev();
 			ArticleManager.getInstance().prev();
 			return false;
 		});
-		$(document).swiperight(function() {
-			AllSnippets.getInstance().next();
-			ArticleManager.getInstance().next();
-			return false;
-        });
-		$(".up-navigation", Taskbar.getInstance().el).mousedown(function( ) {
-			AllSnippets.getInstance().up();
-			return false;
-		});
-		$(".right-navigation", Taskbar.getInstance().el).mousedown(function( ) {
-			AllSnippets.getInstance().next();
-			ArticleManager.getInstance().next();
-			return false;
-		});
-		$(".down-navigation", Taskbar.getInstance().el).mousedown(function( ) {
-			AllSnippets.getInstance().down();
-			return false;
-		});
+		
+//		com.reader.Reader.getDivision().center.el.scroll(function(e){
+//			e.preventDefault();
+//			if(scrolling){
+//				return false;
+//			}
+//			scrolling = true;
+//			t.push(setTimeout(function() {
+//				if(t.length >1){
+//					t.pop();
+//					return;
+//				}
+//				t = [];
+//				if(e.target.scrollLeft - scrollv > 0){
+//					AllSnippets.getInstance().next();
+//					ArticleManager.getInstance().next();
+//				}
+//				else{
+//					AllSnippets.getInstance().prev();
+//					ArticleManager.getInstance().prev();
+//				}
+//				scrollv = e.target.scrollLeft;
+//				preventScroll();
+//            }, 100));
+//			return false;
+//		});
 		$(document).keydown(function( e ) {
 			switch (e.keyCode) {
 				
@@ -1450,5 +1484,4 @@ com.reader.Reader = function (me, AllSnippets, ArticleManager, Taskbar, Division
 		    }
 		});
 	};
-};
-fm.isConcatinated = false;
+};fm.isConcatinated = false;

@@ -3,7 +3,7 @@ fm.Import("com.reader.snippet.AllSnippets");
 fm.Import("com.reader.article.ArticleManager");
 fm.Import("com.reader.settings.Settings");
 fm.Class("Taskbar", "jfm.html.Container");
-com.reader.taskbar.Taskbar = function(base, me, AllSnippets, ArticleManager, Settings, Container) {
+com.reader.taskbar.Taskbar = function (base, me, AllSnippets, ArticleManager, Settings, Container) {
 	this.setMe = function(_me) {
 		me = _me;
 	};
@@ -20,7 +20,7 @@ com.reader.taskbar.Taskbar = function(base, me, AllSnippets, ArticleManager, Set
 		callback = cb;
 		base({
 			id : "taskbar",
-			height : 50,
+			height : 40,
 			html : jQuery("#taskbar-template").html()
 		});
 		com.reader.Reader.getDivision().center.add(Settings.getInstance());

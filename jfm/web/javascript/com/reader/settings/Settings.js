@@ -1,6 +1,6 @@
 fm.Package("com.reader.settings");
 fm.Class("Settings", "jfm.html.Container");
-com.reader.settings.Settings = function(base, me, Container) {
+com.reader.settings.Settings = function (base, me, Container) {
 	this.setMe = function(_me) {
 		me = _me;
 	};

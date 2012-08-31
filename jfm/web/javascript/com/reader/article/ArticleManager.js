@@ -70,10 +70,10 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Cookie, Ima
 		var elemLeft = element.offsetLeft;
 		var elemRight = elemLeft + $(element).width();
 		if (elemLeft < containerLeft) {
-			me.el.parent().scrollLeft(elemLeft);
+			me.el.parent().animate({scrollLeft:elemLeft},1000);
 		}
 		else if (elemRight > containerRight) {
-			me.el.parent().scrollLeft(elemRight - me.el.parent().width() + margins - 10);
+			me.el.parent().animate({scrollLeft:elemRight - me.el.parent().width() + margins - 10},1000);
 		}
 	}
 	
@@ -118,6 +118,10 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Cookie, Ima
 	};
 	
 	function createHeader( title ) {
+		return {
+			height:0,
+			width:0
+		};
 		var div = $("<div />", {
 		    'class' : 'title',
 		    html : "<h2>" + title + "</h2>"

@@ -1,6 +1,6 @@
 body {
 	margin: 0;
-	font-family: Arial, Helvetica, sans-serif,
+	font-family: Arial, Helvetica, sans-serif;
 }
 
 p {
@@ -312,25 +312,24 @@ a{
     font-size: 0.9em;
     text-align: justify;	
 }
-/*
-.jfm-division-center{
-	overflow-x:scroll!important;
-	overflow-y:hidden; 
+.minus, .plus{
+	float:left;
 }
-*/
-#prev, #next{
-	position:absolute;
-	top:50%;
-	opacity: .1;
-	z-index: 90;
-}
-
-#prev:hover, #next:hover{
-	opacity: 1;
+.minus{
+	margin-top:3px;
 }
 #prev{
+	float:left;
 	left:2px;
+	margin-top: 2px;
+	margin-left: 4px
 }
 #next{
+	margin-top: 2px;
+	float:right;
 	right:2px;
+	margin-right: 4px;
+	
 }
+#next img, #prev img{
+	height:32px;

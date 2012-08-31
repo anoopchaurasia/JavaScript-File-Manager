@@ -68,7 +68,7 @@ com.reader.filler.FillContent = function (me) {
 		myStr = myStr.substring(0, start).replace(/<br\s*\/?>/mgi, "") + myStr.substring(start, end) + myStr.substring(end, myStr.length).replace(/<br\s*\/?>/mgi, "");
 		$(this).html(myStr);
 		$(this).SkipRoot();
-		return [ max + 1, totalLen ];
+		return [ max, totalLen ];
 	};
 	function charsPerLine( dom ) {
 		
