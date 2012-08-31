@@ -58,8 +58,8 @@ com.reader.settings.Settings = function(base, me, Container) {
 			name : "Faking News",
 			selected : true
 		}, {
-			url : "http://online.wsj.com/xml/rss/3_7011.xml",
-			name : "abcd",
+			url : "http://blogs.forbes.com/ewanspence/feed/",
+			name : "Ewan Spence",
 			selected : true
 		} ];
 	};
@@ -74,10 +74,10 @@ com.reader.settings.Settings = function(base, me, Container) {
 		this.el.find("form").html(html);
 	};
 
-	this.getSelectedUrl = function() {
+	this.getSelectedUrl = function(cb) {
 		for ( var k = 0; k < data.length; k++) {
 			if (data[k].selected) {
-				return data[k].url;
+				cb( data[k].url);
 			}
 		}
 		return "";
