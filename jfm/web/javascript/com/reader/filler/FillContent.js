@@ -2,7 +2,7 @@ var t = 0;
 fm.Package("com.reader.filler");
 fm.Class("FillContent");
 
-com.reader.filler.FillContent = function( me ) {
+com.reader.filler.FillContent = function (me) {
 	this.setMe = function( _me ) {
 		me = _me;
 	};
@@ -13,7 +13,7 @@ com.reader.filler.FillContent = function( me ) {
 	};
 	$.fn.htmlTruncate = function( strt, max, settings ) {
 		settings = jQuery.extend({
-			chars : /\s|\./
+			chars : /\s|\."|\./
 		}, settings);
 		var myRegEx = /<\/?[^<>]*\/?>/gim;
 		var $this = this;
@@ -31,8 +31,8 @@ com.reader.filler.FillContent = function( me ) {
 		var totalLen = myStr.length;
 		if (strt != 0) {
 			myStr = myStr.substring(strt, myStr.length);// strt is removing text
-			// only thats why we
-			// need tags
+														// only thats why we
+														// need tags
 		}
 		
 		if (myStr.length > max) {
@@ -98,11 +98,11 @@ com.reader.filler.FillContent = function( me ) {
 			if (relativeHeight < all[i].offsetTop) {
 				jQuery(all[i]).remove();
 			}
-			else if (all[i].nodeName != 'BR' && jQuery(all[i]).text() == "") {
-				jQuery(all[i]).remove();
+			else if(all[i].nodeName != 'BR' && jQuery(all[i]).text() == ""){
+				 jQuery(all[i]).remove();
 			}
-			else if (firstP && all[i].nodeName == "P") {
-				$(all[i]).css("margin-top", "0px");
+			else if(firstP && all[i].nodeName == "P" ){
+				$(all[i]).css("margin-top","0px");
 				firstP = false;
 			}
 		}
@@ -124,15 +124,14 @@ com.reader.filler.FillContent = function( me ) {
 			}
 			count++;
 			diff = dom.get(0).scrollHeight - ownHeight;
-			decrease = Math.floor((diff / lineHeight - 1) * cpl / 1.7);
+			decrease = Math.floor((diff / lineHeight -1 ) * cpl / 1.7);
 			if (decrease <= 0) {
 				decrease = step;
 			}
 		}
 		dom.html(dom.html().replace(/<\/a>/mgi, "</a> "));
 		t += Date.now() - t2;
-		// alert(count);
-		console.log(count);
+ 	//	console.log(count);
 		return [ from + lastCharOffset[0], totalLen - from - lastCharOffset[0] ];
 	};
 	this.FillContent = function( ) {

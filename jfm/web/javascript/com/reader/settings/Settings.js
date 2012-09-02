@@ -43,8 +43,7 @@ com.reader.settings.Settings = function( base, me, Container ) {
 		    name : "Faking News",
 		}, {
 		    url : "http://blogs.forbes.com/ewanspence/feed/",
-		    name : "Ewan Spence",
-		    selected : true
+		    name : "Ewan Spence"
 		},{
 			url: "http://www.engadget.com/editor/brian-heater/rss.xml",
 			name: "Engadget"
@@ -56,6 +55,7 @@ com.reader.settings.Settings = function( base, me, Container ) {
 			name : "Slashgear"
 		},{
 			url: "http://feeds.feedburner.com/TechCrunch/",
+			selected : true,
 			name : "Tech Crunch"
 		}
 		];
