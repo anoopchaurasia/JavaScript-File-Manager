@@ -20,7 +20,7 @@ com.reader.article.ImageContainer = function (base, me, Container){this.setMe=fu
 		columnInsideImageWidth = Math.floor(imageContainerWidth / contentColumns - margins / 2 - 2);
 		base({
 		    width : imageContainerWidth,
-		    height : height,
+		    height : height - 10,
 		    'class' : "imageContainer selector parent"
 		});		
 		this.add(addImage(images[0]) );
@@ -28,7 +28,7 @@ com.reader.article.ImageContainer = function (base, me, Container){this.setMe=fu
 	
 	function addImage(img) {
 		return new Container({
-			  width : "90%",
+			  width : "100%",
 			    height:255,
 			    "class" : "image-container",
 			    html : "<img  src='" + img.href + "'/><div class='imagetext'>" + img.text + "</div>"
@@ -36,7 +36,7 @@ com.reader.article.ImageContainer = function (base, me, Container){this.setMe=fu
 	}
 	
 	this.getWidth = function() {
-		return imageContainerWidth? imageContainerWidth + 27 : 0;
+		return imageContainerWidth? imageContainerWidth + 20 : 0;
     };
 	
 	this.getColumns = function() {

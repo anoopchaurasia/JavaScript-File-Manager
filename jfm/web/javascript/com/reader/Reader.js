@@ -56,7 +56,7 @@ com.reader.Reader = function (me, AllSnippets, ArticleManager, Taskbar, Division
 	};
 	
 	Static.parseRSS = function( url, callback, isGoogle ) {
-		url = isGoogle ? document.location.protocol + '//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=10&callback=?&q=' + encodeURIComponent(url) : url;
+		url = isGoogle ? document.location.protocol + '//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=8&callback=?&q=' + encodeURIComponent(url) : url;
 		$.ajax({
 		    url : url,
 		    dataType : 'json',

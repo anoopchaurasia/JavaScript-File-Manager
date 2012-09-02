@@ -23,7 +23,7 @@ body,html {
 <script type="text/javascript" src="javascript/jquery.js"></script>
 <script type="text/javascript" src="javascript/jfm/Master.js"></script>
 <script>
-	fm.basedir = '/contjs';
+	fm.basedir = '/javascript';
     fm.Include("com.reader.Reader");
 </script>
 <script type="text/my-type" id="taskbar-template">
@@ -41,6 +41,9 @@ body,html {
 			</a> <a class='minus'> <img src="img/minus-sign.jpg" />
 			</a>
 		</div>
+	</div>
+	<div id="columnsInfo" style="display:none;">
+		<span class="current"></span>/<span class="total"></span>
 	</div>
 	<div id="next">
 		<img src="img/next-off.gif" />

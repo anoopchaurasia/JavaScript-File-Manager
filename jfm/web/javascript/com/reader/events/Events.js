@@ -3,7 +3,7 @@ fm.Import("com.reader.snippet.AllSnippets");
 fm.Import("com.reader.article.ArticleManager");
 fm.Import("com.reader.taskbar.Taskbar");
 fm.Class("Events");
-com.reader.events.Events = function (me, AllSnippets, ArticleManager, Taskbar) {
+com.reader.events.Events = function( me, AllSnippets, ArticleManager, Taskbar ) {
 	this.setMe = function( _me ) {
 		me = _me;
 	};
@@ -44,49 +44,55 @@ com.reader.events.Events = function (me, AllSnippets, ArticleManager, Taskbar) {
 	};
 	
 	this.keydownEvents = function( ) {
-		
-		function preventScroll(){
-			setTimeout(function() {
-				scrolling = false;
-            }, 100);
-		}
-		var t= [], scrolling = false, scrollv = 0;
+		var t = [], scrolling = false, scrollv = 0;
 		jQuery("#next").click(function( ) {
+			scrolling = true;
 			AllSnippets.getInstance().next();
 			ArticleManager.getInstance().next();
+			preventScroll();
 			return false;
 		});
 		jQuery("#prev").click(function( ) {
+			scrolling = true;
 			AllSnippets.getInstance().prev();
 			ArticleManager.getInstance().prev();
+			preventScroll();
 			return false;
 		});
 		
-//		com.reader.Reader.getDivision().center.el.scroll(function(e){
-//			e.preventDefault();
-//			if(scrolling){
-//				return false;
-//			}
-//			scrolling = true;
-//			t.push(setTimeout(function() {
-//				if(t.length >1){
-//					t.pop();
-//					return;
-//				}
-//				t = [];
-//				if(e.target.scrollLeft - scrollv > 0){
-//					AllSnippets.getInstance().next();
-//					ArticleManager.getInstance().next();
-//				}
-//				else{
-//					AllSnippets.getInstance().prev();
-//					ArticleManager.getInstance().prev();
-//				}
-//				scrollv = e.target.scrollLeft;
-//				preventScroll();
-//            }, 100));
-//			return false;
-//		});
+		function preventScroll( ) {
+			setTimeout(function( ) {
+				scrolling = false;
+			}, 400);
+		}
+		if (navigator.userAgent.indexOf("Phone") != -1 && navigator.userAgent.indexOf("IE") != -1) {
+			com.reader.Reader.getDivision().center.el.css("overflow", "auto");
+			com.reader.Reader.getDivision().center.el.scroll(function( e ) {
+				e.preventDefault();
+				if (scrolling) {
+					return false;
+				}
+				scrolling = true;
+				t.push(setTimeout(function( ) {
+					if (t.length > 1) {
+						t.pop();
+						return;
+					}
+					t = [];
+					if (e.target.scrollLeft - scrollv > 10) {
+						AllSnippets.getInstance().next();
+						ArticleManager.getInstance().next();
+					}
+					else if (e.target.scrollLeft - scrollv < -10) {
+						AllSnippets.getInstance().prev();
+						ArticleManager.getInstance().prev();
+					}
+					scrollv = e.target.scrollLeft;
+					preventScroll();
+				}, 100));
+				return false;
+			});
+		}
 		$(document).keydown(function( e ) {
 			switch (e.keyCode) {
 				

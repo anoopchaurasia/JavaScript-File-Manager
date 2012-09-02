@@ -10,6 +10,7 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Cookie, Ima
 	var setTimeOut, multi, currentSelected, active, singleton;
 	var margins;
 	var self = this;
+	var columnsInfo, currentCoNumber;
 	this.title;
 	this.content;
 	this.imageHeight;
@@ -33,12 +34,14 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Cookie, Ima
 		    id : "article-container",
 		    height : "100%"
 		});
+		columnsInfo = jQuery("#columnsInfo");
 		c.add(this);
 		Cookie.get("Afontsize") && this.el.css('font-size', Cookie.get("Afontsize") + "px");
 		setTimeOut = -9;
 		multi = 18;
 		active = false;
-		margins = 36;
+		margins = 20;
+		currentCoNumber = 1;
 		this.imageHeight = 400;
 		c.resize(this.resize);
 	};
@@ -56,13 +59,13 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Cookie, Ima
 			currentSelected.removeClass("column-selected");
 			currentSelected = currentSelected.next().addClass("column-selected");
 			scrollIntoView(currentSelected.get(0));
-			changed({
-				type : "next"
-			});
 		}
 		else {
 			this.el.parent().scrollLeft(this.el.width());
+			return;
 		}
+		currentCoNumber++;
+		jQuery(".current",columnsInfo).html(currentCoNumber);
 	};
 	function scrollIntoView( element ) {
 		var containerLeft = me.el.parent().scrollLeft();
@@ -70,10 +73,10 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Cookie, Ima
 		var elemLeft = element.offsetLeft;
 		var elemRight = elemLeft + $(element).width();
 		if (elemLeft < containerLeft) {
-			me.el.parent().animate({scrollLeft:elemLeft},1000);
+			me.el.parent().scrollLeft(elemLeft);
 		}
 		else if (elemRight > containerRight) {
-			me.el.parent().animate({scrollLeft:elemRight - me.el.parent().width() + margins - 10},1000);
+			me.el.parent().scrollLeft(elemRight - me.el.parent().width() + margins - 10);
 		}
 	}
 	
@@ -84,19 +87,18 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Cookie, Ima
 		if (!currentSelected.hasClass("column-selected")) {
 			currentSelected.addClass("column-selected");
 			scrollIntoView(currentSelected.get(0));
-			return;
 		}
 		if (currentSelected.prev(".selector").length != 0) {
 			currentSelected.removeClass("column-selected");
 			currentSelected = currentSelected.prev().addClass("column-selected");
 			scrollIntoView(currentSelected.get(0));
-			changed({
-				type : "prev"
-			});
 		}
 		else {
 			this.el.parent().scrollLeft(0);
+			return;
 		}
+		currentCoNumber--;
+		jQuery(".current",columnsInfo).html(currentCoNumber);
 	};
 	
 	function changed( obj ) {
@@ -134,11 +136,13 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Cookie, Ima
 	
 	this.active = function( ) {
 		active = true;
+		columnsInfo.show();
 		this.el.show();
 	};
 	
 	this.deActive = function( ) {
 		active = false;
+		columnsInfo.hide();
 		this.el.hide();
 	};
 	
@@ -187,7 +191,9 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Cookie, Ima
 		if (setTimeOut) {
 			clearTimeout(setTimeOut);
 		}
+		currentCoNumber = 1;
 		prepareHtml();
+		jQuery(".current",columnsInfo).html(currentCoNumber);
 		var bodyHeight = this.el.height();
 		var content = new FillContent(this.content);
 		var header = createHeader(this.title);
@@ -201,11 +207,12 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Cookie, Ima
 				return;
 			}
 			i++;
+			jQuery(".total",columnsInfo).html(i);
 			var elem;
 			//alert("a");
 			articleContainer.width((i - columns) * (articalWidth + margins) + imageContainer.getWidth());
 			if (i <= columns) {
-				removeHeight += imageContainer.el.find(".image-container").height();
+				removeHeight += imageContainer.el.find(".image-container").height() + margins;
 				elem = $(htm).appendTo(imageContainer.el).removeClass("parent").addClass("text-inside-image");
 				elem.find("div.s").height(bodyHeight - removeHeight).width(imageContainer.getSingleColumnWidth());
 			}
