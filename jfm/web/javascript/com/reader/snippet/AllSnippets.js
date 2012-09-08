@@ -52,8 +52,9 @@ com.reader.snippet.AllSnippets = function (base, me, Snippet, Cookie, SnippetGro
 	};
 	
 	this.active = function( ) {
-		this.el.show().siblings().hide();
 		active = true;
+		this.el.show().siblings().hide();
+		com.reader.Reader.getDivision().left.show();
 	};
 	
 	this.isActive = function( ) {
@@ -62,11 +63,14 @@ com.reader.snippet.AllSnippets = function (base, me, Snippet, Cookie, SnippetGro
 	
 	this.deActive = function( ) {
 		active = false;
+		com.reader.Reader.getDivision().left.hide();
 		this.el.hide();
 	};
 	
 	this.create = function( resp, clean, fontChange ) {
-		
+		if(!active){
+			return;
+		}
 		if (clean) {
 			this.clearStoredData(fontChange);
 		}

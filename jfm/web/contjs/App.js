@@ -556,6 +556,15 @@ jfm.division.Part = function (base, me, Component){this.setMe=function(_me){me=_
         elem;
     };
     
+    this.hide = function() {
+    	this.el.hide();
+    	division.updateLayout();
+    };
+    
+    this.show = function() {
+        this.el.show();
+        division.updateLayout();
+    };
     this.reset = function(){
         this.el.empty();
         this.el.css({ 'display':'none',height:0, width:0 });

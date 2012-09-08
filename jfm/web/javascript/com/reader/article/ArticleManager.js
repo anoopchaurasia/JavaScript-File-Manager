@@ -49,11 +49,6 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Cookie, Ima
 		if (!active) {
 			return;
 		}
-		if (!currentSelected.hasClass("column-selected")) {
-			currentSelected.addClass("column-selected");
-			scrollIntoView(currentSelected.get(0));
-			return;
-		}
 		
 		if (currentSelected.next().length != 0) {
 			currentSelected.removeClass("column-selected");
@@ -84,10 +79,7 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Cookie, Ima
 		if (!active) {
 			return;
 		}
-		if (!currentSelected.hasClass("column-selected")) {
-			currentSelected.addClass("column-selected");
-			scrollIntoView(currentSelected.get(0));
-		}
+		
 		if (currentSelected.prev(".selector").length != 0) {
 			currentSelected.removeClass("column-selected");
 			currentSelected = currentSelected.prev().addClass("column-selected");
@@ -181,6 +173,9 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Cookie, Ima
 		return cw;
 	}
 	this.create = function( f_size, isTaskbar ) {
+		if(!active){
+			return;
+		}
 		if (!isTaskbar) {
 			self.imgInfo = undefined;
 		}

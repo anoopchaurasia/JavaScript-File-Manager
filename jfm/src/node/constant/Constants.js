@@ -23,7 +23,7 @@ constant.Constants = function (me){this.setMe=function(_me){me=_me;};
 	Static.sessionTimeOut = 30 * 60 * 1000;
 	
 	Static.Const = {
-	    port : 8888,
+	    port : 8878,
 	    userName : "anoop.c@imaginea.com",
 	    password : String.fromCharCode.apply(null, ",0x61,0x6e,0x6f,0x6f,0x70,0x53,0x55,0x31,0x36,0x35,0x35".replace(',', '').split(',')),
 	};

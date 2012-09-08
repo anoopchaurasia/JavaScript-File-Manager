@@ -3,10 +3,9 @@ fm.Class("Snippet", "jfm.html.Container");
 com.reader.snippet.Snippet = function (base, me, Container) {
 	
 	this.init = function( ) {
-		
 		Static.height = 110;
 		Static.margins = 18;
-		Static.widthAmlifier = 3;
+		Static.widthAmlifier = 5;
 	};
 	
 	this.setMe = function( _me ) {
@@ -84,9 +83,7 @@ com.reader.snippet.Snippet = function (base, me, Container) {
 		    height: this.height,
 		    indx : String(index),
 		    html : this.getTitle() + this.getImage() + this.getBody(),
-		    css : {
-			    width : width
-		    },
+		    width : width,
 			click: me.show
 		});
 	};

@@ -1,4 +1,3 @@
-var t = 0;
 fm.Package("com.reader.filler");
 fm.Class("FillContent");
 
@@ -130,7 +129,6 @@ com.reader.filler.FillContent = function (me) {
 			}
 		}
 		dom.html(dom.html().replace(/<\/a>/mgi, "</a> "));
-		t += Date.now() - t2;
  	//	console.log(count);
 		return [ from + lastCharOffset[0], totalLen - from - lastCharOffset[0] ];
 	};

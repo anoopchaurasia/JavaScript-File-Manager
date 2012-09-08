@@ -10,5 +10,5 @@ webPath = {
     "/subcategory" : { 'class' : "test.SubCategory"},
     "/search" : {'class':"test.Search"},
     "/chat" : {'class':"test.Chat"},
-    "/reader" : {'class':"test.Reader"}
+    "/reader/" : {'class':"test.Reader"}
 };

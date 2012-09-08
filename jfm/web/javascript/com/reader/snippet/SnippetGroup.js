@@ -59,10 +59,6 @@ com.reader.snippet.SnippetGroup = function (base, me, Snippet, Container) {
 
 	this.next = function() {
 
-		if (!currentSnippet.isSelected()) {
-			currentSnippet.activate();
-			return true;
-		}
 		currentSnippet.deActivate();
 		if (!currentSnippet.next()) {
 			return false;
@@ -73,10 +69,7 @@ com.reader.snippet.SnippetGroup = function (base, me, Snippet, Container) {
 	};
 
 	this.prev = function() {
-		if (!currentSnippet.isSelected()) {
-			currentSnippet.activate();
-			return true;
-		}
+
 		currentSnippet.deActivate();
 		if (!currentSnippet.prev()) {
 			return false;
@@ -87,10 +80,7 @@ com.reader.snippet.SnippetGroup = function (base, me, Snippet, Container) {
 	};
 
 	this.up = function() {
-		if (!currentSnippet.isSelected()) {
-			currentSnippet.activate();
-			return true;
-		}
+
 		currentSnippet.deActivate();
 		if (!currentSnippet.el.parent().prev().length) {
 			return false;
@@ -105,10 +95,7 @@ com.reader.snippet.SnippetGroup = function (base, me, Snippet, Container) {
 	};
 
 	this.down = function() {
-		if (!currentSnippet.isSelected()) {
-			currentSnippet.activate();
-			return true;
-		}
+
 		currentSnippet.deActivate();
 		if (!currentSnippet.el.parent().next().length) {
 			return false;

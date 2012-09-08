@@ -54,9 +54,9 @@ com.reader.taskbar.Taskbar = function (base, me, AllSnippets, ArticleManager, Se
 		AllSnippets.getInstance().deActive();
 		Settings.getInstance().enable();
 		Settings.getInstance().changeSettings(function(url) {
-			getData(url);
 			Settings.getInstance().disable();
 			AllSnippets.getInstance().active();
+			getData(url);
 		});
 		return false;
 	}
@@ -69,8 +69,8 @@ com.reader.taskbar.Taskbar = function (base, me, AllSnippets, ArticleManager, Se
 	this.clickHome = function(e) {
 		e.preventDefault();
 		if (!AllSnippets.getInstance().isActive()) {
-			AllSnippets.getInstance().active();
 			ArticleManager.getInstance().deActive();
+			AllSnippets.getInstance().active();
 		}
 		return false;
 	};

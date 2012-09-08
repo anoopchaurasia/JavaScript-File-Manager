@@ -144,7 +144,7 @@ function runall( ) {
 	ajt.concatenateJSFiles(inputFiles, {});
 	
 	var ajt = new Concatenation(sourceDir, destinDir);
-	ajt.concatenateJSFiles(["com/reader/Reader.js"], {});
+	ajt.concatenateJSFiles(["jfm/Master.js","com/reader/Reader.js"], {});
 
 }
 runall();

@@ -3,7 +3,7 @@ fm.Import("com.reader.snippet.AllSnippets");
 fm.Import("com.reader.article.ArticleManager");
 fm.Import("com.reader.taskbar.Taskbar");
 fm.Class("Events");
-com.reader.events.Events = function( me, AllSnippets, ArticleManager, Taskbar ) {
+com.reader.events.Events = function (me, AllSnippets, ArticleManager, Taskbar) {
 	this.setMe = function( _me ) {
 		me = _me;
 	};
