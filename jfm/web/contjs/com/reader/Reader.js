@@ -464,7 +464,6 @@
 			});
 		};
 	}
-	window.me = window.base = undefined;
 	
 	// Change the context of function.
 	function changeContext( fun, context, bc ) {
@@ -1470,6 +1469,11 @@ com.reader.filler.FillContent = function (me) {
 			return this.tagName.toLowerCase() != 'br' && $.trim($(this).text()) == '';
 		}).remove();
 	};
+	$.fn.SkipRoot = function( ) {
+		this.find("*").filter(function( ) {
+			return this.tagName.toLowerCase() != 'br' && $.trim($(this).text()) == '';
+		}).remove();
+	};
 	$.fn.htmlTruncate = function( strt, max, settings ) {
 		settings = jQuery.extend({
 			chars : /\s|\."|\./
@@ -1526,6 +1530,7 @@ com.reader.filler.FillContent = function (me) {
 		}
 		myStr = myStr.substring(0, start).replace(/<br\s*\/?>/mgi, "") + myStr.substring(start, end) + myStr.substring(end, myStr.length).replace(/<br\s*\/?>/mgi, "");
 		$(this).html(myStr);
+		$(this).SkipRoot();
 		return [ max + 1, totalLen ];
 	};
 	function charsPerLine( dom ) {
@@ -1987,69 +1992,74 @@ fm.Import("com.reader.article.ArticleManager");
 fm.Import("com.reader.settings.Settings");
 fm.Class("Taskbar", "jfm.html.Container");
 com.reader.taskbar.Taskbar = function (base, me, AllSnippets, ArticleManager, Settings, Container) {
-	this.setMe = function(_me) {
+	this.setMe = function( _me ) {
 		me = _me;
 	};
 	var callback, singleton;
-
-	Static.getInstance = function(cb) {
+	
+	Static.getInstance = function( cb ) {
 		if (!singleton) {
 			singleton = new me(cb);
 		}
 		return singleton;
 	};
-
-	Private.Taskbar = function(cb) {
+	
+	Private.Taskbar = function( cb ) {
 		callback = cb;
-		base({
-			id : "taskbar",
-			height : 40,
-			html : jQuery("#taskbar-template").html()
-		});
+		if (window.WinJS) {
+			WinJS.UI.Pages.define("default.html");
+		}
+		else {
+			base({
+			    id : "taskbar",
+			    height : 40,
+			    html : jQuery("#taskbar-template").html()
+			});
+			com.reader.Reader.getDivision().bottom.add(this);
+		}
 		com.reader.Reader.getDivision().center.add(Settings.getInstance());
 		Settings.getInstance().disable();
-		com.reader.Reader.getDivision().bottom.add(this);
-		$(".controlers .plus", this.el).click(increaseFontSize);
-		$(".controlers .minus", this.el).click(decreaseFontSize);
-		$(".home a", this.el).click(me.clickHome);
-		$(">.news-feed-select a", this.el).click(changeSettings);
-		Settings.getInstance().getSelectedUrl(function(url) {
+		jQuery("#fontplus").click(increaseFontSize);
+		jQuery("#home").click(this.clickHome);
+		jQuery("#fontminus").click(decreaseFontSize);
+		jQuery("#setting").click(changeSettings);
+		Settings.getInstance().getSelectedUrl(function( url ) {
 			getData(url);
 		});
 	};
-	function increaseFontSize(e) {
+	function increaseFontSize( e ) {
 		e.preventDefault();
 		ArticleManager.getInstance().changeFont(+2);
 		AllSnippets.getInstance().changeFont(+2);
 		return false;
 	}
-	function decreaseFontSize(e) {
+	function decreaseFontSize( e ) {
 		// alert("a");
 		e.preventDefault();
 		ArticleManager.getInstance().changeFont(-2);
 		AllSnippets.getInstance().changeFont(-2);
 		return false;
 	}
-
-	function changeSettings(e) {
-
+	
+	function changeSettings( e ) {
+		
 		ArticleManager.getInstance().deActive();
 		AllSnippets.getInstance().deActive();
 		Settings.getInstance().enable();
-		Settings.getInstance().changeSettings(function(url) {
+		Settings.getInstance().changeSettings(function( url ) {
 			Settings.getInstance().disable();
 			AllSnippets.getInstance().active();
 			getData(url);
 		});
 		return false;
 	}
-
-	function getData(url) {
+	
+	function getData( url ) {
 		AllSnippets.getInstance().clearStoredData();
 		com.reader.Reader.parseRSS(url, callback, true);
 	}
-
-	this.clickHome = function(e) {
+	
+	this.clickHome = function( e ) {
 		e.preventDefault();
 		if (!AllSnippets.getInstance().isActive()) {
 			ArticleManager.getInstance().deActive();
@@ -2092,7 +2102,11 @@ com.reader.snippet.LeftBar = function (base, me, Settings, AllSnippets, Containe
 		this.el.html(html);
 		this.el.click(function(e) {
 			e.preventDefault();
-			if(e.target.nodeName == "A"){
+			if(e.target.nodeName == "DIV" && jQuery(e.target).hasClass("items") || e.target.nodeName == "A"){
+				AllSnippets.getInstance().clearStoredData();
+				com.reader.Reader.parseRSS(e.target.childNodes[0].href, callback, true);
+			}
+			if( e.target.nodeName == "A" ){
 				AllSnippets.getInstance().clearStoredData();
 				com.reader.Reader.parseRSS(e.target.href, callback, true);
 			}
@@ -2459,9 +2473,9 @@ com.reader.Reader = function (me, AllSnippets, ArticleManager, Taskbar, LeftBar,
 		});
 		division.addTo(jQuery("body"));
 		Taskbar.getInstance(callback);
-		if(jQuery(window).width()>700){
-		division.left.add(LeftBar.getInstance());
-		LeftBar.getInstance().create(callback);
+		if (jQuery(window).width() > 700) {
+			division.left.add(LeftBar.getInstance());
+			LeftBar.getInstance().create(callback);
 		}
 		Events.getInstance();
 		$("a").live('click', function( ) {
@@ -2472,13 +2486,28 @@ com.reader.Reader = function (me, AllSnippets, ArticleManager, Taskbar, LeftBar,
 	};
 	
 	Static.parseRSS = function( url, callback, isGoogle ) {
-		url = isGoogle ? document.location.protocol + '//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=8&callback=?&q=' + encodeURIComponent(url) : url;
-		$.ajax({
-		    url : url,
-		    dataType : 'json',
-		    success : function( data ) {
-			    callback(data.responseData.feed);
-		    }
-		});
+		// windows 8
+		
+		if (window.WinJS) {
+			url = isGoogle ? 'http://ajax.googleapis.com/ajax/services/feed/load?num=10&v=1.0&q=' + encodeURIComponent(url) + "&output=json_xml" : url;
+			WinJS.xhr({
+				url : url
+			}).done(function( data ) {
+				callback(JSON.parse(data.response).responseData.feed);
+			}, function( data ) {
+				callback(data.responseData.feed);
+			});
+		}
+		else {
+			url = isGoogle ? document.location.protocol + '//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=8&callback=?&q=' + encodeURIComponent(url) : url;
+			$.ajax({
+			    url : url,
+			    dataType : 'json',
+			    success : function( data ) {
+				    callback(data.responseData.feed);
+			    }
+			});
+		}
 	};
-};fm.isConcatinated = false;
+};
+fm.isConcatinated = false;

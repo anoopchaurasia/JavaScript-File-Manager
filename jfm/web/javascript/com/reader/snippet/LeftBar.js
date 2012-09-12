@@ -32,7 +32,11 @@ com.reader.snippet.LeftBar = function (base, me, Settings, AllSnippets, Containe
 		this.el.html(html);
 		this.el.click(function(e) {
 			e.preventDefault();
-			if(e.target.nodeName == "A"){
+			if(e.target.nodeName == "DIV" && jQuery(e.target).hasClass("items") || e.target.nodeName == "A"){
+				AllSnippets.getInstance().clearStoredData();
+				com.reader.Reader.parseRSS(e.target.childNodes[0].href, callback, true);
+			}
+			if( e.target.nodeName == "A" ){
 				AllSnippets.getInstance().clearStoredData();
 				com.reader.Reader.parseRSS(e.target.href, callback, true);
 			}

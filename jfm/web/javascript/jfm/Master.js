@@ -464,7 +464,6 @@
 			});
 		};
 	}
-	window.me = window.base = undefined;
 	
 	// Change the context of function.
 	function changeContext( fun, context, bc ) {

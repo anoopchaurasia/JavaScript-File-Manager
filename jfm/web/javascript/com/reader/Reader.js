@@ -48,9 +48,9 @@ com.reader.Reader = function (me, AllSnippets, ArticleManager, Taskbar, LeftBar,
 		});
 		division.addTo(jQuery("body"));
 		Taskbar.getInstance(callback);
-		if(jQuery(window).width()>700){
-		division.left.add(LeftBar.getInstance());
-		LeftBar.getInstance().create(callback);
+		if (jQuery(window).width() > 700) {
+			division.left.add(LeftBar.getInstance());
+			LeftBar.getInstance().create(callback);
 		}
 		Events.getInstance();
 		$("a").live('click', function( ) {
@@ -61,13 +61,27 @@ com.reader.Reader = function (me, AllSnippets, ArticleManager, Taskbar, LeftBar,
 	};
 	
 	Static.parseRSS = function( url, callback, isGoogle ) {
-		url = isGoogle ? document.location.protocol + '//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=8&callback=?&q=' + encodeURIComponent(url) : url;
-		$.ajax({
-		    url : url,
-		    dataType : 'json',
-		    success : function( data ) {
-			    callback(data.responseData.feed);
-		    }
-		});
+		// windows 8
+		
+		if (window.WinJS) {
+			url = isGoogle ? 'http://ajax.googleapis.com/ajax/services/feed/load?num=10&v=1.0&q=' + encodeURIComponent(url) + "&output=json_xml" : url;
+			WinJS.xhr({
+				url : url
+			}).done(function( data ) {
+				callback(JSON.parse(data.response).responseData.feed);
+			}, function( data ) {
+				callback(data.responseData.feed);
+			});
+		}
+		else {
+			url = isGoogle ? document.location.protocol + '//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=8&callback=?&q=' + encodeURIComponent(url) : url;
+			$.ajax({
+			    url : url,
+			    dataType : 'json',
+			    success : function( data ) {
+				    callback(data.responseData.feed);
+			    }
+			});
+		}
 	};
 };

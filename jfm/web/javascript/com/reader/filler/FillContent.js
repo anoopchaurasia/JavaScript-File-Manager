@@ -10,6 +10,11 @@ com.reader.filler.FillContent = function (me) {
 			return this.tagName.toLowerCase() != 'br' && $.trim($(this).text()) == '';
 		}).remove();
 	};
+	$.fn.SkipRoot = function( ) {
+		this.find("*").filter(function( ) {
+			return this.tagName.toLowerCase() != 'br' && $.trim($(this).text()) == '';
+		}).remove();
+	};
 	$.fn.htmlTruncate = function( strt, max, settings ) {
 		settings = jQuery.extend({
 			chars : /\s|\."|\./
@@ -66,6 +71,7 @@ com.reader.filler.FillContent = function (me) {
 		}
 		myStr = myStr.substring(0, start).replace(/<br\s*\/?>/mgi, "") + myStr.substring(start, end) + myStr.substring(end, myStr.length).replace(/<br\s*\/?>/mgi, "");
 		$(this).html(myStr);
+		$(this).SkipRoot();
 		return [ max + 1, totalLen ];
 	};
 	function charsPerLine( dom ) {
