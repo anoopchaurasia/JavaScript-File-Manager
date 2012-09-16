@@ -3,7 +3,7 @@ fm.Class("ImageContainer", "jfm.html.Container");
 com.reader.article.ImageContainer = function (base, me, Container){this.setMe=function(_me){me=_me;};
 	var f_size, contentColumns, columnInsideImageWidth, imageContainerWidth;
 	this.ImageContainer = function(images, f_s, multi, margins, height, width){
-		if (images.length == 0 || $.trim(images[0].text) == "") {
+		if (images.length == 0 ) {
 			imageContainerWidth = 0;
 			return 0;
 		}
@@ -23,15 +23,15 @@ com.reader.article.ImageContainer = function (base, me, Container){this.setMe=fu
 		    height : height - 10,
 		    'class' : "imageContainer selector parent"
 		});		
-		this.add(addImage(images[0]) );
+		this.add(addImage(images) );
 	};
 	
 	function addImage(img) {
 		return new Container({
 			  width : "100%",
-			    height:255,
-			    "class" : "image-container",
-			    html : "<img  src='" + img.href + "'/><div class='imagetext'>" + img.text + "</div>"
+			  height:255,
+			  "class" : "image-container",
+			  html :img
 		});
 	}
 	

@@ -1,4 +1,7 @@
 var fs = require('fs');
+var jsp = require("uglify-js").parser;
+var pro = require("uglify-js").uglify;
+//var uglifyjs =  require("uglify-js");
 var IncludedInside = [], circulerReference = {};
 
 function mkdir( path, root ) {
@@ -113,6 +116,13 @@ function Concatenation( sourceDir, destinDir ) {
 		}
 		concatenatedString += "fm.isConcatinated = false;\n";
 		fs.writeFileSync(destinDir + dFile, concatenatedString, 'utf8', function( e ) {
+			console.log(e);
+		});
+		var ast = jsp.parse(concatenatedString); // parse code and get the initial AST
+		ast = pro.ast_mangle(ast); // get a new AST with mangled names
+		ast = pro.ast_squeeze(ast); // get an AST with compression optimizations
+		var final_code = pro.gen_code(ast); // compressed code here
+		fs.writeFileSync(destinDir + dFile+"min.js", final_code, 'utf8', function( e ) {
 			console.log(e);
 		});
 		var s, fname;

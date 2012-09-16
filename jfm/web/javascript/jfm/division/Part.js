@@ -3,7 +3,7 @@ fm.Package("jfm.division");
 fm.Class("Part","jfm.component.Component");
 jfm.division.Part = function (base, me, Component){this.setMe=function(_me){me=_me;};
 
-    var set, division, resizeCB;    
+    var set, division, resizeCB, visible ;    
     this.Part = function(config, divsn, s){
         set = s;
         resizeCB = [];
@@ -11,6 +11,7 @@ jfm.division.Part = function (base, me, Component){this.setMe=function(_me){me=_
         config.css = config.css || {};
         config.css.display = 'none';
         base('<div />',config);
+        visible = true;
     };
     
     this.add = function(elem){        
@@ -19,11 +20,19 @@ jfm.division.Part = function (base, me, Component){this.setMe=function(_me){me=_
     };
     
     this.hide = function() {
+    	if(!visible){
+    		return;
+    	}
+    	visible = false;
     	this.el.hide();
     	division.updateLayout();
     };
     
     this.show = function() {
+    	if(visible){
+    		return;
+    	}
+    	visible = true;
         this.el.show();
         division.updateLayout();
     };

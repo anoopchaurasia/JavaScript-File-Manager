@@ -3,7 +3,7 @@ fm.Import("com.reader.snippet.AllSnippets");
 fm.Import("com.reader.article.ArticleManager");
 fm.Import("com.reader.taskbar.Taskbar");
 fm.Class("Events");
-com.reader.events.Events = function (me, AllSnippets, ArticleManager, Taskbar) {
+com.reader.events.Events = function( me, AllSnippets, ArticleManager, Taskbar ) {
 	this.setMe = function( _me ) {
 		me = _me;
 	};
@@ -33,11 +33,10 @@ com.reader.events.Events = function (me, AllSnippets, ArticleManager, Taskbar) {
 					return false;
 				}
 				case 8: {
-					if (!AllSnippets.getInstance().isActive()) {
+					if (ArticleManager.getInstance().isActive()) {
 						Taskbar.getInstance().clickHome(e);
 						return false;
 					}
-					return false;
 				}
 			}
 		});
@@ -117,17 +116,15 @@ com.reader.events.Events = function (me, AllSnippets, ArticleManager, Taskbar) {
 					return false;
 				}
 				case 8: {
-					if (!AllSnippets.getInstance().isActive()) {
+					if (ArticleManager.getInstance().isActive()) {
 						Taskbar.getInstance().clickHome(e);
 						return false;
 					}
-					return false;
 				}
 				default: {
 					AllSnippets.getInstance().removeHighLight();
 					ArticleManager.getInstance().removeHighLight();
 				}
-					
 			}
 		});
 	};

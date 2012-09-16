@@ -103,17 +103,17 @@ t = new Date().getTime();
 		// delete Module._cache[path];
 		require(path);
 		
-		fs.watchFile(path, {
-		    persistent : true,
-		    interval : 5000
-		}, function( ) {
-			scriptArr.push({
-				packageName : ""
-			});
-			delete require.cache[path.replace(/\//g, '\\')];
-			require(path);
-			classManager(scriptArr.pop());
-		});
+//		fs.watchFile(path, {
+//		    persistent : true,
+//		    interval : 5000
+//		}, function( ) {
+//			scriptArr.push({
+//				packageName : ""
+//			});
+//			delete require.cache[path.replace(/\//g, '\\')];
+//			require(path);
+//			classManager(scriptArr.pop());
+//		});
 		classManager(scriptArr.pop());
 	}
 	var scriptArr = [];

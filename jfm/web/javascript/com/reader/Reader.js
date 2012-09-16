@@ -48,10 +48,8 @@ com.reader.Reader = function (me, AllSnippets, ArticleManager, Taskbar, LeftBar,
 		});
 		division.addTo(jQuery("body"));
 		Taskbar.getInstance(callback);
-		if (jQuery(window).width() > 700) {
-			division.left.add(LeftBar.getInstance());
-			LeftBar.getInstance().create(callback);
-		}
+		division.left.add(LeftBar.getInstance());
+		LeftBar.getInstance().create(callback);
 		Events.getInstance();
 		$("a").live('click', function( ) {
 			window.open(this.href, '_blank');

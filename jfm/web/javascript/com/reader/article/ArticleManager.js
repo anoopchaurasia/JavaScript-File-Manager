@@ -145,24 +145,25 @@ com.reader.article.ArticleManager = function (base, me, FillContent, Cookie, Ima
 	function prepareHtml( ) {
 		if (!self.imgInfo) {
 			self.imgInfo = [];
-			var imgsInfo = $("#hidden >.content").find("img").parents("div:first").not(".content").clone();
-			var imgi = {};
-			for ( var i = 0; i < imgsInfo.length; i++) {
-				imgi = {};
-				imgi.href = $("img", imgsInfo[i]).attr("src");
-				imgi.height = $("img", imgsInfo[i]).height();
-				imgi.text = $(imgsInfo[i]).text();
-				self.imgInfo.push(imgi);
-			}
+			self.imgInfo = $("#hidden >.content").find("img").clone();
+//			var imgi = {};
+//			for ( var i = 0; i < imgsInfo.length; i++) {
+//				imgi = {};
+//				imgi.href = $("img", imgsInfo[i]).attr("src");
+//				imgi.height = $("img", imgsInfo[i]).height();
+//				imgi.text = $(imgsInfo[i]).text();
+//				self.imgInfo.push(imgi);
+//			}
 		}
 		$("#hidden").find("*").filter(function( ) {
 			return this.tagName.toLowerCase() != 'br' && this.tagName.toLowerCase() != 'img' && $.trim($(this).text()) == '';
 		}).remove();
 		self.imgages = $("#hidden >.content").find("*").width('').height('').find("img");
-		self.content = $.trim($("#hidden >.content").html().replace(/[\s\s]+/, " ").replace(/\n+/, " ").replace(/>\s+/, ">")).replace(/\r\n/gim, "").replace(/^\s/gim, "");
-		self.htmlLength = self.content.length;
 		$("#hidden >.content").find("img").parent().not(".content").remove();
+		$("#hidden >.content").find("img").remove();
 		$("#hidden >.content").find(">br, script").remove();
+		self.content = $.trim($("#hidden >.content").html().replace(/[\s\s]+|\n+/, " ").replace(/\r\n|\sstyle=""|^\s/gim, ""));
+		self.htmlLength = self.content.length;
 		self.title = $("#hidden >.title").text();
 	}
 	function getWidth(fs){

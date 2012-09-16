@@ -23,6 +23,12 @@ com.reader.snippet.AllSnippets = function (base, me, Snippet, Cookie, SnippetGro
 		if(!active){
 			return;
 		}
+		if (jQuery(window).width() > 600) {
+			com.reader.Reader.getDivision().left.show();
+		}
+		else{
+			com.reader.Reader.getDivision().left.hide();
+		}
 		var clean = true;
 		var len =resources.length;
 		for(var k =0; k < len; k++){
@@ -54,7 +60,9 @@ com.reader.snippet.AllSnippets = function (base, me, Snippet, Cookie, SnippetGro
 	this.active = function( ) {
 		active = true;
 		this.el.show().siblings().hide();
-		com.reader.Reader.getDivision().left.show();
+		if(jQuery(window).width() > 600){
+			com.reader.Reader.getDivision().left.show();
+		}
 	};
 	
 	this.isActive = function( ) {

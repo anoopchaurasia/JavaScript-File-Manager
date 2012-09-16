@@ -31,7 +31,7 @@ com.reader.filler.FillContent = function (me) {
 			else
 				myRegExHash[(myRegExArray.index - strt) < 0 ? 0 : (myRegExArray.index - strt)] = myRegExArray[0];
 		}
-		myStr = jQuery.trim(myStr.split(myRegEx).join(""));
+		myStr = myStr.split(myRegEx).join("");
 		var totalLen = myStr.length;
 		if (strt != 0) {
 			myStr = myStr.substring(strt, myStr.length);// strt is removing text
@@ -87,7 +87,6 @@ com.reader.filler.FillContent = function (me) {
 		return chars - 3;
 	}
 	this.truncateWithHeight = function( dom, from, origHtml ) {
-		var t2 = Date.now();
 		var cpl = charsPerLine(dom);
 		var lineHeight = parseInt(dom.css("line-height"));
 		var ownHeight = dom.height();
@@ -118,7 +117,7 @@ com.reader.filler.FillContent = function (me) {
 		if (decrease <= 0) {
 			decrease = 0;
 		}
-		while (diff >= lineHeight / 5 || count == 0) {
+		while (diff > 0) {
 			lastCharOffset = dom.htmlTruncate(0, lastCharOffset[0] - decrease);
 			if (lastCharOffset[0] <= 0) {
 				lastCharOffset[0] = 0;

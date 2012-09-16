@@ -2,6 +2,8 @@ body {
 	margin: 0;
 	font-family: Arial, Helvetica, sans-serif;
 	text-align: justify;
+	background-color: white;
+	color: black;
 }
 
 p {
@@ -127,7 +129,7 @@ a {
 
 .item-item-cont {
 	float: left;
-	margin-left: 10px;
+	margin-right: 10px;
 }
 
 #article-list {
@@ -236,5 +238,14 @@ a {
 
 .jfm-division-left .items a {
 	text-decoration: none;
-	color: black;
+	color: inherit;
+}
+
+.addUrl {
+	padding: 8px 28px;
+}
+
+.textinput {
+	padding: 8px 5px;
+	width: 200px;
 }
