@@ -64,7 +64,7 @@ jfm.server.Server = function (me, Serialize){this.setMe=function(_me){me=_me;};
         	
         	switch( typeof err){
         		case 'boolean' :
-        			async = type;
+        			async = err;
         			break;
         		case 'string':
         			type = err;
