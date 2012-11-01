@@ -85,7 +85,7 @@ jfm.tmpl.Scriptlet = function (me){this.setMe=function(_me){me=_me;};
         try{
             var strTemp  = '\n var temp="";\n function out(o){ \n temp+=o; \n}\n with(obj){\n' + this.convertToJs(str) + "\n};\n return temp;\n ";
             var __runner____ = new Function('obj', strTemp);
-            return __runner____(obj);
+            return __runner____.call(obj);
         }
         catch(e){
             fm.stackTrace(e.message);
