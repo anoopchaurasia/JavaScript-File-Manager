@@ -22,7 +22,7 @@ function mkdir( path, root ) {
 
 function Concatenation( sourceDir, destinDir ) {
 	var isConcatinatedAdded = false, concatenatedString = "", ConcatenatedFiles = {};
-	function executeFile( data ) {
+	function executeFile( data, updateFile ) {
 		var result, classIndex = 0;
 		var d = data.replace(/\s/g, ""), reg;
 		
@@ -37,7 +37,7 @@ function Concatenation( sourceDir, destinDir ) {
 			result = result.substring(1, result.length - 1).split(",")[1];
 			if (result) {
 				result = result.substring(1).trim().replace(/\./g, "/") + ".js";
-				processFile(sourceDir + result);
+				processFile(sourceDir + result, updateFile);
 			}
 		}
 		
@@ -48,18 +48,17 @@ function Concatenation( sourceDir, destinDir ) {
 			result = result[1];
 			result = result.substring(1, result.length - 1).replace(/\./g, "/") + ".js";
 			if (index > classIndex) {
-			  //  console.log(result);
 				IncludedInside.push(result.split(",")[0].replace(/"/gm, ''));
 				continue;
 			}
-			processFile(sourceDir + result);
+			processFile(sourceDir + result, updateFile);
 		}
 		
 		reg = /fm.import\((.*?)\)/gi;
 		while (result = reg.exec(d)) {
 			result = result[1];
 			result = result.substring(1, result.length - 1).replace(/\./g, "/") + ".js";
-			processFile(sourceDir + result);
+			processFile(sourceDir + result, updateFile);
 		}
 		
 		
@@ -69,7 +68,7 @@ function Concatenation( sourceDir, destinDir ) {
 			
 			for ( var k = 0; k < result.length; k++) {
 			
-				processFile(sourceDir + result[k].substring(1, result[k].length - 1).replace(/\./g, "/") + ".js");
+				processFile(sourceDir + result[k].substring(1, result[k].length - 1).replace(/\./g, "/") + ".js", updateFile);
 			}
 		}
 		
@@ -87,14 +86,16 @@ function Concatenation( sourceDir, destinDir ) {
 		concatenatedString += data;
 	}
 	
-	function processFile( path ) {
+	function processFile( path, updateFile ) {
 		if (!ConcatenatedFiles[path]) {
 			ConcatenatedFiles[path] = true;
 			try {
-				executeFile(fs.readFileSync(path).toString('utf-8'));
+				var fileData = fs.readFileSync(path).toString('utf-8');
+				updateFile(path, fileData);
+				executeFile(fileData, updateFile);
 			}
 			catch (e) {
-				//console.log(e);
+				console.error(e);
 			}
 		}
 		
@@ -112,7 +113,7 @@ function Concatenation( sourceDir, destinDir ) {
 		}
 		return newobj;
 	}
-	this.concatenateJSFiles = function( sFiles, concate ) {
+	this.concatenateJSFiles = function( sFiles, concate, updatefile ) {
 		ext = "js";
 		backSlash = "";
 		var len = sFiles.length;
@@ -123,21 +124,22 @@ function Concatenation( sourceDir, destinDir ) {
 		concatenatedString += "";
 		ConcatenatedFiles = concate;
 		for ( var i = 0; i < sFiles.length; i++) {
-			processFile(sourceDir + sFiles[i]);
+			processFile(sourceDir + sFiles[i], updatefile);
 		}
 		concatenatedString += ";\nfm.isConcatinated = false;\n";
 		fs.writeFileSync(destinDir + dFile, concatenatedString, 'utf8', function( e ) {
-			//console.log(e);
+			console.log("response", e, arguments);
 		});
-		/*var ast = jsp.parse(concatenatedString); // parse code and get the initial AST
+		var ast = jsp.parse(concatenatedString); // parse code and get the initial AST
 		ast = pro.ast_mangle(ast); // get a new AST with mangled names
 		ast = pro.ast_squeeze(ast); // get an AST with compression optimizations
 		var final_code = pro.gen_code(ast); // compressed code here
-		fs.writeFileSync(destinDir + dFile+"min.js", final_code, 'utf8', function( e ) {
-			console.log(e);
-		});*/
+		fs.writeFileSync(destinDir + dFile + "min.js", final_code, 'utf8',
+			function(e) {
+				console.log(e);
+			}
+		);
 		var s, fname;
-	//	console.log(destinDir + dFile, IncludedInside);
 		while (IncludedInside.length) {
 			fname = IncludedInside.pop();
 			if (fname.indexOf('http') != -1) {
@@ -149,22 +151,33 @@ function Concatenation( sourceDir, destinDir ) {
 	};
 }
 
-function runall( ) {
-	//console.log("Test:start");
-	var base = "F:/practo/Code/practo/Public_html";
-	var ajt = new createJFM(), lastRun = Number(fs.readFileSync("lastRun").toString('utf-8'));
+function runall( a ) {
+	var sourceDir = a[2],
+	destinDir = a[3],
+	files = [];
+	
+	if(a.length < 5){
+		throw "Please provide sourceDir destinDir files";
+	}
+	
+	if(sourceDir == destinDir){
+		throw "Source directory and destination directory can not be same.";
+	}
+	
+	for(var k=4; k < a.length; k++ ){
+		files.push(a[k]);
+	}
+	var lastRun = Number(fs.readFileSync("lastRun").toString('utf-8')),
+	updateFile = new createJFM(lastRun || 0);
 	//walk(base + "/js", ajt.create, lastRun);
-	fs.writeFile("lastRun", "" + Date.now(), function( ) {});
-	//console.log("Test");
-	//console.log("RunAll");
-	var sourceDir = base+"/js/", destinDir = base + "/contjs/";
  
-	var ajt = new Concatenation(sourceDir, destinDir);
-	ajt.concatenateJSFiles(["jfm/jsfm.js","com/practo/Records.js"], {});
+	var ajt = new Concatenation( sourceDir, destinDir );
+	ajt.concatenateJSFiles(files, {},  updateFile.create);
+	fs.writeFile("lastRun", "" + Date.now(), function( ) {});
 }
-runall();
+runall(process.argv);
 
-function createJFM( ) {
+function createJFM( lastRun ) {
 	function executeFile( data ) {
 		var imports = [ 'me' ], add = true, result;
 		var d = data.replace(/\s/g, ""), reg = /fm.class|fm.AbstractClass/mi;
@@ -201,17 +214,22 @@ function createJFM( ) {
 		return data.replace(reg, "= function (" + imports.join(", ") + ")");
 	}
 	
-	this.create = function( sFiles ) {
-		//console.log("test:" + sFiles);
-		var data = executeFile(fs.readFileSync(sFiles).toString('utf-8'));
-		data && fs.writeFileSync(sFiles, data, 'utf-8');
+	this.create = function( sFile, d ) {
+
+		var stat = fs.statSync(sFile);
+		//do not modify file if it has no change.
+		if((new Date(stat.mtime).getTime()) < lastRun ){
+			return;
+		}
+		d = d || fs.readFileSync(sFile).toString('utf-8');
+		var data = executeFile(d);
+		data && fs.writeFileSync(sFile, data, 'utf-8');
 	};
 }
 
 function walk( dir, cb, lastRun ) {
 	var stat, file, list = fs.readdirSync(dir);
 	if (list) {
-	//console.log("list");
 		for ( var l = 0; l < list.length; l++) {
 			file = list[l];
 			if (!file)
