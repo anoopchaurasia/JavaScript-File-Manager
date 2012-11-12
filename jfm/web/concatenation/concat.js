@@ -167,13 +167,18 @@ function runall( a ) {
 	for(var k=4; k < a.length; k++ ){
 		files.push(a[k]);
 	}
-	var lastRun = Number(fs.readFileSync("lastRun").toString('utf-8')),
-	updateFile = new createJFM(lastRun || 0);
+	var lastRun;
+	try{
+		lastRun = Number(fs.readFileSync( (sourceDir + files[ files.length - 1 ]).replace(/\/|\\|\.|:/g, "") ).toString('utf-8'));
+	}catch(e){
+		lastRun = 0;
+	}
+	var updateFile = new createJFM(lastRun || 0);
 	//walk(base + "/js", ajt.create, lastRun);
  
 	var ajt = new Concatenation( sourceDir, destinDir );
 	ajt.concatenateJSFiles(files, {},  updateFile.create);
-	fs.writeFile("lastRun", "" + Date.now(), function( ) {});
+	fs.writeFile( "./lastconcat/" + (sourceDir + files[ files.length - 1 ]).replace(/\/|\\|\.|:/g, ""), "" + Date.now(), function( ) {});
 }
 runall(process.argv);
 
