@@ -142,6 +142,9 @@
 		path = path.replace(/\s/g, "");
 		if (path.indexOf("http") != 0 && path.lastIndexOf(".js") != path.length - 3) {
 			path = fm.basedir + "/" + path.split(".").join("/") + ".js";
+			if(fm.isMinified){
+				path += "min.js";
+			}
 		}
 		include(path);
 		return this;
@@ -181,6 +184,10 @@
 		var e = document.createElement("script");
 		// onerror is not supported by IE so this will throw exception only for
 		// non IE browsers.
+		
+		if(fm.version){
+			path += "?v=" + fm.version;
+		}
 		e.onerror = onReadyState;
 		e.src = path;
 		e.type = "text/javascript";
@@ -236,7 +243,7 @@
 			o = o[s[k]];
 		}
 		if(typeof o == 'function' && o.name == '___manager___'){
-			return true;
+			return o;
 		}
 		return false;
 	};

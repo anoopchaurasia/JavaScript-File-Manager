@@ -81,9 +81,9 @@ function Concatenation( sourceDir, destinDir ) {
 		
 		if (!isConcatinatedAdded) {
 			isConcatinatedAdded = true;
-			concatenatedString += "fm.isConcatinated = true; \n";
+			concatenatedString += "\nfm.isConcatinated = true; \n fm.version=" + fileVersion + ";\n";
 		}
-		concatenatedString += data;
+		concatenatedString += data + "\n";
 	}
 	
 	function processFile( path, updateFile ) {
@@ -95,10 +95,9 @@ function Concatenation( sourceDir, destinDir ) {
 				executeFile(fileData, updateFile);
 			}
 			catch (e) {
-				console.error(e);
+				console.error(e.stack);
 			}
 		}
-		
 	}
 	
 	function deleteFile( dir ) {
@@ -126,7 +125,7 @@ function Concatenation( sourceDir, destinDir ) {
 		for ( var i = 0; i < sFiles.length; i++) {
 			processFile(sourceDir + sFiles[i], updatefile);
 		}
-		concatenatedString += ";\nfm.isConcatinated = false;\n";
+		concatenatedString += ";\n\n fm.isConcatinated = false;\n";
 		fs.writeFileSync(destinDir + dFile, concatenatedString, 'utf8', function( e ) {
 			console.log("response", e, arguments);
 		});
@@ -134,6 +133,7 @@ function Concatenation( sourceDir, destinDir ) {
 		ast = pro.ast_mangle(ast); // get a new AST with mangled names
 		ast = pro.ast_squeeze(ast); // get an AST with compression optimizations
 		var final_code = pro.gen_code(ast); // compressed code here
+		final_code += ";fm.isMinified=true";
 		fs.writeFileSync(destinDir + dFile + "min.js", final_code, 'utf8',
 			function(e) {
 				console.log(e);
@@ -146,41 +146,11 @@ function Concatenation( sourceDir, destinDir ) {
 				continue;
 			}
 			s = fname + ".js";
-			new Concatenation(sourceDir, destinDir).concatenateJSFiles([ s ], clone(ConcatenatedFiles) );
+			new Concatenation(sourceDir, destinDir).concatenateJSFiles([ s ], clone(ConcatenatedFiles), updatefile );
 		}
 	};
 }
 
-function runall( a ) {
-	var sourceDir = a[2],
-	destinDir = a[3],
-	files = [];
-	
-	if(a.length < 5){
-		throw "Please provide sourceDir destinDir files";
-	}
-	
-	if(sourceDir == destinDir){
-		throw "Source directory and destination directory can not be same.";
-	}
-	
-	for(var k=4; k < a.length; k++ ){
-		files.push(a[k]);
-	}
-	var lastRun;
-	try{
-		lastRun = Number(fs.readFileSync( (sourceDir + files[ files.length - 1 ]).replace(/\/|\\|\.|:/g, "") ).toString('utf-8'));
-	}catch(e){
-		lastRun = 0;
-	}
-	var updateFile = new createJFM(lastRun || 0);
-	//walk(base + "/js", ajt.create, lastRun);
- 
-	var ajt = new Concatenation( sourceDir, destinDir );
-	ajt.concatenateJSFiles(files, {},  updateFile.create);
-	fs.writeFile( "./lastconcat/" + (sourceDir + files[ files.length - 1 ]).replace(/\/|\\|\.|:/g, ""), "" + Date.now(), function( ) {});
-}
-runall(process.argv);
 
 function createJFM( lastRun ) {
 	function executeFile( data ) {
@@ -250,3 +220,39 @@ function walk( dir, cb, lastRun ) {
 		}
 	}
 }
+
+var fileVersion;
+function runall( a ) {
+	var sourceDir = a[2],
+	destinDir = a[3],
+	files = [];
+	fileVersion = Date.now();
+	if(a.length < 5){
+		throw "Please provide sourceDir destinDir files";
+	}
+	
+	if(sourceDir == destinDir){
+		throw "Source directory and destination directory can not be same.";
+	}
+	
+	for(var k=4; k < a.length; k++ ){
+		files.push(a[k]);
+	}
+	var lastRun;
+	try{
+		lastRun = Number(fs.readFileSync( (sourceDir + files[ files.length - 1 ]).replace(/\/|\\|\.|:/g, "") ).toString('utf-8'));
+	}catch(e){
+		lastRun = 0;
+	}
+	var updateFile = new createJFM(lastRun || 0);
+	//walk(base + "/js", ajt.create, lastRun);
+	
+	try{
+		var ajt = new Concatenation( sourceDir, destinDir );
+		ajt.concatenateJSFiles(files, {},  updateFile.create);
+		fs.writeFile( "./lastconcat/" + (sourceDir + files[ files.length - 1 ]).replace(/\/|\\|\.|:/g, ""), "" + Date.now(), function( ) {});
+	}catch(e){
+		console.log(e);
+	}
+}
+runall(process.argv);
