@@ -242,7 +242,7 @@
 			}
 			o = o[s[k]];
 		}
-		if(typeof o == 'function' && o.name == '___manager___'){
+		if(typeof o == 'function'){
 			return o;
 		}
 		return false;
@@ -904,7 +904,7 @@
 		if (!po || !fn) {
 			return;
 		}
-		if(typeof(older) == 'function' && older.name == '___manager___'){
+		if(typeof(older) == 'function' ){
 			po[fn] = older;
 			return;
 		}
