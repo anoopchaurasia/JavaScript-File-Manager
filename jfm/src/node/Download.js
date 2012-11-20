@@ -8,8 +8,8 @@ fm.Import("cookie.Cookie");
 fm.Import("facebook.FacebookAuth");
 fm.Import("session.SessionManager");
 fm.Import("user.User");
-fm.Class("App");
-App = function (me, Constants, Cookie, FacebookAuth, SessionManager, User){this.setMe=function(_me){me=_me;};
+fm.Class("Download");
+Download = function (me, Constants, Cookie, FacebookAuth, SessionManager, User){this.setMe=function(_me){me=_me;};
 	var http, url, qs, servletObj, staticServer, sessionM;
 	console.log(process.execArgv);
 	this.init = function( ) {
@@ -49,7 +49,6 @@ App = function (me, Constants, Cookie, FacebookAuth, SessionManager, User){this.
 			if (webPath[servletName] && !servletObj[servletName]) {
 				loadServlet(webPath[servletName].class, servletName);
 			}
-			
 			if (servletObj[servletName]) {
 				var c = cookie.Cookie.getCookie(req);
 				var SessionId = c["SESSIONID"];
@@ -100,20 +99,13 @@ App = function (me, Constants, Cookie, FacebookAuth, SessionManager, User){this.
 				}
 			}
 			else {
-				if (servletName == "/") {
-					req.url = "/index.html";
+				servletName = "download";
+				if (webPath[servletName] && !servletObj[servletName]) {
+					loadServlet(webPath[servletName].class, servletName);
 				}
-				req.url = "/web" + req.url;
-				staticServer.serve(req, resp, function( err, result ) {
-					if (err) {
-						console.error('Error serving %s - %s', req.url, err.message);
-						resp.end();
-					}
-				});
+				servletObj[servletName].download(req, resp, t);
 			}
-			
-			// console.log(new Date().getTime() - t, servletName);
-		}).listen(Constants.port);
+		}).listen(81);
 	};
 };
 

@@ -705,8 +705,15 @@
 		}
 		return str.join(",");
 	}
+	
+	
+	var FN_ARGS = /^function\s*[^\(]*\(\s*([^\)]*)\)/m;
+	var FN_ARG_SPLIT = /,/;
+	var FN_ARG = /^\s*(_?)(.+?)\1\s*$/;
+	var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
 	// Set relevent class information.
 	function getReleventClassInfo( Class, fn, pofn ) {
+		//var args = Class.toString().replace(STRIP_COMMENTS).match(FN_ARGS).split(FN_ARG_SPLIT);
 		addPrototypeBeforeCall(Class, this.isAbstract);
 		var tempObj, k, len;
 		eval("tempObj= new Class(" + createArgumentString(pofn.base, pofn.ics) + ");");

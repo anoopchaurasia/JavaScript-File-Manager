@@ -1,4 +1,6 @@
+
 fm.isConcatinated = true; 
+ fm.version=1352908462176;
 /* 
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -49,4 +51,6 @@ com.registration.Registration = function (base, me, Cache, Text, Combobox, FormM
 		}, 600);
 		
 	};
-};fm.isConcatinated = false;
+};;
+
+ fm.isConcatinated = false;

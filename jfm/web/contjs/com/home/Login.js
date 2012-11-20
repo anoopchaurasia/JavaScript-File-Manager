@@ -1,4 +1,6 @@
+
 fm.isConcatinated = true; 
+ fm.version=1352908462176;
 /* 
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -32,7 +34,7 @@ jfm.html.FormManager = function (me){this.setMe=function(_me){me=_me;};
         d = ("" + a[1]).split(".");
         o = a[0];
         for (j = 0; j < d.length - 1; j = j + 1) {
-            if( !isNaN(d[ j + 1 ]) &&  !hasElem( o ) ){
+            if( !isNaN(d[ j + 1 ]) &&  !hasElem( o[d[j]]  ) ){
                 o[d[j]] = o[d[j]] || [];
             }else{
                 o[d[j]] = o[d[j]] || {};
@@ -251,4 +253,6 @@ com.home.Login = function (base, me, Cache, FormManager, Text, Container){this.s
 };
 
 
-fm.isConcatinated = false;
+;
+
+ fm.isConcatinated = false;

@@ -1,4 +1,6 @@
+
 fm.isConcatinated = true; 
+ fm.version=1352908462176;
 fm.Package("com.home");
 fm.Class("SubCategory", "jfm.html.Container");
 com.home.SubCategory = function (base, me, Container){this.setMe=function(_me){me=_me;};
@@ -28,4 +30,6 @@ com.home.SubCategory = function (base, me, Container){this.setMe=function(_me){m
 };
 
 
-fm.isConcatinated = false;
+;
+
+ fm.isConcatinated = false;

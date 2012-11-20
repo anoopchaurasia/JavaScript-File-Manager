@@ -1,4 +1,6 @@
+
 fm.isConcatinated = true; 
+ fm.version=1352908462176;
 fm.Package("lib.google");
 fm.Class("Map", "jfm.html.Container");
 lib.google.Map = function (base, me, Container) {
@@ -187,4 +189,6 @@ shop.Register = function (me, Map, SearchLocation) {
 		new SearchLocation(division, map);
 	};
 };
-fm.isConcatinated = false;
+;
+
+ fm.isConcatinated = false;
