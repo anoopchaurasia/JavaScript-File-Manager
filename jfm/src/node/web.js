@@ -11,5 +11,6 @@ webPath = {
     "search" : {'class':"test.Search"},
     "chat" : {'class':"test.Chat"},
     "reader" : {'class':"test.Reader"},
-    "download" : {"class" : "searchfolder.SearchFolder"}
+    "download" : {"class" : "searchfolder.SearchFolder"},
+    "aws": {"class" : "aws.FileUploader"}
 };

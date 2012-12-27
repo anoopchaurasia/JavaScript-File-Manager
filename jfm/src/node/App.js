@@ -49,7 +49,7 @@ App = function (me, Constants, Cookie, FacebookAuth, SessionManager, User){this.
 			if (webPath[servletName] && !servletObj[servletName]) {
 				loadServlet(webPath[servletName].class, servletName);
 			}
-			
+
 			if (servletObj[servletName]) {
 				var c = cookie.Cookie.getCookie(req);
 				var SessionId = c["SESSIONID"];
@@ -69,9 +69,11 @@ App = function (me, Constants, Cookie, FacebookAuth, SessionManager, User){this.
 				}
 				if (req.method == "POST") {
 					var body = "";
-					facebook.FacebookAuth.Authenticate(req, function( ) {
-						console.log(arguments[0]);
-					});
+					if(req.headers['content-type'].indexOf('multipart/form') != -1){
+						servletObj[servletName].multiPart(req, resp, t);
+						return;
+					}
+					
 					req.on('data', function( data ) {
 						body += data;
 					});
@@ -88,6 +90,7 @@ App = function (me, Constants, Cookie, FacebookAuth, SessionManager, User){this.
 					});
 				}
 				else if (req.method == "GET") {
+					console.log(servletName, servletObj[servletName].GET);
 					var query = url_parts.query;
 					req.params = query;
 					try {

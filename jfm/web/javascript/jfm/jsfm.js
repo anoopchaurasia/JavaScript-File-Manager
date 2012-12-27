@@ -134,6 +134,9 @@
 			storePath[temp + path] = args || true;
 		}
 		else {
+			if(typeof args[args.length -1] == 'function'){
+				args.pop()();
+			}
 			return this;
 		}
 		if (fm.isConcatinated && path.indexOf("http") != 0) {
@@ -184,7 +187,7 @@
 		var e = document.createElement("script");
 		// onerror is not supported by IE so this will throw exception only for
 		// non IE browsers.
-		
+
 		if(fm.version){
 			path += "?v=" + fm.version;
 		}
@@ -242,12 +245,21 @@
 			}
 			o = o[s[k]];
 		}
+
 		if(typeof o == 'function'){
 			return o;
 		}
 		return false;
 	};
 	
+	fm.addController = function (cntl) {
+		var ct = currentScript.controller = window[cntl];
+		ct.cntl = cntl;
+		window[cntl] = function ($scope) {
+			ct.controllerArgs = arguments;
+		};
+		
+	};
 	// fm.Class creates a jfm class.
 	fm['class'] = fm["Class"] = function Class( ){ 
 		!currentScript && this.Package();
@@ -281,6 +293,7 @@
 			// fm.holdReady(false);
 		});
 	}
+
 	
 	// fm.stringToObject: map a string into object.
 	fm.stringToObject = function stringToObject( classStr ) {
@@ -324,7 +337,9 @@
 		classDependent[id] = classDependent[id] || [];
 		classDependent[id].push(cb);
 	}
-	
+	fm.getDependent = function(){
+		return classDependent;
+	}
 	// return clas if class with name {id} is ready.
 	function isReady( id ) {
 		return classDependent[id];
@@ -490,8 +505,8 @@
 		var indx = str.lastIndexOf(".");
 		var o = createObj(str.substring(0, indx));
 		var nam = str.substring(1 + indx);
-		if (o[nam]) {
-			console.error("Short hand " + str + " for " + protoClass + " has conflict with. " + o[nam]);
+		if (o[nam] && o[nam] != protoClass){
+			//console.error("Short hand " + str + " for " + protoClass + " has conflict with. " + o[nam]);
 		}
 		o[nam] = protoClass;
 	}
@@ -555,7 +570,7 @@
 			}
 			// deleteing $add as all operations on $add are completed for this
 			// instance.
-			delete baseClassObject.$add;
+			//delete baseClassObject.$add;
 			var currentClass = arr.pop();
 			return currentClass.base = baseClassObject;
 		}
@@ -705,21 +720,14 @@
 		}
 		return str.join(",");
 	}
-	
-	
-	var FN_ARGS = /^function\s*[^\(]*\(\s*([^\)]*)\)/m;
-	var FN_ARG_SPLIT = /,/;
-	var FN_ARG = /^\s*(_?)(.+?)\1\s*$/;
-	var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
 	// Set relevent class information.
 	function getReleventClassInfo( Class, fn, pofn ) {
-		//var args = Class.toString().replace(STRIP_COMMENTS).match(FN_ARGS).split(FN_ARG_SPLIT);
 		addPrototypeBeforeCall(Class, this.isAbstract);
 		var tempObj, k, len;
 		eval("tempObj= new Class(" + createArgumentString(pofn.base, pofn.ics) + ");");
 		tempObj.setMe && tempObj.setMe(pofn);
 		delete tempObj.setMe;
-		this.shortHand = tempObj.shortHand;
+		this.shortHand = tempObj.shortHand || this.shortHand;
 		var info = separeteMethodsAndFields(tempObj);
 		this.methods = info.methods = pofn.base ? info.methods.concat(pofn.base.prototype.$get('methods')) : info.methods;
 		
@@ -776,12 +784,12 @@
 		return str.join(",");
 	}
 	
-	function createClassInstance( pofn, script, fn, Class ) {
-		var baseObj, ex = getException.call(this, script, pofn);
+	function createClassInstance( pofn, script, fn, Class, DummyInstance ) {
+		var baseObj, ex = getException.call(DummyInstance, script, pofn);
 		if (ex) {
 			throw ex;
 		}
-		baseObj = pofn.base && getBaseClassObject(pofn.base, this.__base___ ? this.get$arr() : []);
+		baseObj = pofn.base && getBaseClassObject(pofn.base, DummyInstance.__base___ ? DummyInstance.get$arr() : []);
 		addPrototypeBeforeCall(Class, pofn.isAbstract);
 		var currentObj;
 		eval("currentObj= new Class(" + createArgumentStringObj(baseObj, pofn.ics) + ");");
@@ -811,7 +819,7 @@
 	}
 	
 	// Run this code after all resources are available.
-	function executeOnready( script, fn, Class, data ) {
+	function executeOnready( script, fn, Class, data, newObj ) {
 		
 		var internalObj = script;
 		// for instance of: check if given class is a interface implemeted by
@@ -864,11 +872,20 @@
 		};
 		this.constructor = defaultConstrct;
 		iamready(this.getClass(), this);
+		if(data && typeof data[data.length -1] == 'function'){
+			data.pop()();
+		}
 		if (typeof this.main == 'function') {
 			this.main(data);
 			delete this.main;
 		}
 		data = undefined;
+		for(var k in this){
+			if(this.hasOwnProperty(k) ){
+				newObj[k] = this[k];
+			}
+		}
+		Class.prototype = newObj;
 	}
 	
 	function createSetterGetterHelper( self, obj, source, isConst, isStatic ) {
@@ -916,6 +933,7 @@
 			return;
 		}
 		if (!po[fn] && (po[fn] = window[fn])) {
+			script.shortHand = fn;
 			try {
 				delete window[fn];
 			}
@@ -923,9 +941,10 @@
 				console.log(e);
 			}
 		}
-		var Class = po[fn];
-		po[fn] = function ___manager___( ) {
-			var currentObj = createClassInstance.call(this, po[fn], script, fn, Class);
+		var Class = po[fn], newObj = {};
+		po[fn] = function ( ) {
+			newObj.__base___ = this.__base___;
+			var currentObj = createClassInstance.call(newObj, po[fn], script, fn, Class, this);
 			if (!this.__base___) {
 				currentObj.constructor.apply(currentObj, arguments);
 				// Calling base constructor if not called explicitly.
@@ -936,9 +955,10 @@
 			!this.__base___ && currentObj.el && currentObj.el[0] && (currentObj.el[0].jfm = currentObj);
 			return currentObj;
 		};
+		newObj.prototype = po[fn].prototype;
 		// Add resource ready queue.
 		addImportsOnready(script.imports, function( ) {
-			executeOnready.call(po[fn], script, fn, Class, data);
+			executeOnready.call(po[fn], script, fn, Class, data, newObj);
 			data = undefined;
 		}, fn);
 	}

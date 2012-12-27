@@ -3,7 +3,7 @@ fm.Class("Chat", "Base");
 test.Chat = function (base, me, Base){this.setMe=function(_me){me=_me;};
 
 	var messages, callbacks, mem, starttime, MESSAGE_BACKLOG;
-	
+
 	this.Chat = function( ) {
 		messages = [];
 		callbacks = [];
@@ -13,7 +13,7 @@ test.Chat = function (base, me, Base){this.setMe=function(_me){me=_me;};
 		}, 10 * 1000);
 		starttime = (new Date()).getTime();
 		MESSAGE_BACKLOG = 100;
-		
+
 		setInterval(function( ) {
 			var now = new Date();
 			while (callbacks.length > 0 && now - callbacks[0].timestamp > 30 * 1000) {
@@ -21,7 +21,7 @@ test.Chat = function (base, me, Base){this.setMe=function(_me){me=_me;};
 			}
 		}, 3000);
 	};
-	
+
 	this.method = function( req, res ) {
 		var path = process.cwd() + "/web/html/chat.html";
 		require('fs').readFile(path, function( err, data ) {
@@ -34,7 +34,7 @@ test.Chat = function (base, me, Base){this.setMe=function(_me){me=_me;};
 			}
 		});
 	};
-	
+
 	this.userExist = function( req, res ) {
 		var id = req.cookie.SESSIONID;
 		var session = req.sessionM.getSession(id);
@@ -44,9 +44,9 @@ test.Chat = function (base, me, Base){this.setMe=function(_me){me=_me;};
 		console.log(session);
 		res.end();
 	};
-	
+
 	this.join = function( req, res ) {
-		
+
 		var nick = req.params.nick;
 		if (nick == null || nick.length == 0) {
 			res.writeHead(400, {
@@ -54,7 +54,7 @@ test.Chat = function (base, me, Base){this.setMe=function(_me){me=_me;};
 			});
 			return;
 		}
-		
+
 		var sess = {};
 		sess.sessionId = nick;
 		sess.userId = nick;
@@ -69,13 +69,13 @@ test.Chat = function (base, me, Base){this.setMe=function(_me){me=_me;};
 		}));
 		res.end();
 	};
-	
+
 	this.recieve = function( req, res ) {
-		
+
 		var id = req.cookie.SESSIONID;
 		var session = req.sessionM.getSession(id);
 		var since = parseInt(req.params.since, 10);
-		
+
 		query(since, function( messages ) {
 			if (session)
 				req.sessionM.updateTime(id);
@@ -87,7 +87,7 @@ test.Chat = function (base, me, Base){this.setMe=function(_me){me=_me;};
 			res.end();
 		});
 	};
-	
+
 	this.send = function( req, res ) {
 		var id = req.cookie.SESSIONID;
 		var text = req.params.text;
@@ -106,7 +106,7 @@ test.Chat = function (base, me, Base){this.setMe=function(_me){me=_me;};
 		}));
 		res.end();
 	};
-	
+
 	this.part = function( req, res ) {
 		req.sessionM.remove(req.cookie.SESSIONID);
 		res.write(JSON.stringify({
@@ -114,7 +114,7 @@ test.Chat = function (base, me, Base){this.setMe=function(_me){me=_me;};
 		}));
 		res.end();
 	};
-	
+
 	function query( since, callback ) {
 		var matching = [];
 		for ( var i = 0; i < messages.length; i++) {
@@ -122,7 +122,7 @@ test.Chat = function (base, me, Base){this.setMe=function(_me){me=_me;};
 			if (message.timestamp > since)
 				matching.push(message);
 		}
-		
+
 		if (matching.length != 0) {
 			callback(matching);
 		}
@@ -133,7 +133,7 @@ test.Chat = function (base, me, Base){this.setMe=function(_me){me=_me;};
 			});
 		}
 	}
-	
+
 	function appendMessage( nick, type, text ) {
 		var m = {
 		    nick : nick,
@@ -146,11 +146,11 @@ test.Chat = function (base, me, Base){this.setMe=function(_me){me=_me;};
 		while (callbacks.length > 0) {
 			callbacks.shift().callback([ m ]);
 		}
-		
+
 		while (messages.length > MESSAGE_BACKLOG)
 			messages.shift();
 	}
-	
+
 };
 
 

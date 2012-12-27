@@ -126,9 +126,23 @@ function Concatenation( sourceDir, destinDir ) {
 			processFile(sourceDir + sFiles[i], updatefile);
 		}
 		concatenatedString += ";\n\n fm.isConcatinated = false;\n";
+		var temp1 = [];
+		var kk = 100, strlen = sourceDir.length;
+		for(var k in ConcatenatedFiles){
+			temp1.push("js.bundle.patientroot.asset"+ (kk++) +" = "+ k.substring(strlen));
+		}
+		console.log(temp1);
+		fs.writeFileSync("abcdmin.js", temp1.join("\n"), 'utf8',
+			function(e) {
+				console.log(e);
+			}
+		);
 		fs.writeFileSync(destinDir + dFile, concatenatedString, 'utf8', function( e ) {
 			console.log("response", e, arguments);
 		});
+		
+		
+		
 		var ast = jsp.parse(concatenatedString); // parse code and get the initial AST
 		ast = pro.ast_mangle(ast); // get a new AST with mangled names
 		ast = pro.ast_squeeze(ast); // get an AST with compression optimizations
