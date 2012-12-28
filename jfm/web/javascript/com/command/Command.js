@@ -37,8 +37,6 @@ com.command.Command = function (base, me, Cache, Utility, Container, Division){t
 		    id : "join"
 		}));
 		activate(me);
-		this.left.add(new Container({width:300, height:"100%"}));
-		this.right.add(new Container({width:300, height:"100%"}));
 	};
 
 	function send( textarea ) {
@@ -59,7 +57,7 @@ com.command.Command = function (base, me, Cache, Utility, Container, Division){t
 			id : 'recieve'
 		}));
 		me.bottom.add(new Container({
-		    html : '<hr style="width:90%; margin:auto"/><br><textarea></textarea><button class="Submit">Send</button><span class="activateEnter"><input type="checkbox">:Send on enter</span>',
+		    html : '<hr style="width:90%; margin:auto"/><br><textarea style="height:20px"></textarea><br><button class="Submit">Send</button><span class="activateEnter"><input type="checkbox">:Send on enter</span>',
 		    id : "send",
 		    height : 100
 		}));

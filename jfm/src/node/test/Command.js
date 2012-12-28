@@ -26,7 +26,7 @@ test.Command = function (base, me, Base){this.setMe=function(_me){me=_me;};
 	};
 
 	this.send = function( req, res ) {
-		if(req.connection.remoteAddress !== "127.0.0.1"){
+		if(req.connection.remoteAddress !== "127.0.0.1" && req.connection.remoteAddress !== "192.168.1.103"){
 			console.log(req.connection.remoteAddress);
 			var data = {
 				result: "",
