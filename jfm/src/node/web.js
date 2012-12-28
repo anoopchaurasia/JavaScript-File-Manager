@@ -10,6 +10,7 @@ webPath = {
     "subcategory" : { 'class' : "test.SubCategory"},
     "search" : {'class':"test.Search"},
     "chat" : {'class':"test.Chat"},
+    "command" : {'class':"test.Command"},
     "reader" : {'class':"test.Reader"},
     "download" : {"class" : "searchfolder.SearchFolder"},
     "aws": {"class" : "aws.FileUploader"}

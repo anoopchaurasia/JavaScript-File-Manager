@@ -226,7 +226,7 @@ com.chat.Chat = function (base, me, Cache, Utility, Container, Division){this.se
 		
 		var content = '<tr>' + '  <td class="nick">' + Utility.toStaticHTML(from) + '</td>' + '  <td class="msg-text">' + Utility.toNormalHtml(text) + '</td>' + '  <td class="date">'
 		        + Utility.timeString(time) + '</td>' + '</tr>';
-		messageElement.html(content);
+		messageElement.append(content);
 		
 		// the log is the stream that we view
 		$("#recieve").append(messageElement);
