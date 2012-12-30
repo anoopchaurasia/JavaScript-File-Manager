@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>jfm\server\Server.js</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.7.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.7.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            
+                <h1><img src="..&#x2F;assets/css/logo.png" title=""></h1>
+            
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: </em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1 class="file-heading">File: jfm\server\Server.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x2F;**
+ * Created with JetBrains WebStorm.
+ * User: anoop
+ * Date: 5&#x2F;12&#x2F;12
+ * Time: 5:42 PM
+ * To change this template use File | Settings | File Templates.
+ *&#x2F;
+
+fm.Package(&quot;jfm.server&quot;);
+fm.Import(&quot;jfm.io.Serialize&quot;);
+fm.Class(&quot;Server&quot;);
+jfm.server.Server = function (me, Serialize){this.setMe=function(_me){me=_me;};
+
+    var me = this;
+    this.url = location.protocol + &quot;&#x2F;&#x2F;&quot; + location.host + &quot;&#x2F;&quot; ;
+    this.method = &quot;method&quot;;
+    this.shortHand = &quot;Server&quot;;
+    this.type = &quot;json&quot;;
+    this.async = true;
+    this.parameters = {};
+    var singleton;
+    
+    this.errorCallback = function(msg) {
+        console.log(msg);
+    };
+    
+    this.callback = function(msg) {
+    	console.log(&quot;callback&quot;, msg);
+    };
+    
+    this.Static.newInstance = function(url, parameters, method, cb, err, type, async){
+    	return new me(url, parameters, method, cb, err, type, async);
+    };
+    
+    this.Static.getInstance = function(url){  
+
+		if(!singleton){
+            singleton = new jfm.server.Server(url);
+            me = singleton;
+        }
+        else{
+        	singleton.url = url;
+        }
+        return singleton;
+    };
+    this.Private.Server = function( url, parameters, method, cb, err, type, async ){
+
+        this.url = url || this.url;
+        this.parameters = parameters || this.parameters;
+        this.method = method || this.method;
+        this.callback = cb || this.callback;
+        this.errorCallback = err || this.errorCallback;
+        this.type = type || this.type;
+        this.async = async || this.async;
+    };
+    
+    this.serviceCall = function( parameters, method, cb, err, type, async ) {
+        try {
+        	async = async != undefined? async : this.async;
+        	switch(typeof type){
+        		case &#x27;boolean&#x27;:
+        			async = type;
+        	}
+        	
+        	switch( typeof err){
+        		case &#x27;boolean&#x27; :
+        			async = err;
+        			break;
+        		case &#x27;string&#x27;:
+        			type = err;
+        	}
+        	
+        	switch( typeof cb ){
+        		case &#x27;boolean&#x27; :
+        			async = type;
+        			break;
+        		case &#x27;string&#x27;:
+        			type = err;
+        	}
+        	
+        	switch(typeof method){
+        		case &#x27;boolean&#x27; :
+        			async = type;
+        			break;
+        		case &#x27;function&#x27; :
+        			if(typeof cb == &#x27;function&#x27;){
+        				err = cb;
+        			}
+        			cb = method;
+        	}
+        	
+        	switch(typeof parameters){
+        		case &#x27;boolean&#x27; :
+        			async = type;
+        			break;
+        		case &#x27;string&#x27;:
+        			type = err;
+        		case &#x27;function&#x27; :
+        			if(typeof method == &#x27;function&#x27;){
+        				err = method;
+        			}
+        			cb = parameters;
+        	}
+        	
+            this.parameters = typeof (parameters ) == &#x27;object&#x27; &amp;&amp; parameters != null ? parameters : this.parameters;
+            
+            var param = this.parameters;
+            for(var k in this.parameters){
+                param.hasOwnProperty(k) &amp;&amp; (typeof param[k] == &#x27;object&#x27;) &amp;&amp; (param[k]=Serialize.serialize(param[k] ));
+            }   
+            param.method = param.method || method || this.method;
+            var aj = $.ajax({
+                url : this.url,
+                type : &quot;POST&quot;,
+                data : param,
+                success : cb || this.callback,
+                error : err ||  this.errorCallback,
+                dataType : type || this.type,
+                async : async 
+            });
+            return aj;
+        }
+        catch (r) {
+            (cb || me.errorCallback)(r);
+        }
+    };
+};
+
+
+
+
+
+
+    </pre>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

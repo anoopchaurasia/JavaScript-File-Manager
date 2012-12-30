@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>jfm\jsfm.js</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.7.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.7.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            
+                <h1><img src="..&#x2F;assets/css/logo.png" title=""></h1>
+            
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: </em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1 class="file-heading">File: jfm\jsfm.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x2F;**
+ * Created by JetBrains WebStorm. User: Anoop Date: 5&#x2F;7&#x2F;11 Time: 11:14 PM To
+ * change this template use File | Settings | File Templates.
+ *&#x2F;
+
+(function( window, undefined ) {
+	if(window.fm &amp;&amp; window.fm[&#x27;package&#x27;]){
+		return ;
+	}
+	&#x2F;&#x2F; method to check if Object.defineProperty supported by browser.
+	&#x2F;&#x2F; IE8 support Object.defineProperty only for dom object.
+	function doesDefinePropertyWork( object ) {
+		try {
+			Object.defineProperty(object, &quot;a&quot;, {});
+			return &quot;a&quot; in object;
+		}
+		catch (e) {
+			return false;
+		}
+	}
+	
+	if (!Function.prototype.bind) {
+		Function.bind = Function.prototype.bind = function( obj ) {
+			var thisFun = this;
+			return function( ) {
+				return thisFun.apply(obj, arguments);
+			};
+		};
+	}
+	
+	&#x2F;&#x2F; Checking if setter and getter is supported by browser.
+	var isGetterSetterSupported = doesDefinePropertyWork({}) || Object.prototype.__defineGetter__;
+	
+	&#x2F;&#x2F; This method is adding a $add method into class prototype wchich is being
+	&#x2F;&#x2F; used to create setter and getter for its own property.
+	function creareSetGet( classProto ) {
+		&#x2F;&#x2F; Storing key:value in separate variable as using original object will
+		&#x2F;&#x2F; create infinit loop.
+		var valueStorage = {};
+		&#x2F;&#x2F; Static is not supported.... will not support ie &lt; 9;
+		&#x2F;&#x2F; Adding setter and getter
+		classProto.prototype.$add = function( obj, key, val, isConst ) {
+			
+			&#x2F;&#x2F; val has a value for it&#x27;s original object.
+			if (val != undefined) {
+				valueStorage[key] = val;
+			}
+			
+			function setter( newval ) {
+				if (isConst) {
+					throw this + &quot;.&quot; + key + &quot; can not be changed.&quot;;
+				}
+				valueStorage[key] = newval;
+			}
+			
+			function getter( ) {
+				return valueStorage[key];
+			}
+			
+			if (obj.__defineGetter__) {
+				obj.__defineGetter__(key, getter);
+				obj.__defineSetter__(key, setter);
+			}
+			else if (Object.defineProperty &amp;&amp; isGetterSetterSupported) {
+				Object.defineProperty(obj, key, {
+				    get : getter,
+				    set : setter
+				});
+			}
+			else {
+				obj[key] == undefined &amp;&amp; (obj[key] = valueStorage[key]);
+			}
+		};
+	}
+	
+	&#x2F;&#x2F; intializing fm
+	if (!window.fm) {
+		window.fm = {};
+	}
+	&#x2F;&#x2F; currentScript is being used to contain all information of currently
+	&#x2F;&#x2F; loaded JavaScript file.
+	var currentScript;
+	&#x2F;&#x2F; Assuming JavaScript base directory is &quot;javascript&quot;.
+	
+	fm.basedir = &quot;&#x2F;javascript&quot;;
+	
+	&#x2F;&#x2F; fm.stackTrace can be used to collect to print function stack;
+	&#x2F;&#x2F; JAVA:Exception.stacktrace
+	fm.stackTrace = function( message ) {
+		try {
+			if (message) {
+				console.error(message);
+			}
+			var a = arguments.callee, str = &quot;&quot;;
+			while (a.caller) {
+				if (a.caller.getName) {
+					str += a.caller.getName() + &quot; of &quot; + a.caller.$Class + &quot;\n&quot;;
+				}
+				else if (a.caller.name != &quot;&quot;) {
+					str += a.caller.name + &quot;\n&quot;;
+				}
+				a = a.caller;
+			}
+			console.log(str);
+			var k = ty;
+		}
+		catch (e) {
+			console.error(e.stack &amp;&amp; e.stack.substring(e.stack.indexOf(&quot;\n&quot;)));
+			&#x2F;&#x2F; System.out.println(e.stack &amp;&amp;
+			&#x2F;&#x2F; e.stack.substring(e.stack.indexOf(&quot;\n&quot;)));
+		}
+	};
+	
+	&#x2F;&#x2F; &#x2F;fm.import adds new javascript file to head of document. JAVA: import
+	fm[&#x27;import&#x27;] = fm.Import = function Import( path ) {
+		path = path.replace(&#x2F;\s&#x2F;g, &quot;&quot;);
+		add(path);
+		this.Include(path); &#x2F;&#x2F; function
+		return this;
+	};
+	
+	&#x2F;&#x2F; Keep track of loaded files in storePath.
+	var storePath = [];
+	
+	&#x2F;&#x2F; &#x2F;same as fm.import but for non jfm files.
+	fm[&#x27;include&#x27;] = fm.Include = function Include( ) {
+		var args = [];
+		for (var k =1; k &lt; arguments.length; k++){
+			args.push(arguments[k]);
+		}
+		var path = arguments[0];
+		var temp = fm.basedir.replace(&#x2F;\&#x2F;&#x2F;gim,&quot;&quot;);
+		if (!storePath[temp+ path]) {
+			storePath[temp + path] = args || true;
+		}
+		else {
+			return this;
+		}
+		if (fm.isConcatinated &amp;&amp; path.indexOf(&quot;http&quot;) != 0) {
+			return this;
+		}
+		path = path.replace(&#x2F;\s&#x2F;g, &quot;&quot;);
+		if (path.indexOf(&quot;http&quot;) != 0 &amp;&amp; path.lastIndexOf(&quot;.js&quot;) != path.length - 3) {
+			path = fm.basedir + &quot;&#x2F;&quot; + path.split(&quot;.&quot;).join(&quot;&#x2F;&quot;) + &quot;.js&quot;;
+		}
+		include(path);
+		return this;
+	};
+	
+	&#x2F;&#x2F; &#x2F;onReadyState method get called when browser fail to load a javascript
+	&#x2F;&#x2F; file.
+	function onReadyState( ) {
+		console.error(&quot;Unable to load file: &quot; + this.src + &quot;. Please check the file name and parh.&quot;);
+		&#x2F;&#x2F; fm.holdReady(false);
+		return false;
+	}
+	
+	&#x2F;&#x2F; Add imports for current loaded javascript file.
+	&#x2F;&#x2F; Add imported javascript file for current class into currentScript.
+	function add( path ) {
+		!currentScript &amp;&amp; fm.Package();
+		var script = currentScript;
+		script &amp;&amp; (!script.imports &amp;&amp; (script.imports = []));
+		&#x2F;&#x2F; checking if same file imported twice for same Class.
+		for ( var k = 0, len = script.imports.length; k &lt; len; k++) {
+			if (script.imports[k] == path) {
+				return this;
+			}
+		}
+		script.imports.push(path);
+		return true;
+	}
+	var docHead;
+	
+	&#x2F;&#x2F; Create script tag inside head.
+	function include( path ) {
+		if (!docHead) {
+			docHead = document.getElementsByTagName(&quot;head&quot;)[0];
+		}
+		&#x2F;&#x2F; isNonfm &amp;&amp; fm.holdReady(true);
+		var e = document.createElement(&quot;script&quot;);
+		&#x2F;&#x2F; onerror is not supported by IE so this will throw exception only for
+		&#x2F;&#x2F; non IE browsers.
+		e.onerror = onReadyState;
+		e.src = path;
+		e.type = &quot;text&#x2F;javascript&quot;;
+		docHead.appendChild(e);
+		
+	}
+	
+	&#x2F;&#x2F; This should be first method to be called from jfm classes.JAVA:package
+	fm[&quot;package&quot;] = fm.Package = function Package( packageName ) {
+		currentScript = {
+			packageName : packageName || &quot;&quot;
+		};
+		return this;
+	};
+	
+	&#x2F;&#x2F; &#x2F; this method Add base class for current Class.JAVA:extend
+	fm[&#x27;super&#x27;] = fm[&#x27;base&#x27;] = fm.Base = function Base( baseClass ) {
+		currentScript &amp;&amp; (currentScript.baseClass = baseClass) &amp;&amp; this.Import(baseClass);
+		return this;
+	};
+	
+	&#x2F;&#x2F; Set current script as Interface; JAVA:interface
+	fm[&quot;interface&quot;] = fm.Interface = function Interface( ) {
+		!currentScript &amp;&amp; this.Package();
+		currentScript.isInterface = true;
+		this.Class.apply(this, arguments);
+	};
+	
+	fm[&#x27;abstractClass&#x27;] = fm.AbstractClass = function( ) {
+		!currentScript &amp;&amp; this.Package();
+		currentScript.isAbstract = true;
+		this.Class.apply(this, arguments);
+	};
+	&#x2F;&#x2F; Add all implemented interface to class interface list. and import
+	&#x2F;&#x2F; them.JAVA:implements
+	fm[&#x27;implements&#x27;] = fm.Implements = function Implements( ) {
+		!currentScript &amp;&amp; this.Package();
+		var script = currentScript;
+		script.interfaces = script.interfaces || [];
+		for ( var k = 0, len = arguments.length; k &lt; len; k++) {
+			this.Import(arguments[k]);
+			script.interfaces.push(arguments[k]);
+		}
+	};
+	
+	fm.isExist = function( cls ) {
+		var s = cls.split(&quot;.&quot;);
+		var o = window;
+		for ( var k in s) {
+			if (!o[s[k]]) {
+				return false;
+			}
+			o = o[s[k]];
+		}
+		if(typeof o == &#x27;function&#x27; &amp;&amp; o.name == &#x27;___manager___&#x27;){
+			return true;
+		}
+		return false;
+	};
+	
+	&#x2F;&#x2F; fm.Class creates a jfm class.
+	fm[&#x27;class&#x27;] = fm[&quot;Class&quot;] = function Class( ){ 
+		!currentScript &amp;&amp; this.Package();
+		var script = currentScript, data;
+		var a = arguments, o = null;
+		script.className = a[0];
+		if (a[1]) {
+			this.Base(a[1]);
+		}
+		o = createObj(&quot;&quot; + script.packageName);
+		script.Class = &quot;&quot; + (script.packageName == &quot;&quot; ? &quot;&quot; : script.packageName + &quot;.&quot;) + script.className;
+		
+		script.Package = o;
+		var temp = fm.basedir.replace(&#x2F;\&#x2F;&#x2F;gim,&quot;&quot;);
+		if (typeof storePath[temp  + script.Class] == &#x27;object&#x27;) {
+			data = storePath[temp  + script.Class];
+			storePath[temp  + script.Class] = true;
+		}
+		callAfterDelay(script, data, o[script.className]);
+		currentScript = undefined;
+	};
+	
+	&#x2F;&#x2F; callAfterDelay:Delay the call for classManager so that file get compiled
+	&#x2F;&#x2F; completely.
+	&#x2F;&#x2F; And classManager get all information about the function.
+	function callAfterDelay( script, data,  older) {
+		setTimeout(function( ) {
+			&#x2F;&#x2F; Calling classmanager after a short delay so that file get
+			&#x2F;&#x2F; completely ready.
+			classManager(script, data, older);
+			&#x2F;&#x2F; fm.holdReady(false);
+		});
+	}
+	
+	&#x2F;&#x2F; fm.stringToObject: map a string into object.
+	fm.stringToObject = function stringToObject( classStr ) {
+		var Class = window, classStrArr = classStr.split(&quot;.&quot;);
+		for ( var n = 0; Class &amp;&amp; n &lt; classStrArr.length; n++) {
+			Class = Class[classStrArr[n]];
+		}
+		return Class;
+	};
+	
+	&#x2F;&#x2F; Map string to corresponding object.
+	function createObj( str ) {
+		if (!str || str.length == 0) {
+			return window;
+		}
+		var d = str.split(&quot;.&quot;), j, o = window;
+		for (j = 0; j &lt; d.length; j = j + 1) {
+			o[d[j]] = o[d[j]] || {};
+			o = o[d[j]];
+		}
+		return o;
+	}
+	
+	&#x2F;&#x2F; Contain all classses dependent on a class with className {id};
+	var classDependent = {};
+	&#x2F;&#x2F; Call all callbacks after a class get ready so that dependent can
+	&#x2F;&#x2F; complete.
+	function iamready( id, obj ) {
+		if (classDependent[id]) {
+			for ( var k = 0, len = classDependent[id].length; k &lt; len; k++) {
+				classDependent[id][k](id, obj);
+			}
+		}
+		classDependent[id] = {
+			classObj : obj
+		};
+	}
+	
+	&#x2F;&#x2F; Store all callbacks dependent on class with name {id}.
+	function onFileReady( id, cb ) {
+		classDependent[id] = classDependent[id] || [];
+		classDependent[id].push(cb);
+	}
+	
+	&#x2F;&#x2F; return clas if class with name {id} is ready.
+	function isReady( id ) {
+		return classDependent[id];
+	}
+	
+	&#x2F;&#x2F; return all imported classes string into object
+	function getAllImportClass( imp ) {
+		var newImports = {}, splited;
+		for ( var k = 0; imp &amp;&amp; k &lt; imp.length; k++) {
+			splited = imp[k].split(&quot;.&quot;);
+			newImports[splited[splited.length - 1]] = fm.stringToObject(imp[k]);
+		}
+		return newImports;
+	}
+	var saveState = [];
+	
+	&#x2F;&#x2F; Add information before calling the class.
+	function addPrototypeBeforeCall( Class, isAbstract ) {
+		
+		saveState.push(window.Static, window.Abstract, window.Const, window.Private);
+		Static = Class.prototype.Static = {};
+		Abstract = Class.prototype.Abstract = isAbstract ? {} : undefined;
+		Const = Class.prototype.Const = {};
+		Const.Static = Static.Const = {};
+		Private = Class.prototype.Private = {};
+	}
+	
+	&#x2F;&#x2F; Delete all added information after call.
+	function deleteAddedProtoTypes( Class ) {
+		
+		delete Class.prototype.Static;
+		delete Class.prototype.Const;
+		delete Class.prototype.Private;
+		delete Class.prototype.Abstract;
+		Private = saveState.pop();
+		Const = saveState.pop();
+		Abstract = saveState.pop();
+		Static = saveState.pop();
+		
+	}
+	
+	&#x2F;&#x2F; Return whether object is empty.
+	function isNotAEmptyObject( obj ) {
+		for ( var k in obj) {
+			if (obj.hasOwnProperty(k)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	&#x2F;&#x2F; Extend to one level.
+	function simpleExtend( from, to ) {
+		for ( var k in from) {
+			if (to[k] == undefined) {
+				to[k] = from[k];
+			}
+		}
+		return to;
+	}
+	
+	&#x2F;&#x2F; Check if same property already available in object for static and Const;
+	function checkAvailability( obj ) {
+		for ( var k = 1, len = arguments.length; k &lt; len; k++) {
+			for ( var m in arguments[k]) {
+				if (obj.hasOwnProperty(m)) {
+					throw obj.getClass() + &quot;: has &quot; + m + &quot; at more than one places&quot;;
+				}
+			}
+		}
+	}
+	
+	&#x2F;&#x2F; Separate all methods and fields of object;
+	function separeteMethodsAndFields( obj ) {
+		var methods = [], fields = {};
+		eachPropertyOf(obj, function( v, k ) {
+			if (typeof v == &#x27;function&#x27;) {
+				methods.push(k + &quot;&quot;);
+			}
+			else {
+				fields[k + &quot;&quot;] = v;
+			}
+		});
+		obj = undefined;
+		return {
+		    methods : methods,
+		    fields : fields
+		};
+	}
+	
+	&#x2F;&#x2F; add all transient fields to list.
+	function addTransient( internalObj, tempObj ) {
+		var temp = {}, k, tr = tempObj[&quot;transient&quot;] || [];
+		tr.push(&quot;shortHand&quot;);
+		for (k = 0; k &lt; tr.length; k++) {
+			(temp[tr[k]] = true);
+		}
+		eachPropertyOf(internalObj.Static, function( v, key ) {
+			temp[key] = true;
+		});
+		eachPropertyOf(internalObj.staticConst, function( v, key ) {
+			temp[key] = true;
+		});
+		internalObj[&quot;transient&quot;] = temp;
+		internalObj = tempObj = k = temp = undefined;
+	}
+	
+	function checkForAbstractFields( abs, cls ) {
+		eachPropertyOf(abs, function( v, k ) {
+			if (typeof v != &#x27;function&#x27;) {
+				throw cls + &quot;: can not contain abstract fields.&quot;;
+			}
+		});
+	}
+	
+	function checkMandSetF( pofn ) {
+		
+		&#x2F;&#x2F; check if methods are implemeted and add fields;
+		pofn.prototype.$checkMAndGetF = function( pofnS, allMethods, isAbstract, cls ) {
+			var temp = {}, k, len;
+			var intPofnM = pofn.prototype.$get(&#x27;methods&#x27;);
+			if (isAbstract) {
+				var abs = cls.Abstract;
+				for (k = 0, len = intPofnM.length; k &lt; len; k++) {
+					if (!abs[intPofnM[k]]) {
+						abs[intPofnM[k]] = function( ) {};
+					}
+				}
+			}
+			else {
+				for (k = 0, len = allMethods.length; k &lt; len; k++) {
+					temp[allMethods[k]] = true;
+				}
+				
+				for (k = 0, len = intPofnM.length; k &lt; len; k++) {
+					if (!temp[intPofnM[k]]) {
+						throw &quot;Interface method &quot; + intPofnM[k] + &quot; of &quot; + pofn.getClass() + &quot; not implemented by &quot; + pofnS.getClass();
+					}
+				}
+			}
+			
+			eachPropertyOf(pofn.prototype.$get(&#x27;fields&#x27;), function( v, key ) {
+				pofn.prototype.$add(pofnS, key, v, true, true);
+			});
+		};
+	}
+	
+	&#x2F;&#x2F; Change the context of function.
+	function changeContext( fun, context, bc ) {
+		return function( ) {
+			fun.apply(context, arguments);
+			bc();
+		};
+	}
+	
+	function defaultConstrct( ) {
+		if (arguments.length &gt; 0) {
+			fm.stackTrace(&quot;Class does not have any constructor &quot;);
+		}
+	}
+	
+	function addShortHand( str, protoClass ) {
+		var indx = str.lastIndexOf(&quot;.&quot;);
+		var o = createObj(str.substring(0, indx));
+		var nam = str.substring(1 + indx);
+		if (o[nam]) {
+			console.error(&quot;Short hand &quot; + str + &quot; for &quot; + protoClass + &quot; has conflict with. &quot; + o[nam]);
+		}
+		o[nam] = protoClass;
+	}
+	
+	&#x2F;&#x2F; Wait for resource to be ready
+	function addImportsOnready( implist, cb, fn ) {
+		var counter = 0, complete;
+		function decreaseCounter( ) {
+			counter--;
+			if (counter == 0 &amp;&amp; complete) {
+				cb();
+			}
+		}
+		for ( var k = 0; implist &amp;&amp; k &lt; implist.length; k++) {
+			counter++;
+			var Class = isReady(implist[k]);
+			if (Class &amp;&amp; &#x27;classObj&#x27; in Class) {
+				decreaseCounter();
+			}
+			else {
+				onFileReady(implist[k], function( obj, id ) {
+					decreaseCounter();
+				});
+			}
+		}
+		complete = true;
+		if (counter == 0) {
+			cb();
+		}
+	}
+	
+	&#x2F;&#x2F; Reeturn base class object.
+	function getBaseClassObject( base, $arr ) {
+		function addAllBaseInfo( ) {
+			var v, arr = $arr;
+			var proto = baseClassObject.prototype;
+			var constList = proto.$get(&quot;Const&quot;), isConst;
+			for ( var k in baseClassObject) {
+				if (baseClassObject.hasOwnProperty(k)) {
+					isConst = constList.hasOwnProperty(k);
+					v = baseClassObject[k];
+					if (typeof v == &#x27;function&#x27;) {
+						if (k == &#x27;$add&#x27;) {
+							continue;
+						}
+						for ( var l = arr.length - 1; l &gt;= 0; l--) {
+							if (arr[l][k] != undefined)
+								break;
+							arr[l][k] = v;
+						}
+					}
+					else {
+						isConst &amp;&amp; baseClassObject.$add(baseClassObject, k, v, isConst);
+						for ( var m = arr.length - 1; m &gt;= 0; m--) {
+							if (arr[m][k] != undefined)
+								break;
+							baseClassObject.$add(arr[m], k, undefined, isConst);
+						}
+					}
+				}
+			}
+			&#x2F;&#x2F; deleteing $add as all operations on $add are completed for this
+			&#x2F;&#x2F; instance.
+			delete baseClassObject.$add;
+			var currentClass = arr.pop();
+			return currentClass.base = baseClassObject;
+		}
+		
+		base.prototype.get$arr = function( ) {
+			return $arr;
+		};
+		base.prototype.__base___ = true;
+		var baseClassObject = new base();
+		delete base.prototype.__base___;
+		delete base.prototype.get$arr;
+		var baseObj = changeContext(baseClassObject.constructor, baseClassObject, addAllBaseInfo);
+		baseObj.prototype = baseClassObject;
+		baseObj.$ADD = function( o ) {
+			$arr.unshift(o);
+			delete baseObj.$ADD;
+		};
+		return baseObj;
+	}
+	
+	&#x2F;&#x2F; Return the function name.
+	window.getFunctionName = function( ) {
+		return arguments.callee.caller.name;
+	};
+	
+	function eachPropertyOf( obj, cb ) {
+		if (typeof obj != &#x27;null&#x27;) {
+			for ( var k in obj) {
+				if (obj.hasOwnProperty(k)) {
+					cb(obj[k], k);
+				}
+			}
+		}
+	}
+	
+	function addInstance( currentObj ) {
+		var valueStorage = {};
+		&#x2F;&#x2F; Adding into instance as prototype is shared by all.
+		currentObj.$add = function( obj, key, val, isConst ) {
+			
+			if (val != undefined) {
+				valueStorage[key] = val;
+			}
+			function setter( v ) {
+				if (isConst) {
+					throw this + &quot;.&quot; + key + &quot; can not be changed.&quot;;
+				}
+				else if (isConst) {
+					valueStorage[key] = v;
+				}
+				else {
+					currentObj[key] = v;
+				}
+			}
+			
+			function getter( ) {
+				if (isConst) {
+					return valueStorage[key];
+				}
+				return currentObj[key];
+			}
+			
+			if (obj.__defineGetter__) {
+				obj.__defineGetter__(key, getter);
+				obj.__defineSetter__(key, setter);
+			}
+			else if (Object.defineProperty &amp;&amp; isGetterSetterSupported) {
+				Object.defineProperty(obj, key, {
+				    get : getter,
+				    set : setter
+				});
+			}
+			
+			else {
+				currentObj[key] != undefined &amp;&amp; (obj[key] = currentObj[key]);
+			}
+		};
+	}
+	
+	&#x2F;&#x2F; Add extra information into newly created object.
+	function addExtras( currentObj, baseObj, fn ) {
+		&#x2F;&#x2F; Return function name.
+		var clss = currentObj.getClass();
+		for ( var k in currentObj) {
+			if (currentObj.hasOwnProperty(k) &amp;&amp; typeof currentObj[k] == &#x27;function&#x27; &amp;&amp; k != fn) {
+				currentObj[k] = currentObj[k].bind(currentObj);
+				currentObj[k].$name = k;
+				currentObj[k].$Class = clss;
+			}
+		}
+		currentObj.getFunctionName = function( ) {
+			var caller = arguments.callee.caller;
+			return caller.name || caller.$name || &quot;&quot;;
+		};
+		addInstance(currentObj);
+		
+		&#x2F;&#x2F; eachPropertyOf(currentObj.Private, function(val, key){
+		if (currentObj.Private &amp;&amp; typeof currentObj.Private[fn] == &#x27;function&#x27;) {
+			currentObj[fn] = currentObj.Private[fn];
+		}
+		if (currentObj[fn]) {
+			currentObj[fn].$Class = currentObj.getClass();
+			currentObj[fn].$name = fn;
+		}
+		&#x2F;&#x2F; Check if function have constant.
+		if (currentObj.Const) {
+			var cnt = currentObj.Const;
+			delete cnt.Static;
+			for (k in cnt) {
+				cnt.hasOwnProperty(k) &amp;&amp; currentObj.$add(currentObj, k, cnt[k], true);
+			}
+		}
+		&#x2F;&#x2F; migrate information about abstract method to base class.
+		if (currentObj.isAbstract) {
+			var absMethods = currentObj.prototype.$get(&quot;Abstract&quot;);
+			currentObj.setAbstractMethods = function( solidObj ) {
+				for ( var k in absMethods) {
+					if (absMethods.hasOwnProperty(k)) {
+						if (typeof solidObj[k] != &#x27;function&#x27;) {
+							throw &quot;Abstract method &quot; + k + &quot; is not implemented by &quot; + solidObj.getClass();
+						}
+						this[k] = solidObj[k];
+					}
+				}
+				if (baseObj &amp;&amp; baseObj.prototype.isAbstract) {
+					baseObj.prototype.setAbstractMethods(solidObj);
+				}
+			};
+		}
+		
+		if (baseObj) {
+			currentObj.base = baseObj;
+			!currentObj.isAbstract &amp;&amp; baseObj.prototype.isAbstract &amp;&amp; baseObj.prototype.setAbstractMethods(currentObj);
+			baseObj.$ADD(currentObj);
+		}
+	}
+	function createArgumentString( base, imports ) {
+		var str = [];
+		if (base) {
+			str.push(&#x27;pofn.base&#x27;);
+		}
+		str.push(&#x27;undefined&#x27;);
+		if (imports) {
+			for ( var k in imports) {
+				imports.hasOwnProperty(k) &amp;&amp; str.push(&#x27;pofn.ics.&#x27; + k);
+			}
+		}
+		return str.join(&quot;,&quot;);
+	}
+	&#x2F;&#x2F; Set relevent class information.
+	function getReleventClassInfo( Class, fn, pofn ) {
+		addPrototypeBeforeCall(Class, this.isAbstract);
+		var tempObj, k, len;
+		eval(&quot;tempObj= new Class(&quot; + createArgumentString(pofn.base, pofn.ics) + &quot;);&quot;);
+		tempObj.setMe &amp;&amp; tempObj.setMe(pofn);
+		delete tempObj.setMe;
+		this.shortHand = tempObj.shortHand;
+		var info = separeteMethodsAndFields(tempObj);
+		this.methods = info.methods = pofn.base ? info.methods.concat(pofn.base.prototype.$get(&#x27;methods&#x27;)) : info.methods;
+		
+		if (this.isInterface) {
+			pofn.base &amp;&amp; simpleExtend(pofn.base.prototype.$get(&#x27;fields&#x27;), info.fields);
+			this.fields = info.fields;
+			checkMandSetF(pofn);
+			deleteAddedProtoTypes(Class);
+			return this;
+		}
+		
+		var temp = this.interfaces;
+		if (temp) {
+			for (k = 0, len = temp.length; k &lt; len; k++) {
+				createObj(temp[k]).prototype.$checkMAndGetF(pofn, info.methods, this.isAbstract, tempObj);
+			}
+		}
+		
+		if (tempObj.init)
+			tempObj.init();
+		this.isAbstract &amp;&amp; checkForAbstractFields(tempObj.Abstract, this.Class);
+		this.Static = simpleExtend(tempObj.Static, {});
+		this.isAbstract &amp;&amp; (this.Abstract = simpleExtend(tempObj.Abstract, {}));
+		this.staticConst = this.Static.Const;
+		delete this.Static.Const;
+		this.Const = simpleExtend(tempObj.Const, {});
+		delete this.Const.Static;
+		checkAvailability(tempObj, this.Static, this.staticConst, this.Abstract, this.Const);
+		addTransient(this, tempObj);
+		this.privateConstructor = !!tempObj[&quot;Private&quot;] &amp;&amp; tempObj[&quot;Private&quot;][fn];
+		deleteAddedProtoTypes(Class);
+		temp = k = tempObj = info = Class = fn = currentScript = undefined;
+		return this;
+	}
+	
+	function getException( script, pofn ) {
+		var caller = arguments.callee.caller.caller.caller;
+		return (!this.$get &amp;&amp; &quot;Object cannot be created&quot;) || (script.isInterface &amp;&amp; script.Class + &quot;: can not initiated.&quot;)
+		        || (pofn.prototype.$get(&quot;privateConstructor&quot;) &amp;&amp; (caller.$Class != script.Class &amp;&amp; caller.$Class != &quot;jfm.io.Serialize&quot;) &amp;&amp; &quot;Object cannot be created&quot;)
+		        || (!this.__base___ &amp;&amp; pofn.isAbstract &amp;&amp; script.Class + &quot; is an abstract class&quot;);
+	}
+	
+	function createArgumentStringObj( base, imports ) {
+		var str = [];
+		if (base) {
+			str.push(&#x27;baseObj&#x27;);
+		}
+		str.push(&#x27;undefined&#x27;);
+		if (imports) {
+			for ( var k in imports) {
+				imports.hasOwnProperty(k) &amp;&amp; str.push(&#x27;pofn.ics.&#x27; + k);
+			}
+		}
+		return str.join(&quot;,&quot;);
+	}
+	
+	function createClassInstance( pofn, script, fn, Class ) {
+		var baseObj, ex = getException.call(this, script, pofn);
+		if (ex) {
+			throw ex;
+		}
+		baseObj = pofn.base &amp;&amp; getBaseClassObject(pofn.base, this.__base___ ? this.get$arr() : []);
+		addPrototypeBeforeCall(Class, pofn.isAbstract);
+		var currentObj;
+		eval(&quot;currentObj= new Class(&quot; + createArgumentStringObj(baseObj, pofn.ics) + &quot;);&quot;);
+		currentObj.setMe &amp;&amp; currentObj.setMe(currentObj);
+		delete currentObj.setMe;
+		addExtras(currentObj, baseObj, fn);
+		delete currentObj[&quot;transient&quot;];
+		delete currentObj.shortHand;
+		delete currentObj.init;
+		deleteAddedProtoTypes(Class);
+		currentObj.constructor = currentObj[fn] || defaultConstrct;
+		delete currentObj[fn];
+		&#x2F;&#x2F; deleteing $add as all operations on $add are completed for this
+		&#x2F;&#x2F; instance.
+		if (!this.__base___) {
+			delete currentObj.$add;
+		}
+		
+		return currentObj;
+	}
+	
+	function getHashCode( ) {
+		var hashCode = Number(Math.random().toString().replace(&quot;.&quot;, &quot;&quot;));
+		return function( ) {
+			return hashCode;
+		};
+	}
+	
+	&#x2F;&#x2F; Run this code after all resources are available.
+	function executeOnready( script, fn, Class, data ) {
+		
+		var internalObj = script;
+		&#x2F;&#x2F; for instance of: check if given class is a interface implemeted by
+		&#x2F;&#x2F; host class.
+		var self = this;
+		this.getClass = function( ) {
+			return self;
+		};
+		this.toString = function( ) {
+			return script.Class;
+		};
+		
+		this.hashCode = getHashCode();
+		script.baseClass &amp;&amp; (this.base = fm.stringToObject(script.baseClass));
+		if (this.base) {
+			this.prototype.getSub = function( ) {
+				return self;
+			};
+		}
+		creareSetGet(this);
+		this.ics = getAllImportClass(script.imports);
+		getReleventClassInfo.call(internalObj, Class, fn, this);
+		typeof internalObj.shortHand == &#x27;string&#x27; &amp;&amp; addShortHand(internalObj.shortHand, this);
+		this.isAbstract = internalObj.isAbstract;
+		&#x2F;&#x2F;
+		&#x2F;&#x2F; Do not add script info in proto fror interface
+		&#x2F;&#x2F; script.isInterface &amp;&amp; addFieldsInStorage.call(pofn, script, pofn,
+		&#x2F;&#x2F; true);
+		this.prototype.$get = function( key ) {
+			return internalObj[key];
+		};
+		
+		createSetterGetter.call(this);
+		
+		Class.prototype = this;
+		function isInterface( cls ) {
+			var interfs = script.interfaces || [];
+			for ( var k = 0, len = interfs.length; k &lt; len; k++) {
+				if (createObj(interfs[k]).instanceOf(cls)) {
+					return true;
+				}
+			}
+			return false;
+		}
+		this.equals = function( ) {
+			return this === arguments[0];
+		};
+		this.instanceOf = function( cls ) {
+			return cls.getClass() == this.getClass() || this.base &amp;&amp; this.base.instanceOf(cls) || isInterface(cls);
+		};
+		this.constructor = defaultConstrct;
+		iamready(this.getClass(), this);
+		if (typeof this.main == &#x27;function&#x27;) {
+			this.main(data);
+			delete this.main;
+		}
+		data = undefined;
+	}
+	
+	function createSetterGetterHelper( self, obj, source, isConst, isStatic ) {
+		var val, cls = self.getClass();
+		var isSame = obj == self;
+		for ( var k in source) {
+			if (source.hasOwnProperty(k)) {
+				val = source[k];
+				if (typeof val == &#x27;function&#x27;) {
+					if (isSame) {
+						val.$name = k;
+						val.$Class = cls;
+						obj[k] = val.bind(obj);
+					}
+					else {
+						obj[k] == undefined &amp;&amp; (obj[k] = self[k]);
+					}
+				}
+				else
+					obj[k] == undefined &amp;&amp; self.prototype.$add(obj, k, source[k], isConst, isStatic);
+			}
+		}
+	}
+	
+	function createSetterGetter( obj ) {
+		var Static = this.prototype.$get(&quot;Static&quot;);
+		obj = obj || this;
+		createSetterGetterHelper(this, obj, Static, false, true);
+		var StaticConst = this.prototype.$get(&quot;staticConst&quot;);
+		createSetterGetterHelper(this, obj, StaticConst, true, true);
+		var base = this.base;
+		if (base) {
+			createSetterGetter.call(base, obj);
+		}
+	}
+	
+	function classManager( script, data, older ) {
+		
+		var po = script.Package, fn = script.className;
+		if (!po || !fn) {
+			return;
+		}
+		if(typeof(older) == &#x27;function&#x27; &amp;&amp; older.name == &#x27;___manager___&#x27;){
+			po[fn] = older;
+			return;
+		}
+		if (!po[fn] &amp;&amp; (po[fn] = window[fn])) {
+			try {
+				delete window[fn];
+			}
+			catch (e) {
+				console.log(e);
+			}
+		}
+		var Class = po[fn];
+		po[fn] = function ___manager___( ) {
+			var currentObj = createClassInstance.call(this, po[fn], script, fn, Class);
+			if (!this.__base___) {
+				currentObj.constructor.apply(currentObj, arguments);
+				&#x2F;&#x2F; Calling base constructor if not called explicitly.
+				if (typeof currentObj.base == &#x27;function&#x27;) {
+					currentObj.base();
+				}
+			}
+			!this.__base___ &amp;&amp; currentObj.el &amp;&amp; currentObj.el[0] &amp;&amp; (currentObj.el[0].jfm = currentObj);
+			return currentObj;
+		};
+		&#x2F;&#x2F; Add resource ready queue.
+		addImportsOnready(script.imports, function( ) {
+			executeOnready.call(po[fn], script, fn, Class, data);
+			data = undefined;
+		}, fn);
+	}
+})(window);
+
+fm.basedir = &quot;&#x2F;javascript&quot;;
+    </pre>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>

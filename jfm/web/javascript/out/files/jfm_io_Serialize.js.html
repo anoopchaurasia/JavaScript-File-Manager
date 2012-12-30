@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>jfm\io\Serialize.js</title>
+    <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.7.0&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="..&#x2F;assets/favicon.png">
+    <script src="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;combo?3.7.0&#x2F;build&#x2F;yui&#x2F;yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            
+                <h1><img src="..&#x2F;assets/css/logo.png" title=""></h1>
+            
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: </em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1 class="file-heading">File: jfm\io\Serialize.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x2F;**
+ * Created with JetBrains WebStorm.
+ * User: anoop
+ * Date: 5&#x2F;12&#x2F;12
+ * Time: 2:52 AM
+ * To change this template use File | Settings | File Templates.
+ *&#x2F;
+fm.Package(&quot;jfm.io&quot;);
+fm.Import(&quot;jfm.lang.Character&quot;);
+fm.Class(&quot;Serialize&quot;);
+jfm.io.Serialize = function (me, Character){this.setMe=function(_me){me=_me;};
+
+
+    this.shortHand = &quot;Serialize&quot;;
+    
+    function _char(c) {
+
+        if (!Character.CHARS[c]) {
+            Character.CHARS[c] = &#x27;\\u&#x27; + (&#x27;0000&#x27; + (+(c.charCodeAt(0))).toString(16))
+            .slice(-4);
+        }
+        return Character.CHARS[c];
+    }
+    function _string(s) {
+        return Character.QUOTE + s.replace(Character.UTF_CHAR, _char) + Character.QUOTE;
+    }
+    
+    function serialize(h, key, maxLevel) {
+        if(maxLevel &lt;= 0 ){
+            return undefined;
+        }    
+        var value = h[key], a = [], arr,  t, k, v, bluePrint;
+        t = typeof value;
+        if(value instanceof window.jQuery){
+            return null;
+        }
+        switch (t) {
+            case &quot;object&quot; :
+                if(value==null){
+                    return undefined;
+                }
+                break;
+            case &quot;string&quot; :
+                return _string(value);
+            case &quot;number&quot; :
+                return isFinite(value) ? value : Character.NULL;
+            case &quot;boolean&quot; :
+                return value;
+            default :
+                return undefined;
+        }
+        arr = value.length !== undefined &amp;&amp; value instanceof Array ? true : false;
+        var temp;
+        if (arr) { &#x2F;&#x2F; Array
+            for (var i = value.length - 1; i &gt;= 0; --i) {
+                temp = serialize(value, i, maxLevel - 1);
+                temp &amp;&amp; a.push(temp);
+            }
+        }
+        else {
+        
+            for (k in value) {
+                if (value.hasOwnProperty(k) ) {                                          
+                    v = serialize(value, k, maxLevel - 1);
+                    if (v) {
+                        a.push( _string(k) + Character.COLON + v);
+                    }
+                }
+            }
+        }        
+        return arr ? Character.OPEN_A + a.join(Character.COMMA) + Character.CLOSE_A : Character.OPEN_O + a.join(Character.COMMA) + Character.CLOSE_O;
+    }
+    
+    this.Static.serialize = function(obj, maxLevel){
+        return serialize({
+            &quot;&quot; :obj
+        }, &quot;&quot;, maxLevel || 1000 );
+    };
+    Static.JavaSerialize = function(obj){
+        if(obj.getClass &amp;&amp; obj.getSerializable){
+            obj = obj.getSerializable();
+        }
+        var newObj = {};
+        if(typeof obj == &#x27;object&#x27;){
+            for(var k in obj){
+                if(obj.hasOwnProperty(k)){
+                    if(obj[k].getClass &amp;&amp; obj[k].getSerializable){
+                        newObj[k] = this.JavaSerialize(obj[k].getSerializable());
+                    }
+                    else{
+                        newObj[k] = this.JavaSerialize(obj[k]);
+                    }
+                }
+            }
+        }else{
+            newObj = obj;
+        }
+        return newObj;
+    };
+    this.Static.un = function __serialize__(d, cls){     
+        d = typeof d == &#x27;object&#x27; ? d : jQuery.parseJSON(d);
+        var clsObj =  fm.stringToObject(cls);
+        var bluePrint = jQuery.parseJSON(bluePrints[cls]) || {};
+        var h = new clsObj(), s = {};
+        for(var k in d){            
+            if( bluePrint[k]  ){
+                if(bluePrint[k].pos == &quot;_s_&quot;   ){
+                    s[k] = bluePrint[k].type ? __serialize__(d[k], bluePrint[k].type) : d[k];
+                }
+                else if(bluePrint[k].type){
+                    h[k] = __serialize__(d[k], bluePrint[k].type);
+                }
+                else{
+                    h[k] = d[k];
+                }
+            }
+            else{
+                h[k] = d[k];                
+            }
+        }
+        h.setSerializable(s);
+        return h;
+    };
+};
+
+
+    </pre>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="..&#x2F;assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="..&#x2F;assets/js/yui-prettify.js"></script>
+<script src="..&#x2F;assets/../api.js"></script>
+<script src="..&#x2F;assets/js/api-filter.js"></script>
+<script src="..&#x2F;assets/js/api-list.js"></script>
+<script src="..&#x2F;assets/js/api-search.js"></script>
+<script src="..&#x2F;assets/js/apidocs.js"></script>
+</body>
+</html>
