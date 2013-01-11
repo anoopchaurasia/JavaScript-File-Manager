@@ -570,7 +570,7 @@
 			}
 			// deleteing $add as all operations on $add are completed for this
 			// instance.
-			delete baseClassObject.$add;
+			//delete baseClassObject.$add;
 			var currentClass = arr.pop();
 			return currentClass.base = baseClassObject;
 		}
@@ -983,6 +983,7 @@
 		}
 		var Class = po[fn], newObj = {};
 		po[fn] = function ( ) {
+			newObj.__base___ = this.__base___;
 			var currentObj = createClassInstance.call(newObj, po[fn], script, fn, Class, this);
 			if (!this.__base___) {
 				currentObj.constructor.apply(currentObj, arguments);
