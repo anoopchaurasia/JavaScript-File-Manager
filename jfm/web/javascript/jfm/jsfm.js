@@ -18,7 +18,7 @@
 			return false;
 		}
 	}
-	
+
 	if (!Function.prototype.bind) {
 		Function.bind = Function.prototype.bind = function( obj ) {
 			var thisFun = this;
@@ -27,10 +27,10 @@
 			};
 		};
 	}
-	
+
 	// Checking if setter and getter is supported by browser.
 	var isGetterSetterSupported = doesDefinePropertyWork({}) || Object.prototype.__defineGetter__;
-	
+
 	// This method is adding a $add method into class prototype wchich is being
 	// used to create setter and getter for its own property.
 	function creareSetGet( classProto ) {
@@ -40,23 +40,23 @@
 		// Static is not supported.... will not support ie < 9;
 		// Adding setter and getter
 		classProto.prototype.$add = function( obj, key, val, isConst ) {
-			
+
 			// val has a value for it's original object.
 			if (val != undefined) {
 				valueStorage[key] = val;
 			}
-			
+
 			function setter( newval ) {
 				if (isConst) {
 					throw this + "." + key + " can not be changed.";
 				}
 				valueStorage[key] = newval;
 			}
-			
+
 			function getter( ) {
 				return valueStorage[key];
 			}
-			
+			obj[key] = null;
 			if (obj.__defineGetter__) {
 				obj.__defineGetter__(key, getter);
 				obj.__defineSetter__(key, setter);
@@ -72,7 +72,7 @@
 			}
 		};
 	}
-	
+
 	// intializing fm
 	if (!window.fm) {
 		window.fm = {};
@@ -81,9 +81,9 @@
 	// loaded JavaScript file.
 	var currentScript;
 	// Assuming JavaScript base directory is "javascript".
-	
+
 	fm.basedir = "/javascript";
-	
+
 	// fm.stackTrace can be used to collect to print function stack;
 	// JAVA:Exception.stacktrace
 	fm.stackTrace = function( message ) {
@@ -110,7 +110,7 @@
 			// e.stack.substring(e.stack.indexOf("\n")));
 		}
 	};
-	
+
 	// /fm.import adds new javascript file to head of document. JAVA: import
 	fm['import'] = fm.Import = function Import( path ) {
 		path = path.replace(/\s/g, "");
@@ -118,10 +118,10 @@
 		this.Include(path); // function
 		return this;
 	};
-	
+
 	// Keep track of loaded files in storePath.
 	var storePath = [];
-	
+
 	// /same as fm.import but for non jfm files.
 	fm['include'] = fm.Include = function Include( ) {
 		var args = [];
@@ -152,7 +152,7 @@
 		include(path);
 		return this;
 	};
-	
+
 	// /onReadyState method get called when browser fail to load a javascript
 	// file.
 	function onReadyState( ) {
@@ -160,7 +160,7 @@
 		// fm.holdReady(false);
 		return false;
 	}
-	
+
 	// Add imports for current loaded javascript file.
 	// Add imported javascript file for current class into currentScript.
 	function add( path ) {
@@ -177,7 +177,7 @@
 		return true;
 	}
 	var docHead;
-	
+
 	// Create script tag inside head.
 	function include( path ) {
 		if (!docHead) {
@@ -195,9 +195,9 @@
 		e.src = path;
 		e.type = "text/javascript";
 		docHead.appendChild(e);
-		
+
 	}
-	
+
 	// This should be first method to be called from jfm classes.JAVA:package
 	fm["package"] = fm.Package = function Package( packageName ) {
 		currentScript = {
@@ -205,20 +205,20 @@
 		};
 		return this;
 	};
-	
+
 	// / this method Add base class for current Class.JAVA:extend
 	fm['super'] = fm['base'] = fm.Base = function Base( baseClass ) {
 		currentScript && (currentScript.baseClass = baseClass) && this.Import(baseClass);
 		return this;
 	};
-	
+
 	// Set current script as Interface; JAVA:interface
 	fm["interface"] = fm.Interface = function Interface( ) {
 		!currentScript && this.Package();
 		currentScript.isInterface = true;
 		this.Class.apply(this, arguments);
 	};
-	
+
 	fm['abstractClass'] = fm.AbstractClass = function( ) {
 		!currentScript && this.Package();
 		currentScript.isAbstract = true;
@@ -235,7 +235,7 @@
 			script.interfaces.push(arguments[k]);
 		}
 	};
-	
+
 	fm.isExist = function( cls ) {
 		var s = cls.split(".");
 		var o = window;
@@ -251,17 +251,17 @@
 		}
 		return false;
 	};
-	
+
 	fm.addController = function (cntl) {
 		var ct = currentScript.controller = window[cntl];
 		ct.cntl = cntl;
 		window[cntl] = function ($scope) {
 			ct.controllerArgs = arguments;
 		};
-		
+
 	};
 	// fm.Class creates a jfm class.
-	fm['class'] = fm["Class"] = function Class( ){ 
+	fm['class'] = fm["Class"] = function Class( ){
 		!currentScript && this.Package();
 		var script = currentScript, data;
 		var a = arguments, o = null;
@@ -271,7 +271,7 @@
 		}
 		o = createObj("" + script.packageName);
 		script.Class = "" + (script.packageName == "" ? "" : script.packageName + ".") + script.className;
-		
+
 		script.Package = o;
 		var temp = fm.basedir.replace(/\//gim,"");
 		if (typeof storePath[temp  + script.Class] == 'object') {
@@ -281,7 +281,7 @@
 		callAfterDelay(script, data, o[script.className]);
 		currentScript = undefined;
 	};
-	
+
 	// callAfterDelay:Delay the call for classManager so that file get compiled
 	// completely.
 	// And classManager get all information about the function.
@@ -294,7 +294,7 @@
 		});
 	}
 
-	
+
 	// fm.stringToObject: map a string into object.
 	fm.stringToObject = function stringToObject( classStr ) {
 		var Class = window, classStrArr = classStr.split(".");
@@ -303,7 +303,7 @@
 		}
 		return Class;
 	};
-	
+
 	// Map string to corresponding object.
 	function createObj( str ) {
 		if (!str || str.length == 0) {
@@ -316,7 +316,7 @@
 		}
 		return o;
 	}
-	
+
 	// Contain all classses dependent on a class with className {id};
 	var classDependent = {};
 	// Call all callbacks after a class get ready so that dependent can
@@ -331,7 +331,7 @@
 			classObj : obj
 		};
 	}
-	
+
 	// Store all callbacks dependent on class with name {id}.
 	function onFileReady( id, cb ) {
 		classDependent[id] = classDependent[id] || [];
@@ -344,7 +344,7 @@
 	function isReady( id ) {
 		return classDependent[id];
 	}
-	
+
 	// return all imported classes string into object
 	function getAllImportClass( imp ) {
 		var newImports = {}, splited;
@@ -355,10 +355,10 @@
 		return newImports;
 	}
 	var saveState = [];
-	
+
 	// Add information before calling the class.
 	function addPrototypeBeforeCall( Class, isAbstract ) {
-		
+
 		saveState.push(window.Static, window.Abstract, window.Const, window.Private);
 		Static = Class.prototype.Static = {};
 		Abstract = Class.prototype.Abstract = isAbstract ? {} : undefined;
@@ -366,10 +366,10 @@
 		Const.Static = Static.Const = {};
 		Private = Class.prototype.Private = {};
 	}
-	
+
 	// Delete all added information after call.
 	function deleteAddedProtoTypes( Class ) {
-		
+
 		delete Class.prototype.Static;
 		delete Class.prototype.Const;
 		delete Class.prototype.Private;
@@ -378,9 +378,9 @@
 		Const = saveState.pop();
 		Abstract = saveState.pop();
 		Static = saveState.pop();
-		
+
 	}
-	
+
 	// Return whether object is empty.
 	function isNotAEmptyObject( obj ) {
 		for ( var k in obj) {
@@ -390,7 +390,7 @@
 		}
 		return false;
 	}
-	
+
 	// Extend to one level.
 	function simpleExtend( from, to ) {
 		for ( var k in from) {
@@ -400,7 +400,7 @@
 		}
 		return to;
 	}
-	
+
 	// Check if same property already available in object for static and Const;
 	function checkAvailability( obj ) {
 		for ( var k = 1, len = arguments.length; k < len; k++) {
@@ -411,7 +411,7 @@
 			}
 		}
 	}
-	
+
 	// Separate all methods and fields of object;
 	function separeteMethodsAndFields( obj ) {
 		var methods = [], fields = {};
@@ -429,7 +429,7 @@
 		    fields : fields
 		};
 	}
-	
+
 	// add all transient fields to list.
 	function addTransient( internalObj, tempObj ) {
 		var temp = {}, k, tr = tempObj["transient"] || [];
@@ -446,7 +446,7 @@
 		internalObj["transient"] = temp;
 		internalObj = tempObj = k = temp = undefined;
 	}
-	
+
 	function checkForAbstractFields( abs, cls ) {
 		eachPropertyOf(abs, function( v, k ) {
 			if (typeof v != 'function') {
@@ -454,9 +454,9 @@
 			}
 		});
 	}
-	
+
 	function checkMandSetF( pofn ) {
-		
+
 		// check if methods are implemeted and add fields;
 		pofn.prototype.$checkMAndGetF = function( pofnS, allMethods, isAbstract, cls ) {
 			var temp = {}, k, len;
@@ -473,20 +473,20 @@
 				for (k = 0, len = allMethods.length; k < len; k++) {
 					temp[allMethods[k]] = true;
 				}
-				
+
 				for (k = 0, len = intPofnM.length; k < len; k++) {
 					if (!temp[intPofnM[k]]) {
 						throw "Interface method " + intPofnM[k] + " of " + pofn.getClass() + " not implemented by " + pofnS.getClass();
 					}
 				}
 			}
-			
+
 			eachPropertyOf(pofn.prototype.$get('fields'), function( v, key ) {
 				pofn.prototype.$add(pofnS, key, v, true, true);
 			});
 		};
 	}
-	
+
 	// Change the context of function.
 	function changeContext( fun, context, bc ) {
 		return function( ) {
@@ -494,13 +494,13 @@
 			bc();
 		};
 	}
-	
+
 	function defaultConstrct( ) {
 		if (arguments.length > 0) {
 			fm.stackTrace("Class does not have any constructor ");
 		}
 	}
-	
+
 	function addShortHand( str, protoClass ) {
 		var indx = str.lastIndexOf(".");
 		var o = createObj(str.substring(0, indx));
@@ -510,7 +510,7 @@
 		}
 		o[nam] = protoClass;
 	}
-	
+
 	// Wait for resource to be ready
 	function addImportsOnready( implist, cb, fn ) {
 		var counter = 0, complete;
@@ -537,7 +537,7 @@
 			cb();
 		}
 	}
-	
+
 	// Reeturn base class object.
 	function getBaseClassObject( base, $arr ) {
 		function addAllBaseInfo( ) {
@@ -570,11 +570,11 @@
 			}
 			// deleteing $add as all operations on $add are completed for this
 			// instance.
-			//delete baseClassObject.$add;
+			delete baseClassObject.$add;
 			var currentClass = arr.pop();
 			return currentClass.base = baseClassObject;
 		}
-		
+
 		base.prototype.get$arr = function( ) {
 			return $arr;
 		};
@@ -590,12 +590,12 @@
 		};
 		return baseObj;
 	}
-	
+
 	// Return the function name.
 	window.getFunctionName = function( ) {
 		return arguments.callee.caller.name;
 	};
-	
+
 	function eachPropertyOf( obj, cb ) {
 		if (typeof obj != 'null') {
 			for ( var k in obj) {
@@ -605,12 +605,12 @@
 			}
 		}
 	}
-	
+
 	function addInstance( currentObj ) {
 		var valueStorage = {};
 		// Adding into instance as prototype is shared by all.
 		currentObj.$add = function( obj, key, val, isConst ) {
-			
+
 			if (val != undefined) {
 				valueStorage[key] = val;
 			}
@@ -625,14 +625,14 @@
 					currentObj[key] = v;
 				}
 			}
-			
+
 			function getter( ) {
 				if (isConst) {
 					return valueStorage[key];
 				}
 				return currentObj[key];
 			}
-			
+
 			if (obj.__defineGetter__) {
 				obj.__defineGetter__(key, getter);
 				obj.__defineSetter__(key, setter);
@@ -643,13 +643,13 @@
 				    set : setter
 				});
 			}
-			
+
 			else {
 				currentObj[key] != undefined && (obj[key] = currentObj[key]);
 			}
 		};
 	}
-	
+
 	// Add extra information into newly created object.
 	function addExtras( currentObj, baseObj, fn ) {
 		// Return function name.
@@ -666,7 +666,7 @@
 			return caller.name || caller.$name || "";
 		};
 		addInstance(currentObj);
-		
+
 		// eachPropertyOf(currentObj.Private, function(val, key){
 		if (currentObj.Private && typeof currentObj.Private[fn] == 'function') {
 			currentObj[fn] = currentObj.Private[fn];
@@ -700,11 +700,34 @@
 				}
 			};
 		}
-		
+
 		if (baseObj) {
 			currentObj.base = baseObj;
 			!currentObj.isAbstract && baseObj.prototype.isAbstract && baseObj.prototype.setAbstractMethods(currentObj);
 			baseObj.$ADD(currentObj);
+		}
+	}
+
+	function invoke (fn, args, base, ics) {
+
+		var newObj = {};
+		newObj.base = base;
+		for (var i in ics) {
+			 newObj[i] = ics[i];
+		}
+
+		switch(args.length){
+			case  0: return new fn();
+	        case  1: return new fn(newObj[args[0]]);
+	        case  2: return new fn(newObj[args[0]], newObj[args[1]]);
+	        case  3: return new fn(newObj[args[0]], newObj[args[1]], newObj[args[2]]);
+	        case  4: return new fn(newObj[args[0]], newObj[args[1]], newObj[args[2]], newObj[args[3]]);
+	        case  5: return new fn(newObj[args[0]], newObj[args[1]], newObj[args[2]], newObj[args[3]], newObj[args[4]]);
+	        case  6: return new fn(newObj[args[0]], newObj[args[1]], newObj[args[2]], newObj[args[3]], newObj[args[4]], newObj[args[5]]);
+	        case  7: return new fn(newObj[args[0]], newObj[args[1]], newObj[args[2]], newObj[args[3]], newObj[args[4]], newObj[args[5]], newObj[args[6]]);
+	        case  8: return new fn(newObj[args[0]], newObj[args[1]], newObj[args[2]], newObj[args[3]], newObj[args[4]], newObj[args[5]], newObj[args[6]], newObj[args[7]]);
+	        case  9: return new fn(newObj[args[0]], newObj[args[1]], newObj[args[2]], newObj[args[3]], newObj[args[4]], newObj[args[5]], newObj[args[6]], newObj[args[7]], newObj[args[8]]);
+	        case 10: return new fn(newObj[args[0]], newObj[args[1]], newObj[args[2]], newObj[args[3]], newObj[args[4]], newObj[args[5]], newObj[args[6]], newObj[args[7]], newObj[args[8]], newObj[args[9]]);
 		}
 	}
 	function createArgumentString( base, imports ) {
@@ -721,16 +744,17 @@
 		return str.join(",");
 	}
 	// Set relevent class information.
-	function getReleventClassInfo( Class, fn, pofn ) {
+	function getReleventClassInfo( Class, fn, pofn, newObj ) {
 		addPrototypeBeforeCall(Class, this.isAbstract);
 		var tempObj, k, len;
-		eval("tempObj= new Class(" + createArgumentString(pofn.base, pofn.ics) + ");");
+		tempObj = invoke(Class, newObj.args, pofn.base, pofn.ics);
+		//eval("tempObj= new Class(" + createArgumentString(pofn.base, pofn.ics) + ");");
 		tempObj.setMe && tempObj.setMe(pofn);
 		delete tempObj.setMe;
 		this.shortHand = tempObj.shortHand || this.shortHand;
 		var info = separeteMethodsAndFields(tempObj);
 		this.methods = info.methods = pofn.base ? info.methods.concat(pofn.base.prototype.$get('methods')) : info.methods;
-		
+
 		if (this.isInterface) {
 			pofn.base && simpleExtend(pofn.base.prototype.$get('fields'), info.fields);
 			this.fields = info.fields;
@@ -738,14 +762,14 @@
 			deleteAddedProtoTypes(Class);
 			return this;
 		}
-		
+
 		var temp = this.interfaces;
 		if (temp) {
 			for (k = 0, len = temp.length; k < len; k++) {
 				createObj(temp[k]).prototype.$checkMAndGetF(pofn, info.methods, this.isAbstract, tempObj);
 			}
 		}
-		
+
 		if (tempObj.init)
 			tempObj.init();
 		this.isAbstract && checkForAbstractFields(tempObj.Abstract, this.Class);
@@ -762,14 +786,14 @@
 		temp = k = tempObj = info = Class = fn = currentScript = undefined;
 		return this;
 	}
-	
+
 	function getException( script, pofn ) {
 		var caller = arguments.callee.caller.caller.caller;
 		return (!this.$get && "Object cannot be created") || (script.isInterface && script.Class + ": can not initiated.")
 		        || (pofn.prototype.$get("privateConstructor") && (caller.$Class != script.Class && caller.$Class != "jfm.io.Serialize") && "Object cannot be created")
 		        || (!this.__base___ && pofn.isAbstract && script.Class + " is an abstract class");
 	}
-	
+
 	function createArgumentStringObj( base, imports ) {
 		var str = [];
 		if (base) {
@@ -783,16 +807,22 @@
 		}
 		return str.join(",");
 	}
-	
+//copy from angularjs
+	var FN_ARGS = /^function\s*[^\(]*\(\s*([^\)]*)\)/m;
+	var FN_ARG_SPLIT = /,/;
+	var FN_ARG = /^\s*(_?)(.+?)\1\s*$/;
+	var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
+
 	function createClassInstance( pofn, script, fn, Class, DummyInstance ) {
 		var baseObj, ex = getException.call(DummyInstance, script, pofn);
 		if (ex) {
 			throw ex;
 		}
-		baseObj = pofn.base && getBaseClassObject(pofn.base, DummyInstance.__base___ ? DummyInstance.get$arr() : []);
+		baseObj = pofn.base && getBaseClassObject(pofn.base, this.__base___ ? this.get$arr() : []);
 		addPrototypeBeforeCall(Class, pofn.isAbstract);
 		var currentObj;
-		eval("currentObj= new Class(" + createArgumentStringObj(baseObj, pofn.ics) + ");");
+		//var argArr = getArgsArray(this.args, baseObj, pofn.ics);
+		currentObj = invoke(Class, this.args, baseObj, pofn.ics);
 		currentObj.setMe && currentObj.setMe(currentObj);
 		delete currentObj.setMe;
 		addExtras(currentObj, baseObj, fn);
@@ -807,20 +837,30 @@
 		if (!this.__base___) {
 			delete currentObj.$add;
 		}
-		
+
 		return currentObj;
 	}
-	
+
 	function getHashCode( ) {
 		var hashCode = Number(Math.random().toString().replace(".", ""));
 		return function( ) {
 			return hashCode;
 		};
 	}
-	
+
+	function getAllArgsSequence(fn){
+		var arr = [];
+		var args = fn.toString().replace(STRIP_COMMENTS, '').match(FN_ARGS);
+		$.each(args[1].split(FN_ARG_SPLIT), function(i, arg){
+	        arg.replace(FN_ARG, function(all, underscore, name){
+	          arr.push(name);
+	        });
+	    });
+		return arr;
+	}
+
 	// Run this code after all resources are available.
 	function executeOnready( script, fn, Class, data, newObj ) {
-		
 		var internalObj = script;
 		// for instance of: check if given class is a interface implemeted by
 		// host class.
@@ -831,7 +871,7 @@
 		this.toString = function( ) {
 			return script.Class;
 		};
-		
+
 		this.hashCode = getHashCode();
 		script.baseClass && (this.base = fm.stringToObject(script.baseClass));
 		if (this.base) {
@@ -841,7 +881,8 @@
 		}
 		creareSetGet(this);
 		this.ics = getAllImportClass(script.imports);
-		getReleventClassInfo.call(internalObj, Class, fn, this);
+		newObj.args = getAllArgsSequence(Class);
+		getReleventClassInfo.call(internalObj, Class, fn, this, newObj);
 		typeof internalObj.shortHand == 'string' && addShortHand(internalObj.shortHand, this);
 		this.isAbstract = internalObj.isAbstract;
 		//
@@ -851,10 +892,9 @@
 		this.prototype.$get = function( key ) {
 			return internalObj[key];
 		};
-		
+
 		createSetterGetter.call(this);
-		
-		Class.prototype = this;
+
 		function isInterface( cls ) {
 			var interfs = script.interfaces || [];
 			for ( var k = 0, len = interfs.length; k < len; k++) {
@@ -887,7 +927,7 @@
 		}
 		Class.prototype = newObj;
 	}
-	
+
 	function createSetterGetterHelper( self, obj, source, isConst, isStatic ) {
 		var val, cls = self.getClass();
 		var isSame = obj == self;
@@ -909,7 +949,7 @@
 			}
 		}
 	}
-	
+
 	function createSetterGetter( obj ) {
 		var Static = this.prototype.$get("Static");
 		obj = obj || this;
@@ -921,9 +961,9 @@
 			createSetterGetter.call(base, obj);
 		}
 	}
-	
+
 	function classManager( script, data, older ) {
-		
+
 		var po = script.Package, fn = script.className;
 		if (!po || !fn) {
 			return;
@@ -943,7 +983,6 @@
 		}
 		var Class = po[fn], newObj = {};
 		po[fn] = function ( ) {
-			newObj.__base___ = this.__base___;
 			var currentObj = createClassInstance.call(newObj, po[fn], script, fn, Class, this);
 			if (!this.__base___) {
 				currentObj.constructor.apply(currentObj, arguments);

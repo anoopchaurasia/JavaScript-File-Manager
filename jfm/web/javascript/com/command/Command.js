@@ -7,7 +7,7 @@ fm.Class("Command", "jfm.division.Division");
 com.command.Command = function (base, me, Cache, Utility, Container, Division){this.setMe=function(_me){me=_me;};
 
 	var chatSer, since;
-
+	var socket ;
 	function updateLayout( division ) {
 		$(window).ready(function( ) {
 			var win = jQuery(window);
@@ -30,6 +30,11 @@ com.command.Command = function (base, me, Cache, Utility, Container, Division){t
 		    id : "jfm-division",
 		    'class' : "bg"
 		});
+		socket = io.connect('http://localhost');
+		socket.on('result', function (data) {
+		    console.log(data);
+		    addMessage(data);
+		});
 		updateLayout(this);
 		chatSer = Server.newInstance("command");
 		this.center.add(new Container({
@@ -44,11 +49,7 @@ com.command.Command = function (base, me, Cache, Utility, Container, Division){t
 		if (val == '') {
 			return;
 		}
-		chatSer.serviceCall({
-			text : val.replace(/\n/ig, "<br/>")
-		}, "send", function( resp ) {
-			addMessage(resp);
-		});
+		socket.emit('command', { command: val });
 		textarea.val("");
 	}
 	function activate( ) {
@@ -78,6 +79,7 @@ com.command.Command = function (base, me, Cache, Utility, Container, Division){t
 
 
 	function addMessage( resp, time, _class ) {
+		console.log(resp);
 		var messageElement = $(document.createElement("table"));
 		text = resp.result.replace(Utility.urlRE, '<a target="_blank" href="$&">$&</a>');
 		var content = '<tr>'

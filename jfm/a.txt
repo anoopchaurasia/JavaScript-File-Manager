@@ -1,0 +1,4 @@
+
+D:\workspace\JavaScript-File-Manager\jfm>node  src/node/start.js 
+[]
+Terminate batch job (Y/N)? 

@@ -1,7 +1,8 @@
-/* 
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+var httpSerrver1;
 fm.Package("");
 fm.Import("constant.Constants");
 fm.Import("cookie.Cookie");
@@ -28,17 +29,17 @@ App = function (me, Constants, Cookie, FacebookAuth, SessionManager, User){this.
 			console.error(err.stack);
 		});
 	};
-	
+
 	function loadServlet( path, key ) {
 		fm.Include(path);
 		servletObj[key] = new (fm.stringToObject(path))();
 	}
-	
+
 	Static.main = function( args ) {
-		
-		http.createServer(function( req, resp ) {
+
+		global.httpSerrver1 = http.createServer(function( req, resp ) {
 			req.sessionM = sessionM;
-			
+
 			var t = new Date().getTime();
 			var url_parts = url.parse(req.url, true);
 			var servletName = url_parts.pathname;
@@ -73,7 +74,7 @@ App = function (me, Constants, Cookie, FacebookAuth, SessionManager, User){this.
 						servletObj[servletName].multiPart(req, resp, t);
 						return;
 					}
-					
+
 					req.on('data', function( data ) {
 						body += data;
 					});
@@ -114,9 +115,10 @@ App = function (me, Constants, Cookie, FacebookAuth, SessionManager, User){this.
 					}
 				});
 			}
-			
+
 			// console.log(new Date().getTime() - t, servletName);
-		}).listen(Constants.port);
+		});
+		global.httpSerrver1.listen(Constants.port);
 	};
 };
 
