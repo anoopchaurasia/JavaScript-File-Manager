@@ -293,15 +293,16 @@
 				return valueStorage[key];
 			}
 			obj[key] = null;
-			if (obj.__defineGetter__) {
-				obj.__defineGetter__(key, getter);
-				obj.__defineSetter__(key, setter);
-			}
-			else if (Object.defineProperty && isGetterSetterSupported) {
+			if (Object.defineProperty && isGetterSetterSupported) {
+				obj[key] = obj[key];
 				Object.defineProperty(obj, key, {
 				    get : getter,
 				    set : setter
 				});
+			}
+			else if (obj.__defineGetter__) {
+				obj.__defineGetter__(key, getter);
+				obj.__defineSetter__(key, setter);
 			}
 			else {
 				obj[key] == undefined && (obj[key] = valueStorage[key]);
@@ -623,17 +624,17 @@
 				return currentObj[key];
 			}
 
-			if (obj.__defineGetter__) {
-				obj.__defineGetter__(key, getter);
-				obj.__defineSetter__(key, setter);
-			}
-			else if (Object.defineProperty && isGetterSetterSupported) {
+			if (Object.defineProperty && isGetterSetterSupported) {
+				obj[key] = obj[key];
 				Object.defineProperty(obj, key, {
 				    get : getter,
 				    set : setter
 				});
 			}
-
+			else if (obj.__defineGetter__) {
+				obj.__defineGetter__(key, getter);
+				obj.__defineSetter__(key, setter);
+			}
 			else {
 				currentObj[key] != undefined && (obj[key] = currentObj[key]);
 			}
