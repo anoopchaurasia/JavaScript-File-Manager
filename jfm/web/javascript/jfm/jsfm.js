@@ -207,6 +207,8 @@
 		currentScript = undefined;
 	};
 
+	fm.globaltransient = [];
+
 	// callAfterDelay:Delay the call for classManager so that file get compiled
 	// completely.
 	// And classManager get all information about the function.
@@ -323,14 +325,22 @@
 		};
 	}
 
+	fm.getMissingClass = function(){
+		var arr = [];
+		for(var k in classDependent){
+			if(!classDependent[k].classObj && !fm.isExist(k)){
+			   arr.push(k); 
+			}
+		}
+		return arr;
+	};
+
 	// Store all callbacks dependent on class with name {id}.
 	function onFileReady( id, cb ) {
 		classDependent[id] = classDependent[id] || [];
 		classDependent[id].push(cb);
 	}
-	fm.getDependent = function(){
-		return classDependent;
-	}
+
 	// return clas if class with name {id} is ready.
 	function isReady( id ) {
 		return classDependent[id];
@@ -719,6 +729,8 @@
 	        case  8: return new fn(newObj[args[0]], newObj[args[1]], newObj[args[2]], newObj[args[3]], newObj[args[4]], newObj[args[5]], newObj[args[6]], newObj[args[7]]);
 	        case  9: return new fn(newObj[args[0]], newObj[args[1]], newObj[args[2]], newObj[args[3]], newObj[args[4]], newObj[args[5]], newObj[args[6]], newObj[args[7]], newObj[args[8]]);
 	        case 10: return new fn(newObj[args[0]], newObj[args[1]], newObj[args[2]], newObj[args[3]], newObj[args[4]], newObj[args[5]], newObj[args[6]], newObj[args[7]], newObj[args[8]], newObj[args[9]]);
+	        case 11: return new fn(newObj[args[0]], newObj[args[1]], newObj[args[2]], newObj[args[3]], newObj[args[4]], newObj[args[5]], newObj[args[6]], newObj[args[7]], newObj[args[8]], newObj[args[9]], newObj[args[10]]);
+	        default: return new fn(newObj[args[0]], newObj[args[1]], newObj[args[2]], newObj[args[3]], newObj[args[4]], newObj[args[5]], newObj[args[6]], newObj[args[7]], newObj[args[8]], newObj[args[9]], newObj[args[10]], newObj[args[11]]);
 		}
 	}
 	function createArgumentString( base, imports ) {
@@ -736,7 +748,7 @@
 	}
 	// Set relevent class information.
 	function getReleventClassInfo( Class, fn, pofn ) {
-		/// this is script 
+		/// this is script
 		addPrototypeBeforeCall(Class, this.isAbstract);
 		var tempObj, k, len;
 		tempObj = invoke(Class, this.args, pofn.base, this.ics);
@@ -852,6 +864,37 @@
 		return arr;
 	}
 
+	function Serialize(obj){
+		var obj = obj || this;
+     	var newObj = jQuery.isArray(obj) ? [] :{};
+     	var transientArray = obj.transient || [];
+     	transientArray.push("transient", 'base');
+     	Array.prototype.push.apply(transientArray, fm.globaltransient);
+     	if(obj.beforeSerialize){
+     		obj.beforeSerialize();
+     	}
+	     for(var k in obj){
+	        if( k == 'error' && obj[k] ){
+	            throw "Please fix error";
+	        }
+	        if(obj.hasOwnProperty(k) && transientArray.indexOf(k) == -1 && obj[k] != null){
+	            if( typeof obj[k] == "object") {
+	                newObj[k] = obj[k].instanceOf && obj[k].getClass ? obj[k].serialize() :Serialize(obj[k]);
+	            }
+	            else if(typeof obj[k] == "function" || typeof obj[k] == "undefined"){
+
+	            }
+	            else{
+	                newObj[k] = obj[k];
+	            }
+	        }
+	     }
+	     if(obj.afterSerialize){
+     		obj.afterSerialize();
+     	}
+	     return newObj;
+	}
+
 	// Run this code after all resources are available.
 	function executeOnready( script, fn, Class, data ) {
 
@@ -870,6 +913,8 @@
 				return self;
 			};
 		}
+
+		this.serialize = Serialize;
 
 		creareSetGet(this);
 		script.ics = getAllImportClass(script.imports);
@@ -908,7 +953,7 @@
 		if(data && typeof data[data.length -1] == 'function'){
 			data.pop()();
 		}
-		
+
 		var obj ={};
 		for (var i in this) {
 			obj[i]=this[i];
@@ -980,7 +1025,7 @@
 		}
 		//Storing Original Class in Class;
 		var Class = po[fn];
-		//Creating new object which is temporary  
+		//Creating new object which is temporary
 		po[fn] = function ( ) {
 			var currentObj = createClassInstance.call(this, po[fn], script, fn, Class);
 			if (!this.__base___) {

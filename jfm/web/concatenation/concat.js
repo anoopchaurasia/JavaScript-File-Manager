@@ -129,7 +129,7 @@ function Concatenation( sourceDir, destinDir ) {
 		var temp1 = [];
 		var kk = 100, strlen = sourceDir.length;
 		for(var k in ConcatenatedFiles){
-			temp1.push("js.bundle.patientroot.asset"+ (kk++) +" = "+ k.substring(strlen));
+			temp1.push("js.bundle.ceb.asset"+ (kk++) +" = "+ k.substring(strlen));
 		}
 		console.log(temp1);
 		fs.writeFileSync("abcdmin.js", temp1.join("\n"), 'utf8',
@@ -262,6 +262,7 @@ function runall( a ) {
 	//walk(base + "/js", ajt.create, lastRun);
 	
 	try{
+	console.log(sourceDir, destinDir);
 		var ajt = new Concatenation( sourceDir, destinDir );
 		ajt.concatenateJSFiles(files, {},  updateFile.create);
 		fs.writeFile( "./lastconcat/" + (sourceDir + files[ files.length - 1 ]).replace(/\/|\\|\.|:/g, ""), "" + Date.now(), function( ) {});
