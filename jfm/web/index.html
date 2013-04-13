@@ -8,9 +8,22 @@
 <script type="text/javascript" src="javascript/jfm/Master.js"></script>
 <script>
 	fm.basedir = '/javascript';
-	fm.Include("App");
+	fm.Include("FormTesting");
 </script>
 </head>
 <body>
+	<form name="testing">
+		<input name="testing.text" />
+		<input type="checkbox" value=true name="testing.checkbox" />
+		<input type="radio" name="testing.radio" value=1 />
+		<input type="radio" name="testing.radio" value=2 />
+		<input type="radio" name="testing.radio" value=3 />
+		<select name="testing.select">
+			<option>A</option>
+			<option>B</option>
+			<option>C</option>
+		</select>
+
+	</form>
 </body>
 </html>

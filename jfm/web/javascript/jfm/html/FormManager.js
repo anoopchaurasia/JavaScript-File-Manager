@@ -93,10 +93,15 @@ jfm.html.FormManager = function (me){this.setMe=function(_me){me=_me;};
         return ret;
     };
     
-    function assignValue( value ){
+    function assignValue( value, fields, i, changedMethod ){
         switch( this.type ){
             case "checkbox":{
                 this.checked = value;
+                $(this).click(function(){
+                    var newValue = this.checked? this.value : undefined;
+                    changedMethod(i, newValue, value, fields);
+                    value = newValue;
+                });
                 break;
             }
             case undefined :{
@@ -108,12 +113,32 @@ jfm.html.FormManager = function (me){this.setMe=function(_me){me=_me;};
                             this[key].checked = false; 
                         }
                     }
+                    $(this).click(function(){
+                        var newValue = this.value;
+                        changedMethod(i, newValue, value, fields);
+                        value = newValue;
+                    });
                 }
                 break;
             }
             default :{
                 this.value = value;
+                $(this).change(function(){
+                    var newValue = this.value;
+                    changedMethod(i, newValue, value, fields);
+                    value = newValue;
+                });
             }
+        }
+    }
+
+    function changedMethod(fieldName, newValue, oldValue, object){
+        if(newValue === oldValue){
+            return;
+        }
+        object[fieldName] = newValue;
+        if(object.change){
+            object.change(fieldName, newValue, oldValue);
         }
     }
     
@@ -121,7 +146,13 @@ jfm.html.FormManager = function (me){this.setMe=function(_me){me=_me;};
         switch( typeof field ){
             case "object":{
                 for ( var i in field) {
-                    setData.call(this, field[i], index + "." + i );
+                    if(typeof field[i] != 'object' || typeof field[i] != 'function'){
+                         this[index + "." + i] && assignValue.call( this[index + "." + i], field[i], field, i, changedMethod );
+                    }
+                    else{
+                        setData.call(this, field[i], index + "." + i );
+                    }
+
                 }
                 break;
             }
@@ -129,7 +160,7 @@ jfm.html.FormManager = function (me){this.setMe=function(_me){me=_me;};
                 break;
             }
             default:{
-                this[index] && assignValue.call( this[index], field );
+               
             }
         }
     }
@@ -139,7 +170,7 @@ jfm.html.FormManager = function (me){this.setMe=function(_me){me=_me;};
             return;
         }
         for ( var k in fields) {
-            fields.hasOwnProperty(k) && setData.call(self, fields[k], k );
+            fields.hasOwnProperty(k) && setData.call(self, fields[k], k, fields, k );
         }
     };
     
