@@ -9,6 +9,14 @@ DivManager = function ( base, me, DomManager ){this.setMe=function(_me){me=_me;}
 
 	this.DivManager = function  () {
 		base();
+
+		setTimeout(function  () {
+			me. testing.text = "Anoop hjhhjjh";
+			//me. testing.checkbox = true;
+			me. testing.radio = 3;
+			me. testing.select = "B";
+			 me.dataUpdated();
+		}, 10000);
 	};
 
 	this.anoop = function () {

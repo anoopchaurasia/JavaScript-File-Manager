@@ -77,24 +77,49 @@ jfm.html.DomManager = function (base, me, FormManager){this.setMe=function(_me){
         changed();
        // me.el.find("[fm-*='" + c_name + "']").text(value);
     }
+
+    function createRelation (type, code, classObj) {
+        switch(type){
+            case 'click': {
+                return function(){ Function('obj', "with(obj){ return "+code+";}")(classObj) };
+            }
+            case 'hide': {
+                return function(elem){ Function('obj', 'elem', "with(obj){ if("+code+"){jQuery(elem).hide()}else{jQuery(elem).show()};}")(classObj, elem) };
+            }
+            case 'text': {
+                return function(elem){ Function('obj', 'elem', "with(obj){ jQuery(elem).text("+ code +")}")(classObj, elem) };
+            }
+        }
+    }
+
+    this.dataUpdated = function (argument) {
+        changed();
+    };
+
     this.DomManager = function(){
         var classObj = this.getSub();
         var name = classObj.getClass().toString();
         var element = jQuery("[fm-controller='" + name + "']");
         base(element);
         element.find("[fm-]").each(function(){
-            var attr, str= this.getAttribute('fm-')
-                                    .replace(/\s/g,"")
-                                    .replace(/click:(.*?)\)/g,'"click":function(){ return $1)}' )
-                                    .replace(/innerText:(.*?),|innerText:(.*?)\}$/g,'"innerText":function(elem){ jQuery(elem).text($2) } }' )
-                                    .replace(/hide:(.*?),|hide:(.*?)\}$/g,'"hide":function(elem){ if($1)jQuery(elem).hide();else jQuery(elem).show() }, ' ); 
-            var a = Function('obj',"with(obj){return " + str+";}");
-            attr = a(classObj);
-           registerForChange( attr.innerText, this);
-           registerForChange( attr.hide, this);
-           attr.innerText && attr.innerText(this);
-           attr.hide && attr.hide(this);
-           $(this).click(attr.click);
+            var str= this.getAttribute('fm-')
+                                    .replace(/\s|^{|}$/g,"");
+            var a = str.split(":");
+            var obj = {}, key=a[0];
+            for(var k =1; k < a.length - 1; k +=1){
+                obj[key]= createRelation(key, a[k].substring(0, a[k].lastIndexOf(",")), classObj);
+                key = a[k].substring( a[k].lastIndexOf(",")+1, a[k].length);
+            }
+            obj[key]=createRelation(key, a[k], classObj);
+                                    // .replace(/click:(.*?)\)/g,'"click":function(){ return $1)}' )
+                                    // .replace(/text:(.*?),|text:(.*?)\}$/g,'"text":function(elem){ jQuery(elem).text($2) } }' )
+                                    // .replace(/hide:(.*?),|hide:(.*?)\}$/g,'"hide":function(elem){ if($1)jQuery(elem).hide();else jQuery(elem).show() }, ' ); 
+
+           registerForChange( obj.text, this);
+           registerForChange( obj.hide, this);
+           obj.text && obj.text(this);
+           obj.hide && obj.hide(this);
+           $(this).click(obj.click);
         });
         element.find("input, select").each(function(){
             var temp = getValue(this.name, classObj);
