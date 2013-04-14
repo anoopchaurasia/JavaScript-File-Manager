@@ -4,7 +4,7 @@
  */
 fm.Package("jfm.html");
 fm.Import("jfm.html.FormManager");
-fm.AbstractClass("DomManager", "jfm.html.Container");
+fm.AbstractClass("DomManager", "jfm.component.Component");
 jfm.html.DomManager = function (base, me, FormManager){this.setMe=function(_me){me=_me;};
 
     function invoke (fn, args){
@@ -78,7 +78,7 @@ jfm.html.DomManager = function (base, me, FormManager){this.setMe=function(_me){
        // me.el.find("[fm-*='" + c_name + "']").text(value);
     }
 
-    function createRelation (type, code, classObj) {
+    function createRelation (type, code, classObj, elem) {
         switch(type){
             case 'click': {
                 return function(){ Function('obj', "with(obj){ return "+code+";}")(classObj) };
@@ -89,11 +89,24 @@ jfm.html.DomManager = function (base, me, FormManager){this.setMe=function(_me){
             case 'text': {
                 return function(elem){ Function('obj', 'elem', "with(obj){ jQuery(elem).text("+ code +")}")(classObj, elem) };
             }
+            case 'option': {
+                code = (code+"}").replace(/\}$/,"html +='<option value='+value+'>'+text+'</option>'}" );
+                return function(elem){ Function('obj', 'elem', "with(obj){var html='', k, value, text; "+ code +"}; $(elem).html(html);")(classObj, elem) };
+            }
+            case 'repeat':{
+                code= code+"{ html +='"+elem.innerHTML.replace(/\n|\s\s/g,"").replace(/\{\{/g, "'+(").replace(/\}\}/g,")+'") + "'}";
+                
+                return function(elem){ Function('obj', 'elem', "with(obj){var html='', k; "+ code +"}; $(elem).html(html);")(classObj, elem) };
+            }
         }
     }
 
     this.dataUpdated = function (argument) {
         changed();
+        me.el.find("input, select").each(function(){
+            var temp = getValue(this.name, me.getSub());
+            assignValue.call(this, temp[0][temp[1]] );
+        });
     };
 
     this.DomManager = function(){
@@ -103,21 +116,20 @@ jfm.html.DomManager = function (base, me, FormManager){this.setMe=function(_me){
         base(element);
         element.find("[fm-]").each(function(){
             var str= this.getAttribute('fm-')
-                                    .replace(/\s|^{|}$/g,"");
+                                    .replace(/^{|}$/g,"");
             var a = str.split(":");
-            var obj = {}, key=a[0];
+            var obj = {}, key=a[0].replace(/\s/g,"");
             for(var k =1; k < a.length - 1; k +=1){
-                obj[key]= createRelation(key, a[k].substring(0, a[k].lastIndexOf(",")), classObj);
-                key = a[k].substring( a[k].lastIndexOf(",")+1, a[k].length);
+                obj[key]= createRelation(key, a[k].substring(0, a[k].lastIndexOf(",")), classObj, this);
+                key = a[k].substring( a[k].lastIndexOf(",")+1, a[k].length).replace(/\s/g,"");
             }
-            obj[key]=createRelation(key, a[k], classObj);
-                                    // .replace(/click:(.*?)\)/g,'"click":function(){ return $1)}' )
-                                    // .replace(/text:(.*?),|text:(.*?)\}$/g,'"text":function(elem){ jQuery(elem).text($2) } }' )
-                                    // .replace(/hide:(.*?),|hide:(.*?)\}$/g,'"hide":function(elem){ if($1)jQuery(elem).hide();else jQuery(elem).show() }, ' ); 
-
+            obj[key]=createRelation(key, a[k], classObj, this);
            registerForChange( obj.text, this);
            registerForChange( obj.hide, this);
            obj.text && obj.text(this);
+           obj.option && obj.option(this);
+            registerForChange( obj.repeat, this);
+           obj.repeat && obj.repeat(this);
            obj.hide && obj.hide(this);
            $(this).click(obj.click);
         });
@@ -140,7 +152,7 @@ jfm.html.DomManager = function (base, me, FormManager){this.setMe=function(_me){
                         newValue = this.checked? this.value : undefined;
                     }
                     if(temp[0][temp[1]] != newValue){
-                         var old = temp[0][temp[1]] ;
+                        var old = temp[0][temp[1]] ;
                         temp[0][temp[1]] = newValue;
                         applyChange(temp[0], classObj, temp[1], this.value, old, this.name);
                     }
