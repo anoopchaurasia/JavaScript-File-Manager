@@ -223,8 +223,8 @@
 
 
 	// fm.stringToObject: map a string into object.
-	fm.stringToObject = function stringToObject( classStr ) {
-		var Class = window, classStrArr = classStr.split(".");
+	fm.stringToObject = function stringToObject( classStr, Class ) {
+		 Class = Class || window, classStrArr = classStr.split(".");
 		for ( var n = 0; Class && n < classStrArr.length; n++) {
 			Class = Class[classStrArr[n]];
 		}
@@ -703,6 +703,11 @@
 		}
 
 		if (baseObj) {
+			if (baseObj.prototype.isAbstract) {
+				baseObj.prototype.getSub = function( ) {
+					return currentObj.isAbstract ? currentObj.getSub() : currentObj;
+				};
+			}
 			currentObj.base = baseObj;
 			!currentObj.isAbstract && baseObj.prototype.isAbstract && baseObj.prototype.setAbstractMethods(currentObj);
 			baseObj.$ADD(currentObj);
@@ -730,7 +735,8 @@
 	        case  9: return new fn(newObj[args[0]], newObj[args[1]], newObj[args[2]], newObj[args[3]], newObj[args[4]], newObj[args[5]], newObj[args[6]], newObj[args[7]], newObj[args[8]]);
 	        case 10: return new fn(newObj[args[0]], newObj[args[1]], newObj[args[2]], newObj[args[3]], newObj[args[4]], newObj[args[5]], newObj[args[6]], newObj[args[7]], newObj[args[8]], newObj[args[9]]);
 	        case 11: return new fn(newObj[args[0]], newObj[args[1]], newObj[args[2]], newObj[args[3]], newObj[args[4]], newObj[args[5]], newObj[args[6]], newObj[args[7]], newObj[args[8]], newObj[args[9]], newObj[args[10]]);
-	        default: return new fn(newObj[args[0]], newObj[args[1]], newObj[args[2]], newObj[args[3]], newObj[args[4]], newObj[args[5]], newObj[args[6]], newObj[args[7]], newObj[args[8]], newObj[args[9]], newObj[args[10]], newObj[args[11]]);
+	        default: return new fn(newObj[args[0]], newObj[args[1]], newObj[args[2]], newObj[args[3]], newObj[args[4]], newObj[args[5]], newObj[args[6]], newObj[args[7]], newObj[args[8]], newObj[args[9]],
+	                               newObj[args[10]], newObj[args[11]],newObj[args[12]],newObj[args[13]],newObj[args[14]],newObj[args[15]],newObj[args[16]],newObj[args[17]],newObj[args[18]], newObj[args[19]], newObj[args[20]]);
 		}
 	}
 	function createArgumentString( base, imports ) {
@@ -1017,6 +1023,7 @@
 		if (!po[fn] && (po[fn] = window[fn])) {
 			script.shortHand = fn;
 			try {
+				window[fn] = null;
 				delete window[fn];
 			}
 			catch (e) {
