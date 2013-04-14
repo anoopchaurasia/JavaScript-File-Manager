@@ -86,12 +86,14 @@ jfm.html.DomManager = function (base, me, FormManager){this.setMe=function(_me){
             var attr, str= this.getAttribute('fm-')
                                     .replace(/\s/g,"")
                                     .replace(/click:(.*?)\)/g,'"click":function(){ return $1)}' )
-                                    .replace(/innerText:(.*?),|innerText:(.*?)\}$/g,'"innerText":function(elem){ jQuery(elem).text($2) } }' ); 
-            with(classObj){
-               eval("attr =" + str );
-           }
+                                    .replace(/innerText:(.*?),|innerText:(.*?)\}$/g,'"innerText":function(elem){ jQuery(elem).text($2) } }' )
+                                    .replace(/hide:(.*?),|hide:(.*?)\}$/g,'"hide":function(elem){ if($1)jQuery(elem).hide();else jQuery(elem).show() }, ' ); 
+            var a = Function('obj',"with(obj){return " + str+";}");
+            attr = a(classObj);
            registerForChange( attr.innerText, this);
+           registerForChange( attr.hide, this);
            attr.innerText && attr.innerText(this);
+           attr.hide && attr.hide(this);
            $(this).click(attr.click);
         });
         element.find("input, select").each(function(){

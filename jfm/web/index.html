@@ -13,12 +13,11 @@
 </head>
 <body>
 	<div fm-controller="DivManager">
-		<div fm-="{ click:anoop(anoop, jfm), innerText:testing.text + testing.radio }" > sdfdfdfdf </div>
+		<div fm-="{ click:anoop(anoop, jfm), hide:testing.checkbox, innerText:testing.text + testing.radio }" > sdfdfdfdf </div>
 		<div fm-="{innerText:testing.checkbox}"></div>
 		<div fm-="{innerText:testing.radio}"></div>
 		<div fm-="{innerText:testing.select}"></div>
 
-		<form name="testing">
 		<input name="testing.text" />
 		<input type="checkbox" value=true name="testing.checkbox" />
 		<input type="radio" name="testing.radio" value=1 />
@@ -29,7 +28,6 @@
 			<option>B</option>
 			<option>C</option>
 		</select>
-	</form>
    </div>
 </body>
 </html>
