@@ -13,10 +13,10 @@
 </head>
 <body>
 	<div fm-controller="DivManager">
-		<span fm-click="anoop(anoop)" fm-text="testing.text"> sdfdfdfdf </span>
-		<span fm-text="testing.checkbox"></span>
-		<span fm-text="testing.radio"></span>
-		<span fm-text="testing.select"></span>
+		<div fm-="{ click:anoop(anoop, jfm), innerText:testing.text + testing.radio }" > sdfdfdfdf </div>
+		<div fm-="{innerText:testing.checkbox}"></div>
+		<div fm-="{innerText:testing.radio}"></div>
+		<div fm-="{innerText:testing.select}"></div>
 
 		<form name="testing">
 		<input name="testing.text" />

@@ -12,13 +12,14 @@ DivManager = function ( base, me, DomManager ){this.setMe=function(_me){me=_me;}
 	};
 
 	this.anoop = function () {
-		alert(arguments[0]);
+		console.log(arguments);
 	};
 
 	this.testing = {};
 	this.change = function () {
 		//console.log(arguments);
 	};
+	
 	this.testing.text = "Anoop";
 	this.testing.checkbox = true;
 	this.testing.radio = 2;

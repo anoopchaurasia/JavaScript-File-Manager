@@ -51,6 +51,21 @@ jfm.html.DomManager = function (base, me, FormManager){this.setMe=function(_me){
         }
         return [obj, str[i]];
     }
+    var arr = [];
+    function registerForChange ( method, element) {
+        if(!method){
+            return;
+        }
+        arr.push( {method:method, element: element} );
+    }
+
+    function changed(){
+        for(var i=0; i < arr.length; i++){
+            if(typeof arr[i].method == 'function'){
+                arr[i].method(arr[i].element);
+            }
+        }
+    }
 
     function applyChange(temp, controllr, name,  value, old, c_name){
         if(temp.change){
@@ -59,15 +74,25 @@ jfm.html.DomManager = function (base, me, FormManager){this.setMe=function(_me){
         else if(controllr.change){
             controllr.change( name, value, old, temp );
         }
-        me.el.find("[fm-text='" + c_name + "']").text(value);
+        changed();
+       // me.el.find("[fm-*='" + c_name + "']").text(value);
     }
     this.DomManager = function(){
         var classObj = this.getSub();
         var name = classObj.getClass().toString();
         var element = jQuery("[fm-controller='" + name + "']");
         base(element);
-        element.find("[fm-click]").each(function(){
-           $(this).click(getFunction( this.getAttribute('fm-click'), classObj) ) ;
+        element.find("[fm-]").each(function(){
+            var attr, str= this.getAttribute('fm-')
+                                    .replace(/\s/g,"")
+                                    .replace(/click:(.*?)\)/g,'"click":function(){ return $1)}' )
+                                    .replace(/innerText:(.*?),|innerText:(.*?)\}$/g,'"innerText":function(elem){ jQuery(elem).text($2) } }' ); 
+            with(classObj){
+               eval("attr =" + str );
+           }
+           registerForChange( attr.innerText, this);
+           attr.innerText && attr.innerText(this);
+           $(this).click(attr.click);
         });
         element.find("input, select").each(function(){
             var temp = getValue(this.name, classObj);
