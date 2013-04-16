@@ -3,9 +3,8 @@
  * and open the template in the editor.
  */
 fm.Package("jfm.html");
-fm.Import("jfm.html.FormManager");
 fm.AbstractClass("DomManager", "jfm.component.Component");
-jfm.html.DomManager = function (base, me, FormManager){this.setMe=function(_me){me=_me;};
+jfm.html.DomManager = function (base, me){this.setMe=function(_me){me=_me;};
 
     function invoke (fn, args){
 

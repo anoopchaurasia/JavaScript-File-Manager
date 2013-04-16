@@ -13,7 +13,7 @@
 <body>
 	<div fm-controller="DivManager">
 		<div >
-		<div fm-=" click:anoop(anoop, jfm), hide:testing.checkbox, text:testing.text + testing.radio, assert: " > sdfdfdfdf </div>
+		<div fm-=" click:anoop(anoop, jfm), hide:testing.checkbox, text:testing.text + testing.radio, assert: isLesthan(testing.text, 3)" > sdfdfdfdf </div>
 		<div fm-="text:testing.checkbox"></div>
 		<div fm-="text:testing.radio"></div>
 		<div fm-="text:testing.select"></div>
@@ -28,7 +28,7 @@
 			<option>C</option>
 		</select>
 		<div fm-="repeat: for(k in arrrr)">
-			<span>{{testing.text}}</span><span>{{testing.text}}</span><span>{{testing.text}}</span><span>{{testing.text}}</span>
+			<span>{{testing.text}}</span>
 		</div>
    </div>
 </body>

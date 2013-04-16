@@ -2,11 +2,13 @@ fm.Package("com.reader");
 fm.Import("com.reader.snippet.AllSnippets");
 fm.Import("com.reader.article.ArticleManager");
 fm.Import("com.reader.taskbar.Taskbar");
+fm.Import("jfm.html.DomManager");
+fm.Import("com.reader.FeedListController");
 fm.Import("com.reader.snippet.LeftBar");
 fm.Import("jfm.division.Division");
 fm.Import('com.reader.events.Events');
 fm.Class("Reader");
-com.reader.Reader = function(me, AllSnippets, ArticleManager, Taskbar, LeftBar, Division, Events) {
+com.reader.Reader = function(me, AllSnippets, ArticleManager, Taskbar, FeedListController, LeftBar, Division, Events) {
 	var division;
 	this.setMe = function(_me) {
 		me = _me;
@@ -48,6 +50,8 @@ com.reader.Reader = function(me, AllSnippets, ArticleManager, Taskbar, LeftBar, 
 	}
 
 	Static.main = function() {
+		new FeedListController();
+		return;
 		updateLayout();
 		division = new Division({
 			id : "main"
