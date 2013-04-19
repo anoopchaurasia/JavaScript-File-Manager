@@ -294,9 +294,9 @@
 			function getter( ) {
 				return valueStorage[key];
 			}
+			/// ie dont include key created by setter getter if not intialized before
 			obj[key] = null;
 			if (Object.defineProperty && isGetterSetterSupported) {
-				obj[key] = obj[key];
 				Object.defineProperty(obj, key, {
 				    get : getter,
 				    set : setter
@@ -380,16 +380,6 @@
 		Abstract = saveState.pop();
 		Static = saveState.pop();
 
-	}
-
-	// Return whether object is empty.
-	function isNotAEmptyObject( obj ) {
-		for ( var k in obj) {
-			if (obj.hasOwnProperty(k)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	// Extend to one level.

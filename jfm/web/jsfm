@@ -1,0 +1,44 @@
+	var currentScript;
+fm.isExist = function( cls ) {
+		var s = cls.split(".");
+		var o = window;
+		for ( var k in s) {
+			if (!o[s[k]]) {
+				return false;
+			}
+			o = o[s[k]];
+		}
+
+		if(typeof o == 'function'){
+			return o;
+		}
+		return false;
+	}
+
+
+	;
+
+	if (!Function.prototype.bind) {
+		Function.bind = Function.prototype.bind = function( obj ) {
+			var thisFun = this;
+			return function( ) {
+				return thisFun.apply(obj, arguments);
+			};
+		};
+	}
+	// add all transient fields to list.
+	function addTransient( internalObj, tempObj ) {
+		var temp = {}, k, tr = tempObj["transient"] || [];
+		tr.push("shortHand");
+		for (k = 0; k < tr.length; k++) {
+			(temp[tr[k]] = true);
+		}
+		eachPropertyOf(internalObj.Static, function( v, key ) {
+			temp[key] = true;
+		});
+		eachPropertyOf(internalObj.staticConst, function( v, key ) {
+			temp[key] = true;
+		});
+		internalObj["transient"] = temp;
+		internalObj = tempObj = k = temp = undefined;
+	}

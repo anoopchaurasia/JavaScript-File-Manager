@@ -229,6 +229,37 @@ t = new Date().getTime();
 		Abstract = saveState.pop();
 		Static = saveState.pop();
 	}
+
+	// This method is adding a $add method into class prototype wchich is being
+	// used to create setter and getter for its own property.
+	function creareSetGet( classProto ) {
+		// Storing key:value in separate variable as using original object will
+		// create infinit loop.
+		var valueStorage = {};
+		// Static is not supported.... will not support ie < 9;
+		// Adding setter and getter
+		classProto.prototype.$add = function( obj, key, val, isConst ) {
+			
+			// val has a value for it's original object.
+			if (val != undefined) {
+				valueStorage[key] = val;
+			}
+			
+			function setter( val ) {
+				if (isConst) {
+					throw this + "." + key + " can not be changed.";
+				}
+				valueStorage[key] = val;
+			}
+			
+			function getter( ) {
+				return valueStorage[key];
+			}
+			obj.__defineGetter__(key, getter);
+			obj.__defineSetter__(key, setter);
+		};
+	}
+	
 	
 	// Extend to one level.
 	function simpleExtend( from, to ) {
@@ -308,7 +339,6 @@ t = new Date().getTime();
 			});
 		};
 	}
-	window.me = window.base = undefined;
 	
 	// Change the context of function.
 	function changeContext( fun, context, bc ) {
