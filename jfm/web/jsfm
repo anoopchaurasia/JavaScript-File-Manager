@@ -42,3 +42,31 @@ fm.isExist = function( cls ) {
 		internalObj["transient"] = temp;
 		internalObj = tempObj = k = temp = undefined;
 	}
+
+
+		// Wait for resource to be ready
+	function addImportsOnready( implist, cb, fn ) {
+		var counter = 0, complete;
+		function decreaseCounter( ) {
+			counter--;
+			if (counter == 0 && complete) {
+				cb();
+			}
+		}
+		for ( var k = 0; implist && k < implist.length; k++) {
+			counter++;
+			var Class = isReady(implist[k]);
+			if (Class && 'classObj' in Class) {
+				decreaseCounter();
+			}
+			else {
+				onFileReady(implist[k], function( obj, id ) {
+					decreaseCounter();
+				});
+			}
+		}
+		complete = true;
+		if (counter == 0) {
+			cb();
+		}
+	}

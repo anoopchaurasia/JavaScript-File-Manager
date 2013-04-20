@@ -44,7 +44,8 @@ jfm.html.DomManager = function (base, me){this.setMe=function(_me){me=_me;};
     }
 
     function getValue(str, obj){
-         str = str.replace(/\s/g,"").split("."), v = obj;
+         str = str.replace(/\s/g,"").split(".");
+         var v = obj;
         for(var i=0; i < str.length - 1 && obj; i++){
             obj = obj[str[i]];
         }
