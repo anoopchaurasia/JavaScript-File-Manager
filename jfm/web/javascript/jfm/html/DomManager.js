@@ -95,8 +95,8 @@ jfm.html.DomManager = function (base, me){this.setMe=function(_me){me=_me;};
             }
             case 'repeat':{
                 code= code+"{ html +='"+elem.innerHTML.replace(/\n|\s\s/g,"").replace(/\{\{/g, "'+(").replace(/\}\}/g,")+'") + "'}";
-                
-                return function(elem){ Function('obj', 'elem', "with(obj){var html='', k; "+ code +"}; $(elem).html(html);")(classObj, elem) };
+                return function(elem){ Function('obj', 'elem', "with(obj){var html='', k; "+ code +"}; $(elem).html(html); new jfm.html.LoopScope(elem, obj)")(classObj, elem); };
+
             }
         }
     }
@@ -109,10 +109,12 @@ jfm.html.DomManager = function (base, me){this.setMe=function(_me){me=_me;};
         });
     };
 
-    this.DomManager = function(){
-        var classObj = this.getSub();
-        var name = classObj.getClass().toString();
-        var element = jQuery("[fm-controller='" + name + "']");
+    this.DomManager = function(element, classObj){
+        if(!element){
+            var classObj = this.getSub();
+            var name = classObj.getClass().toString();
+            element = jQuery("[fm-controller='" + name + "']");
+        }
         base(element);
         element.find("[fm-]").each(function(){
             var str= this.getAttribute('fm-')

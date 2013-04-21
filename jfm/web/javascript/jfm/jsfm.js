@@ -124,6 +124,7 @@
 			if(!script){
 				console.log(path, "script undefined");
 			}
+			 console.log( path);
 			if (typeof storePath[temp  + script.Class] == 'object') {
 				data = storePath[temp  + script.Class];
 				storePath[temp  + script.Class] = true;
@@ -146,7 +147,6 @@
 		e.src = path;
 		e.type = "text/javascript";
 		docHead.appendChild(e);
-
 	}
 
 	// This should be first method to be called from jfm classes.JAVA:package
