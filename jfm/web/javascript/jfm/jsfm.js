@@ -124,12 +124,15 @@
 			if(!script){
 				console.log(path, "script undefined");
 			}
-			 console.log( path);
+			console.log( path);
 			if (typeof storePath[temp  + script.Class] == 'object') {
 				data = storePath[temp  + script.Class];
 				storePath[temp  + script.Class] = true;
 			}
 			classManager( script, data);
+			if(fm.debug_mode === true){
+				listenFileChange(path);
+			}
 			return;
 		}
 		if (!docHead) {
@@ -147,6 +150,20 @@
 		e.src = path;
 		e.type = "text/javascript";
 		docHead.appendChild(e);
+	}
+
+	function listenFileChange (path) {
+		require("fs").watchFile(path, {
+		    persistent : true,
+		    interval : 1000
+		}, function( ) {
+			scriptArr.push({
+				packageName : ""
+			});
+			delete require.cache[path.replace(/\//g, '\\')];
+			require(path);
+			classManager(scriptArr.pop());
+		});
 	}
 
 	// This should be first method to be called from jfm classes.JAVA:package
