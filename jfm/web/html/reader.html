@@ -38,7 +38,7 @@
 			<div style="width: 150px; height: 100%;" fm-controller="com.newReader.source.Sources">
 				<div fm-="repeat:for( k in feedList)">
 					<div class="items">
-						<a href="{{feedList[k].url}}"> {{feedList[k].name}} </a> 
+						<a fm-="{click: changeFeedSource(feedList[{{k}}].url)}"> {{feedList[k].name}} </a> 
 					</div>
 				</div>
 			</div>
@@ -54,7 +54,7 @@
 				<div class="item-item-cont" style="width: 3032px; height: 100%;">
 					<h2 fm-="text:title"></h2>
 					<div class="vertical-news-container" fm-="repeat:for(var k in items)">
-						<div class="newsSnippet" style="height: 110px; width: 361px;" indx="0" >
+						<div fm-="{click:showArticle(items[{{k}}]) }" class="newsSnippet" style="height: 110px; width: 361px;" indx="0" >
 							<div class="brief-title">
 								<h2 class="title">
 									{{items[k].title}}

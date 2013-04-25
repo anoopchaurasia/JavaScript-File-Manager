@@ -4,12 +4,14 @@ fm.Import("com.newReader.article.Articles");
 fm.Class("Reader");
 com.newReader.Reader = function(me, Sources, Articles){	this.setMe=function(_me){me=_me};
 	Static.main = function  () {
-		new Sources();
+		var source = new Sources();
 		var articles;
-		var url = "http://feeds.feedburner.com/fakingnews";
-		com.newReader.Reader.parseRSS(url, function(data){
-			articles = new Articles(data.responseData.feed);
-		});
+		source.onChange(function(url){
+			com.newReader.Reader.parseRSS(url, function(data){
+				articles = new Articles(data.responseData.feed);
+			});
+		}); 
+		
 	};
 
 	Static.parseRSS = function(url, callback) {

@@ -5,7 +5,21 @@ com.newReader.source.Sources = function (base, me) {this.setMe=function(_me){me=
 		base();
 	}
 
-	this.feedList = [ {
+	var onChangeListeners = [];
+
+	this.changeFeedSource = function(url){
+		console.log(url);
+		for (var i = 0; i < onChangeListeners.length; i++) {
+			onChangeListeners[i](url);
+		};
+		return false;
+	};
+
+	this.onChange = function(cb){
+		onChangeListeners.push(cb);
+	};
+
+	this.feedList = [{
 			url : "http://feeds.mashable.com/Mashable",
 			name : "Mashable"
 		}, {

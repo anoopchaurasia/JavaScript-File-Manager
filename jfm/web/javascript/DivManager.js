@@ -18,13 +18,13 @@ DivManager = function ( base, me, DomManager ){this.setMe=function(_me){me=_me;}
 	};
 	this.arrrr=[];
 	this.options = [0,1,2,3,4,5,56,7,8787,787,9,89,0,0,0,00];
-	for(var i=0; i < 5; i++){
+	for(var i=0; i < 2; i++){
 		this.arrrr.push(i);
 
 	}
 
 	this.hello = function () {
-		console.log("hello")
+		console.log(arguments)
 	};
 
 	this.anoop = function () {
