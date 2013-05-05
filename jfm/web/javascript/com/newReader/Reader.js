@@ -10,14 +10,11 @@ com.newReader.Reader = function(me, Sources, Articles){	this.setMe=function(_me)
 			com.newReader.Reader.parseRSS(url, function(data){
 				articles = new Articles(data.responseData.feed);
 			});
-		}); 
-		
+		});
 	};
 
-	Static.parseRSS = function(url, callback) {
-		
-		url =  document.location.protocol + '//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=8&callback=?&q=' + encodeURIComponent(url)
-				;
+	Static.parseRSS = function(url, callback) {		
+		url =  document.location.protocol + '//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=8&callback=?&q=' + encodeURIComponent(url);
 		$.ajax({
 			url : url,
 			dataType : 'json',

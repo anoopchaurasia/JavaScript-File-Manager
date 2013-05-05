@@ -11,7 +11,7 @@ com.newReader.article.Articles = function (base, me, Article) {	this.setMe=funct
 	};
 
 	this.showArticle = function(k){
-		console.log(k);
+		
 	};
 
 	function createList(list){

@@ -63,5 +63,3 @@ jfm.hash.HashChange = function (me){this.setMe=function(_me){me=_me;};
 		}
 	};
 };
-
-
