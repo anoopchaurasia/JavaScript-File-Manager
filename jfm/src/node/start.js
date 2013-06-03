@@ -1,3 +1,3 @@
-require(__dirname + "\\..\\..\\web\\javascript\\jfm\\jsfm.js");
+require("jsfm");
 fm.basedir = __dirname ;
 fm.Include("App");

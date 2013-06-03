@@ -109,6 +109,9 @@ App = function (me, Constants, Cookie, FacebookAuth, SessionManager, User){this.
 					req.url = "/index.html";
 				}
 				req.url = "/web" + req.url;
+				if(servletName == "/jsfm.js"){
+					req.url = "/src/node_modules/jsfm/jsfm.js";
+				}
 				staticServer.serve(req, resp, function( err, result ) {
 					if (err) {
 						console.error('Error serving %s - %s', req.url, err.message);

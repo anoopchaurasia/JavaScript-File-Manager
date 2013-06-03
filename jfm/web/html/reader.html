@@ -24,34 +24,47 @@
 
 	<link type=text/css rel=stylesheet href='/css/reader.css' />
 	<script type="text/javascript" src="/javascript/jquery.js"></script>
-	<script type="text/javascript" src="/javascript/jfm/jsfm.js"></script>
+	<script type="text/javascript" src="/jsfm.js"></script>
 	<script type="text/javascript" src="/thirdparty/farbtastic/farbtastic.js"></script>
 	<script>
 		fm.basedir = '/javascript';
 	    fm.Include("com.newReader.Reader");
 	</script>
+	<style type="text/css">
+		.left-panel{
+			width: 15%;
+			height: 100%;
+			float: left;
+		}
+		.right-panel{
+			width:85%;
+			height: 100%;
+			float: left;
+		}
+	</style>
 </head>
 <body>
 	<div id="hidden"></div>
-	<div style="width: 100%; height: 100%;" class="jfm-division" id="main">
-		<div class="jfm-division-left" style="height: 166px; display: block; width: 150px;">
-			<div style="width: 150px; height: 100%;" fm-controller="com.newReader.source.Sources">
-				<div fm-="repeat:for( k in feedList)">
+	<div style="width: 100%; height: 100%;" id="main">
+		<div class="left-panel">
+			<div  fm-controller="com.newReader.source.Sources">
+				<div fm-="repeat:for(var k in feedList)">
 					<div class="items">
 						<a fm-="{click: changeFeedSource(feedList[{{k}}].url)}"> {{feedList[k].name}} </a> 
 					</div>
 				</div>
 			</div>
+			<br style="clear:both">
 		</div>
-		<div class="jfm-division-center" style="overflow: hidden; display: block; height: 166px; width: 1216px;">
+		<div class="right-panel">
 			<div id="settings" style="display: none;">
 				<div>
 					<form method="POST" id="settingsForm">
 					 </form>
 				</div>
 			</div>
-			<div id="article-list" style="height: 100%; width: 3072px;" fm-controller="com.newReader.article.Articles">
-				<div class="item-item-cont" style="width: 3032px; height: 100%;">
+			<div id="article-list" style="height: 100%; width: 100%;" fm-controller="com.newReader.article.Articles">
+				<div class="item-item-cont" style="width: 100%; height: 100%;">
 					<h2 fm-="text:title"></h2>
 					<div class="vertical-news-container" fm-="repeat:for(var k in items)">
 						<div fm-="{click:showArticle(items[{{k}}]) }" class="newsSnippet" style="height: 110px; width: 361px;" indx="0" >
@@ -72,6 +85,7 @@
 				</div>
 			</div>
 			<div id="article-container" style="height: 100%; display: none;"></div>
+			<br style="clear:both"/>
 		</div>
 		<div class="jfm-division-bottom" style="width: 1366px; display: block; height: 40px;">
 			<div id="taskbar" style="height: 40px;">
