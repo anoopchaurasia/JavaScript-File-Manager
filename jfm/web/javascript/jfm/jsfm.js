@@ -3,7 +3,7 @@
  * change this template use File | Settings | File Templates.
  */
 
-(function( window, undefined ) {
+(function( window, isNode ) {
 	if(window.fm && window.fm['package']){
 		return ;
 	}
@@ -12,7 +12,7 @@
 
 	// currentScript is being used to contain all information of currently
 	// loaded JavaScript file.
-	var currentScript;
+	var scriptArr = [];
 	// Assuming JavaScript base directory is "javascript".
 
 	fm.basedir = "/javascript";
@@ -97,8 +97,7 @@
 	// Add imports for current loaded javascript file.
 	// Add imported javascript file for current class into currentScript.
 	function add( path ) {
-		!currentScript && fm.Package();
-		var script = currentScript;
+		var script = scriptArr[scriptArr.length - 1];
 		script && (!script.imports && (script.imports = []));
 		// checking if same file imported twice for same Class.
 		for ( var k = 0, len = script.imports.length; k < len; k++) {
@@ -113,6 +112,29 @@
 
 	// Create script tag inside head.
 	function include( path ) {
+
+		if(isNode){
+			require(path);
+			var script = scriptArr.pop(), data;
+			// console.log('include', path, scriptArr[scriptArr.length -1]);
+			// console.log(script);
+			// console.log('-----------------------------------------------------');
+
+			var temp = fm.basedir.replace(/\//gim,"");
+			if(!script){
+				console.log(path, "script undefined");
+			}
+			console.log( path);
+			if (typeof storePath[temp  + script.Class] == 'object') {
+				data = storePath[temp  + script.Class];
+				storePath[temp  + script.Class] = true;
+			}
+			classManager( script, data);
+			if(fm.debug_mode === true){
+				listenFileChange(path);
+			}
+			return;
+		}
 		if (!docHead) {
 			docHead = document.getElementsByTagName("head")[0];
 		}
@@ -128,40 +150,56 @@
 		e.src = path;
 		e.type = "text/javascript";
 		docHead.appendChild(e);
+	}
 
+	function listenFileChange (path) {
+		require("fs").watchFile(path, {
+		    persistent : true,
+		    interval : 1000
+		}, function( ) {
+			scriptArr.push({
+				packageName : ""
+			});
+			delete require.cache[path.replace(/\//g, '\\')];
+			require(path);
+			classManager(scriptArr.pop());
+		});
 	}
 
 	// This should be first method to be called from jfm classes.JAVA:package
 	fm["package"] = fm.Package = function Package( packageName ) {
-		currentScript = {
+		//scriptArr.pop();
+		//console.log('package', scriptArr, packageName);
+		var script = {
 			packageName : packageName || ""
 		};
-		return this;
+		scriptArr.push(script);
+		return script;
 	};
 
 	// / this method Add base class for current Class.JAVA:extend
 	fm['super'] = fm['base'] = fm.Base = function Base( baseClass ) {
-		currentScript && (currentScript.baseClass = baseClass) && this.Import(baseClass);
+		var script = scriptArr[scriptArr.length - 1];
+		script && (script.baseClass = baseClass) && this.Import(baseClass);
 		return this;
 	};
 
 	// Set current script as Interface; JAVA:interface
 	fm["interface"] = fm.Interface = function Interface( ) {
-		!currentScript && this.Package();
-		currentScript.isInterface = true;
+		var script = scriptArr[scriptArr.length - 1];
+		script.isInterface = true;
 		this.Class.apply(this, arguments);
 	};
 
 	fm['abstractClass'] = fm.AbstractClass = function( ) {
-		!currentScript && this.Package();
-		currentScript.isAbstract = true;
+		var script = scriptArr[scriptArr.length - 1];
+		script.isAbstract = true;
 		this.Class.apply(this, arguments);
 	};
 	// Add all implemented interface to class interface list. and import
 	// them.JAVA:implements
 	fm['implements'] = fm.Implements = function Implements( ) {
-		!currentScript && this.Package();
-		var script = currentScript;
+		var script = scriptArr[scriptArr.length - 1];
 		script.interfaces = script.interfaces || [];
 		for ( var k = 0, len = arguments.length; k < len; k++) {
 			this.Import(arguments[k]);
@@ -169,9 +207,9 @@
 		}
 	};
 
-	fm.isExist = function( cls ) {
+	fm.isExist = function( cls, CLass ) {
 		var s = cls.split(".");
-		var o = window;
+		var o = CLass || window;
 		for ( var k in s) {
 			if (!o[s[k]]) {
 				return false;
@@ -187,8 +225,7 @@
 
 	// fm.Class creates a jfm class.
 	fm['class'] = fm["Class"] = function Class( ){
-		!currentScript && this.Package();
-		var script = currentScript, data;
+		var script = scriptArr[scriptArr.length - 1], data;
 		var a = arguments, o = null;
 		script.className = a[0];
 		if (a[1]) {
@@ -196,15 +233,17 @@
 		}
 		o = createObj("" + script.packageName);
 		script.Class = "" + (script.packageName == "" ? "" : script.packageName + ".") + script.className;
-
 		script.Package = o;
-		var temp = fm.basedir.replace(/\//gim,"");
-		if (typeof storePath[temp  + script.Class] == 'object') {
-			data = storePath[temp  + script.Class];
-			storePath[temp  + script.Class] = true;
+		
+		if(!isNode){
+			var temp = fm.basedir.replace(/\//gim,"");
+			if (typeof storePath[temp  + script.Class] == 'object') {
+				data = storePath[temp  + script.Class];
+				storePath[temp  + script.Class] = true;
+			}
+			callAfterDelay(script, data, o[script.className]);
+			currentScript = undefined;
 		}
-		callAfterDelay(script, data, o[script.className]);
-		currentScript = undefined;
 	};
 
 	fm.globaltransient = [];
@@ -266,6 +305,32 @@
 		};
 	}
 
+	var saveState = [];
+
+	// Add information before calling the class.
+	function addPrototypeBeforeCall( Class, isAbstract ) {
+
+		saveState.push(window.Static, window.Abstract, window.Const, window.Private);
+		Static = Class.prototype.Static = {};
+		Abstract = Class.prototype.Abstract = isAbstract ? {} : undefined;
+		Const = Class.prototype.Const = {};
+		Const.Static = Static.Const = {};
+		Private = Class.prototype.Private = {};
+	}
+
+	// Delete all added information after call.
+	function deleteAddedProtoTypes( Class ) {
+
+		delete Class.prototype.Static;
+		delete Class.prototype.Const;
+		delete Class.prototype.Private;
+		delete Class.prototype.Abstract;
+		Private = saveState.pop();
+		Const = saveState.pop();
+		Abstract = saveState.pop();
+		Static = saveState.pop();
+	}
+
 	// Checking if setter and getter is supported by browser.
 	var isGetterSetterSupported = doesDefinePropertyWork({}) || Object.prototype.__defineGetter__;
 
@@ -294,9 +359,9 @@
 			function getter( ) {
 				return valueStorage[key];
 			}
+			/// ie dont include key created by setter getter if not intialized before
 			obj[key] = null;
 			if (Object.defineProperty && isGetterSetterSupported) {
-				obj[key] = obj[key];
 				Object.defineProperty(obj, key, {
 				    get : getter,
 				    set : setter
@@ -382,16 +447,6 @@
 
 	}
 
-	// Return whether object is empty.
-	function isNotAEmptyObject( obj ) {
-		for ( var k in obj) {
-			if (obj.hasOwnProperty(k)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	// Extend to one level.
 	function simpleExtend( from, to ) {
 		for ( var k in from) {
@@ -435,7 +490,7 @@
 	function addTransient( internalObj, tempObj ) {
 		var temp = {}, k, tr = tempObj["transient"] || [];
 		tr.push("shortHand");
-		for (k = 0; k < tr.length; k++) {
+		for (var k = 0; k < tr.length; k++) {
 			(temp[tr[k]] = true);
 		}
 		eachPropertyOf(internalObj.Static, function( v, key ) {
@@ -714,7 +769,7 @@
 		}
 	}
 
-	function invoke (fn, args, base, ics) {
+	function invoke (fn, args, base, ics, name) {
 
 		var newObj = {};
 		newObj.base = base;
@@ -862,7 +917,7 @@
 	function getAllArgsSequence(fn){
 		var arr = [];
 		var args = fn.toString().replace(STRIP_COMMENTS, '').match(FN_ARGS);
-		$.each(args[1].split(FN_ARG_SPLIT), function(i, arg){
+		eachPropertyOf(args[1].split(FN_ARG_SPLIT), function(arg, i){
 	        arg.replace(FN_ARG, function(all, underscore, name){
 	          arr.push(name);
 	        });
@@ -925,7 +980,6 @@
 		creareSetGet(this);
 		script.ics = getAllImportClass(script.imports);
 		script.args = getAllArgsSequence(Class);
-
 		getReleventClassInfo.call(script, Class, fn, this);
 
 		typeof script.shortHand == 'string' && addShortHand(script.shortHand, this);
@@ -1051,6 +1105,5 @@
 			data = undefined;
 		}, fn);
 	}
-})(window);
-
+})( this.window || global, !this.window);
 fm.basedir = "/js";
