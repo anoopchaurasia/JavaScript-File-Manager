@@ -1,3 +1,3 @@
-require("./compiler/Master.js");
+require("jsfm");
 fm.basedir = __dirname ;
 fm.Include("App");

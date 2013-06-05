@@ -11,6 +11,7 @@ fm.Import("session.SessionManager");
 fm.Import("user.User");
 fm.Class("App");
 App = function (me, Constants, Cookie, FacebookAuth, SessionManager, User){this.setMe=function(_me){me=_me;};
+	console.log(Constants, Cookie, FacebookAuth, SessionManager, User);
 	var http, url, qs, servletObj, staticServer, sessionM;
 	console.log(process.execArgv);
 	this.init = function( ) {
@@ -47,8 +48,8 @@ App = function (me, Constants, Cookie, FacebookAuth, SessionManager, User){this.
 				servletName = servletName.substring(0, servletName.indexOf("?"));
 			}
 			servletName = servletName.replace(/\//g, "");
-			if (webPath[servletName] && !servletObj[servletName]) {
-				loadServlet(webPath[servletName].class, servletName);
+			if (webPath.path[servletName] && !servletObj[servletName]) {
+				loadServlet(webPath.path[servletName].class, servletName);
 			}
 
 			if (servletObj[servletName]) {
@@ -60,7 +61,7 @@ App = function (me, Constants, Cookie, FacebookAuth, SessionManager, User){this.
 				// facebook.FacebookAuth .Authenticate(req,function(session){
 				// console.log(session);
 				// });
-				if (!user && webPath[servletName].auth) {
+				if (!user && webPath.path[servletName].auth) {
 					resp.writeHead(307, {
 						'Content-Type' : 'text/plain'
 					});
@@ -108,6 +109,9 @@ App = function (me, Constants, Cookie, FacebookAuth, SessionManager, User){this.
 					req.url = "/index.html";
 				}
 				req.url = "/web" + req.url;
+				if(servletName == "/jsfm.js"){
+					req.url = "/src/node_modules/jsfm/jsfm.js";
+				}
 				staticServer.serve(req, resp, function( err, result ) {
 					if (err) {
 						console.error('Error serving %s - %s', req.url, err.message);

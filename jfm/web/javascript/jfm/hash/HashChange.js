@@ -1,67 +1,33 @@
 fm.Package("jfm.hash");
-fm.Class("HashChange");
+fm.AbstractClass("HashChange");
 jfm.hash.HashChange = function (me){this.setMe=function(_me){me=_me;};
-	var division;
-	function onHashChange(  ) {
+
+	Abstract.onUrlChange = function(){};
+
+	function onHashChange(){
 		var hash = location.hash.substring(1);
-		switch (hash) {
-			case("registration"):{
-				if(fm.isExist("com.registration.Registration")){
-					com.registration.Registration.onHashChange(division);
-				}else{
-					fm.Include("com.registration.Registration", division);
+		var hashArr = hash.split("/"), s;
+		for(var k=0; k < me.route.length; k++){
+			s = me.route[k].path.split("/");
+			if(s.length == hashArr.length){
+				for(var i= 0; i < s.length; i++){
+					if(s[i] == hashArr[i] || s[i].indexOf(":") == 0){
+						continue;
+					}
+					else {
+						break;
+					}
 				}
-				break;
-			}
-			case ("home"): {
-				if(fm.isExist("com.home.Home")){
-					com.home.Home.onHashChange(division, {});
-				}else{
-					fm.Include("com.home.Home",division, {});
-				}
-				break;
-			}
-			case ("chat"):{
-				if(fm.isExist("com.chat.Chat")){
-					com.chat.Chat.onHashChange(division, {});
-				}else{
-					fm.Include("com.chat.Chat",division, {});
-				}
-				break;
-			}
-			case ("register"):{
-				if(fm.isExist('shop.Register') ){
-		    		 shop.Register.hashChange(division);
-		    	}
-		    	else{
-		    		fm.Include("shop.Register", division);
-		    		
-		    	}
-				break;
-			}
-			default: {
-				if(fm.isExist("com.home.Login")){
-					com.home.Login.onHashChange(division);
-				}else{
-					fm.Include("com.home.Login", division);
+				if(i == s.length){
+					me.onUrlChange(me.route[k]);
+					break;
 				}
 			}
-			
-			//location.reload();
 		}
 	}
-	
-	this.HashChange = function( d ) {
-		division = d;
-		console.log("a");
-		jQuery(window).hashchange(onHashChange);
-		if(location.hash.length < 2){
-			location.hash="home";
-		}
-		else{
-			onHashChange();
-		}
+
+	this.HashChange = function(  ) {
+		this.route = [];
+		window.onhashchange = onHashChange	
 	};
 };
-
-
