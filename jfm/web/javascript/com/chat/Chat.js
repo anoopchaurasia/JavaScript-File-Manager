@@ -65,8 +65,8 @@ com.chat.Chat = function (base, me, Cache, Utility, Container, Division){this.se
 				});
 			}
 		});
-		division.left.add(new Container({width:300, height:"100%"}));
-		division.right.add(new Container({width:300, height:"100%"}));
+		division.left.add(new Container({width:6, height:"100%"}));
+		division.right.add(new Container({width:4, height:"100%"}));
 		this.addTo(division.center);
 	};
 	
