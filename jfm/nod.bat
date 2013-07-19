@@ -1,1 +1,0 @@
-node %1 src/node/start.js
