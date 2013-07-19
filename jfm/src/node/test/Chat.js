@@ -23,7 +23,7 @@ test.Chat = function (base, me, Base){this.setMe=function(_me){me=_me;};
 	};
 
 	this.method = function( req, res ) {
-		var path = process.cwd() + "/web/html/chat.html";
+		var path = process.cwd() + "/jfm/web/html/chat.html";
 		require('fs').readFile(path, function( err, data ) {
 			if (err) {
 				console.log(err);
