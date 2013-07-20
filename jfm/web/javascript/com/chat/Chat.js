@@ -65,8 +65,8 @@ com.chat.Chat = function (base, me, Cache, Utility, Container, Division){this.se
 				});
 			}
 		});
-		division.left.add(new Container({width:6, height:"100%"}));
-		division.right.add(new Container({width:4, height:"100%"}));
+		//division.left.add(new Container({width:6, height:"100%"}));
+		//division.right.add(new Container({width:4, height:"100%"}));
 		this.addTo(division.center);
 	};
 	
@@ -88,18 +88,22 @@ com.chat.Chat = function (base, me, Cache, Utility, Container, Division){this.se
 			id : 'recieve'
 		}));
 		self.bottom.add(new Container({
-		    html : '<hr style="width:90%; margin:auto"/><br><textarea></textarea><button class="Submit">Send</button><span class="activateEnter"><input type="checkbox">:Send on enter</span>',
+		    html : '<hr style="width:100%; margin:auto"/>\
+		    <span class="activateEnter">\
+		    <input type="checkbox">:Send on enter</span>\
+		    <textarea></textarea>\
+		    <button class="Submit">Send</button>',
 		    id : "send",
 		    height : 100
 		}));
-		self.right.add(new Container({
-		    width : 100,
-		    html : ' <button class="leave">Leave</button><div id=rss></div>'
-		}));
+		// self.right.add(new Container({
+		//     width : 100,
+		//     html : ' <button class="leave">Leave</button><div id=rss></div>'
+		// }));
 		self.bottom.el.find("textarea").keydown(function( e ) {
 			
 			if (e.keyCode == 13) {
-				var isChecked = (e.shiftKey && !e.ctrlKey && !e.altKey) || self.bottom.el.find("button").next().find("input")[0].checked;
+				var isChecked = true; //(e.shiftKey && !e.ctrlKey && !e.altKey) || self.bottom.el.find("button").next().find("input")[0].checked;
 				if (isChecked) {
 					send(self.bottom.el.find("textarea"));
 					return false;
@@ -224,14 +228,18 @@ com.chat.Chat = function (base, me, Cache, Utility, Container, Division){this.se
 		// replace URLs with links
 		text = text.replace(Utility.urlRE, '<a target="_blank" href="$&">$&</a>');
 		
-		var content = '<tr>' + '  <td class="nick">' + Utility.toStaticHTML(from) + '</td>' + '  <td class="msg-text">' + Utility.toNormalHtml(text) + '</td>' + '  <td class="date">'
-		        + Utility.timeString(time) + '</td>' + '</tr>';
+		var content = '<tr>' + '  <td class="nick">' + truncate(Utility.toStaticHTML(from)) + '</td>' + '  <td class="msg-text">' + Utility.toNormalHtml(text) + '<br><span class="date">' + Utility.timeString(time) + '</span></td>'  + '</tr>';
 		messageElement.append(content);
 		
 		// the log is the stream that we view
 		$("#recieve").append(messageElement);
 		messageElement[0].scrollIntoView();
 		// always view the most recent message when it is added
+	}
+
+	function truncate(t){
+		var t = t || "";
+		return t.substring(0, 4)+" <br/>"+t.substring(4, 8);
 	}
 };
 

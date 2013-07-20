@@ -22,6 +22,10 @@ test.Chat = function (base, me, Base){this.setMe=function(_me){me=_me;};
 		}, 3000);
 	};
 
+	this.clearAll = function(){
+		messages = [];
+	};
+
 	this.method = function( req, res ) {
 		var path = process.cwd() + "/jfm/web/html/chat.html";
 		require('fs').readFile(path, function( err, data ) {
@@ -91,6 +95,10 @@ test.Chat = function (base, me, Base){this.setMe=function(_me){me=_me;};
 	this.send = function( req, res ) {
 		var id = req.cookie.SESSIONID;
 		var text = req.params.text;
+		if(text === "clearAll"){
+			this.clearAll();
+			return;
+		}
 		var session = req.sessionM.getSession(id);
 		if (!session || !text) {
 			res.writeHead(400, {
